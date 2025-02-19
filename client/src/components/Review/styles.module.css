@@ -1,0 +1,454 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.downloadIcon {
+  font-size: 18px;
+  color: #333;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+.downloadIcon:hover {
+  color: #3bb19b; /* Hover color for download icon */
+}
+
+  
+  .sidebar {
+    width: 60px;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    border-right: 1px solid #ddd;
+    transition: width 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .sidebar.expanded {
+    width: 250px;
+  }
+  
+  .historyIcon {
+    margin-top: 20px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .historyContent {
+    width: 100%;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  .closeButton {
+    display: block;
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+    margin-right: 10px;
+    padding: 5px;
+  }
+  
+  .historyList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .historyItem {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .historyItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .mainContent {
+    flex: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .mainContent.withSidebar {
+    margin-left: 0px; /* Adjust when sidebar is visible */
+  }
+  
+ .textareas_container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Spacing between boxes */
+    align-items: stretch; /* Ensures all children have the same height */
+  }
+  
+.text_container {
+    flex: 1;
+
+  } 
+
+.button_container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; 
+  gap: 15px; /* Space between Save and Edit buttons */
+}
+
+.textarea {
+  width: 100%;
+  min-height: 400px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  line-height: 1.5; /* Consistent line height */
+  box-sizing: border-box; /* Include padding and border in width/height */
+  resize: both;
+  overflow: auto;
+  margin: 15px 0; /* Add consistent spacing between elements */
+}
+
+
+.diff_box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    overflow-y: auto;
+    max-height: 200px;
+    white-space: pre-wrap;
+    margin-top: 15px;
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  .copyContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0px; /* Add spacing between label and textarea */
+  }
+  
+  /* .copyIcon {
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+  } */
+  .copyIcon {
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  
+  .copyIcon:hover {
+    color: #3bb19b; /* Hover color for clipboard icon */
+  }
+
+
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between clipboard icon and button */
+  }
+  
+  .toggleDiffBtn {
+    background-color: #ffffff; /* White background */
+    color: #000000; /* Black text color */
+    border: 1px solid #ccc; 
+    /* Optional: Add a border for better visibility */
+    padding: 5px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .toggleDiffBtn:hover {
+    background-color: #f0f0f0; /* Slightly darker background on hover */
+    color: #000000; /* Keep text black on hover */
+  }
+
+/* Full-width navbar */
+.navbar {
+    width: 100%;
+    height: 70px;
+    background-color: #3bb19b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Navbar title */
+.navbar h1 {
+    color: white;
+    font-size: 25px;
+    margin: 0;
+}
+
+/* Logout button */
+.white_btn {
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    background-color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Main container for content */
+.main_container {
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+}
+
+/* Form container for single and dual layouts */
+.form_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+
+/* Submit and Save button styles */
+.submit_btn {
+    background-color: #333;
+    color: white;
+    /* width: auto; */
+    width: 800px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    align-self: center;
+}
+
+.submit_btn:hover {
+    background-color: #555;
+}
+
+.upload_container {
+	margin-top: 10px;
+}
+
+.file_input {
+	display: block;
+	margin: 10px auto;
+	padding: 5px;
+}
+
+/* Container for the input area and drag-and-drop box */
+.input_area {
+    display: flex;
+    flex-direction: row; /* Align the input and upload area side by side */
+    gap: 20px; /* Space between the input and upload box */
+    width: 100%;
+
+
+}
+
+/* Drag-and-drop upload box */
+.upload_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px; /* Fixed width for the upload box */
+    height: 100px; /* Same height as the text box */
+    border: 2px dashed #ccc; /* Dashed border for drag-and-drop area */
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 50px;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover effect for upload box */
+.upload_box:hover {
+    background-color: #eaeaea;
+    border-color: #3bb19b;
+}
+
+/* Hidden file input */
+.hidden_input {
+    display: none;
+}
+
+/* Disable the submit button until input is provided */
+.submit_btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
+
+/* Input box full width when alone */
+/* .textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+    margin-top: 15px;
+
+}  */
+
+/* Input and Output box side by side */
+/* Equal width for both input and output boxes */
+.side_by_side {
+    flex: 1; 
+}
+
+/* Output box styles */
+.output_box {
+
+    width: 100%;
+    min-height: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 15px;
+   
+    color: #333;
+
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+    white-space: pre-wrap;
+
+    direction: ltr;
+    text-align: left; 
+}
+
+
+.output_box span {
+    display: inline;
+  }
+  
+  .output_box .diff-added {
+    background-color: #e6ffe6; /* Light green for added text */
+  }
+  
+  .output_box .diff-deleted {
+    background-color: #ffe6e6; /* Light red for deleted text */
+    text-decoration: line-through;
+  }
+
+
+.labelWrapper {
+    display: flex;
+    justify-content: space-between; /* Aligns label and icon */
+    align-items: center;
+    margin-bottom: 0px; /* Space between label and text box */
+  }
+  
+/* Label Styling */
+.label {
+font-size: 16px;
+font-weight: bold;
+margin-bottom: 0px; /* Space between label and textarea */
+text-align: left; /* Ensure label aligns left */
+}
+
+
+/* "OR" Divider Styling */
+.or_divider {
+margin: 90px 0;
+font-size: 16px;
+font-weight: bold;
+text-align: center;
+}
+  
+/* Save/Edit Button Styling */
+.text_btn {
+    margin-top: 10px; /* Space between the button and the text box */
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    width: fit-content; /* Only as wide as the text */
+  }
+  
+  .save_btn, .edit_btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .save_btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+  }
+  
+  .save_btn:hover {
+    background-color: #45a049;
+  }
+  
+  .edit_btn {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+  }
+  
+  .edit_btn:hover {
+    background-color: #0b7dda;
+  }
+  
+  .save_btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+  
+/* App Description Styling */
+.description {
+    margin: 20px auto;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    max-width: 80%;
+    line-height: 1.5;
+  }

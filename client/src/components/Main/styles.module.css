@@ -1,0 +1,351 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Full-width navbar */
+.navbar {
+    width: 100%;
+    height: 70px;
+    background-color: #3bb19b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Navbar title */
+.navbar h1 {
+    color: white;
+    font-size: 25px;
+    margin: 0;
+}
+
+/* Logout button */
+.white_btn {
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    background-color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Main container for content */
+.main_container {
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+}
+
+/* Form container for single and dual layouts */
+.form_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Container for input and output (side-by-side) */
+.textareas_container {
+    display: flex;
+    gap: 20px; /* Space between input and output */
+    width: 100%; /* Full width of the container */
+    resize: both; 
+
+}
+
+/* Submit and Save button styles */
+.submit_btn {
+    background-color: #333;
+    color: white;
+    /* width: auto; */
+    width: 100%;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    align-self: center;
+}
+
+.submit_btn:hover {
+    background-color: #555;
+}
+
+.upload_container {
+	margin-top: 10px;
+}
+
+.file_input {
+	display: block;
+	margin: 10px auto;
+	padding: 5px;
+}
+
+/* Container for the input area and drag-and-drop box */
+.input_area {
+    display: flex;
+    flex-direction: row; /* Align the input and upload area side by side */
+    gap: 20px; /* Space between the input and upload box */
+    width: 100%;
+
+}
+
+/* Drag-and-drop upload box */
+.upload_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px; /* Fixed width for the upload box */
+    height: 100px; /* Same height as the text box */
+    border: 2px dashed #ccc; /* Dashed border for drag-and-drop area */
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 220px;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover effect for upload box */
+.upload_box:hover {
+    background-color: #eaeaea;
+    border-color: #3bb19b;
+}
+
+/* Hidden file input */
+.hidden_input {
+    display: none;
+}
+
+/* Disable the submit button until input is provided */
+.submit_btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+  
+
+/* Container for Each Text Box (Input/Output) after Submit */
+/* .text_container {
+    width: 100%; 
+    height: 150px;
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    margin-bottom: 16px;
+
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: both;
+
+  } */
+
+/* Textarea Styling */
+
+
+
+/* Input box full width when alone */
+.textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+
+} 
+
+/* Input and Output box side by side */
+/* Equal width for both input and output boxes */
+.side_by_side {
+    flex: 1; 
+}
+
+/* Output box styles */
+.output_box {
+    /* flex: 1; */
+    width: 100%;
+    min-height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+
+    background-color: #f9f9f9;
+    color: #333;
+
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+}
+
+  /* Input and Output box styles */
+/* .textarea,
+.output_box {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+} */
+
+/* Container for Input and Output Boxes */
+.text_container {
+    width: 100%; /* Full width */
+    display: flex;
+    flex-direction: column; /* Stack label and textarea vertically */
+    align-items: flex-start; /* Align label and text box to the left */
+    margin-bottom: 16px; /* Add spacing between text boxes */
+}
+
+/* Container for Input and Output Areas Side-by-Side */
+.textareas_container {
+    display: flex;
+    gap: 20px; /* Space between input and output boxes */
+    width: 100%; /* Full width of the container */
+    align-items: stretch;
+}
+
+  
+/* Label Styling */
+.label {
+font-size: 16px;
+font-weight: bold;
+margin-bottom: 8px; /* Space between label and textarea */
+text-align: left; /* Ensure label aligns left */
+margin-top: 40px;
+}
+
+
+/* "OR" Divider Styling */
+.or_divider {
+margin: 260px 0;
+font-size: 20px;
+font-weight: bold;
+text-align: center;
+}
+  
+/* Save/Edit Button Styling */
+.text_btn {
+    margin-top: 10px; /* Space between the button and the text box */
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    width: fit-content; /* Only as wide as the text */
+  }
+  
+  /* Save Button Specific Styling */
+  .save_btn {
+    background-color: #4caf50; /* Green for Save */
+    color: white;
+    border: none;
+    margin-right: 20px;
+  }
+  
+  .save_btn:hover {
+    background-color: #45a049; /* Slightly darker green */
+  }
+  
+  /* Edit Button Specific Styling */
+  .edit_btn {
+    background-color: #2196f3; /* Blue for Edit */
+    color: white;
+    border: none;
+  }
+  
+  .edit_btn:hover {
+    background-color: #0b7dda; /* Slightly darker blue */
+  }
+  
+/* App Description Styling */
+.description {
+    margin: 20px auto;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    max-width: 80%;
+    line-height: 1.5;
+  }
+  
+/* 
+.navbar {
+    width: 100%;
+    height: 70px;
+    background-color: #3bb19b; 
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    margin: 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative; 
+
+}
+
+
+.navbar h1 {
+    color: white;
+    font-size: 25px;
+    margin: 0;
+}
+
+
+.white_btn {
+    border: none;
+    outline: none;
+    padding: 12px 20px; 
+    background-color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+	align-items: center;
+}
+
+
+.main_container {
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+}
+
+.form_container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    justify-content: space-between; 
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%; 
+}
+*/
