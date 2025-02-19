@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 		//res.status(200).send({ data: token, message: "logged in successfully" });
 		
 		// Include user details in the response
-		onsole.log("Login successful for user:", req.body.email);
+		console.log("Login successful for user:", req.body.email);
 		res.status(200).send({
 			data: token,
 			user: {
