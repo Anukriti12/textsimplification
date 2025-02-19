@@ -20,7 +20,7 @@ const Signup = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:8080/api/users";
+			const url = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/users";
 			console.log(data);
 			const { data: res } = await axios.post(url, data);
 			navigate("/login");

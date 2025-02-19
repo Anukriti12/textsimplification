@@ -56,7 +56,7 @@ const SurveyPage = () => {
   useEffect(() => {
     const fetchSimplification = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/simplifications/fetch", {
+        const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/fetch", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, inputText }),

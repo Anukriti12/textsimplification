@@ -54,7 +54,7 @@ const Review = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) return;
 
-      const response = await fetch("http://localhost:8080/api/simplifications", {
+      const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -82,7 +82,7 @@ const Review = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) return;
 
-      const response = await fetch("http://localhost:8080/api/simplifications/edit", {
+      const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -110,7 +110,7 @@ const Review = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) return;
 
-      const response = await fetch("http://localhost:8080/api/simplifications/save", {
+      const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/save", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -507,7 +507,7 @@ export default Review;
 //     try {
 //       const user = JSON.parse(localStorage.getItem("user"));
 
-//       const response = await fetch("http://localhost:8080/api/simplifications", {
+//       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -533,7 +533,7 @@ export default Review;
 //     try {
 //       const user = JSON.parse(localStorage.getItem("user"));
 
-//       const response = await fetch("http://localhost:8080/api/simplifications/edit", {
+//       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit", {
 //         method: "PUT",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -640,8 +640,8 @@ export default Review;
 // // 		  };
 	  
 // // 		  const endpoint = isEditable
-// // 			? "http://localhost:8080/api/simplifications/edit" // Endpoint for updating
-// // 			: "http://localhost:8080/api/simplifications"; // Endpoint for initial save
+// // 			? "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit" // Endpoint for updating
+// // 			: "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications"; // Endpoint for initial save
 	  
 // // 		  const method = isEditable ? "PUT" : "POST"; // Use PUT for updates, POST for saves
 	  
@@ -1000,8 +1000,8 @@ export default Review;
 // 		  };
 	  
 // 		  const endpoint = isEditable
-// 			? "http://localhost:8080/api/simplifications/edit" // Endpoint for updating
-// 			: "http://localhost:8080/api/simplifications"; // Endpoint for initial save
+// 			? "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit" // Endpoint for updating
+// 			: "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications"; // Endpoint for initial save
 	  
 // 		  const method = isEditable ? "PUT" : "POST"; // Use PUT for updates, POST for saves
 	  
@@ -1312,8 +1312,8 @@ export default Review;
 // 		  };
 	  
 // 		  const endpoint = isEditable
-// 			? "http://localhost:8080/api/simplifications/edit" // Endpoint for updating
-// 			: "http://localhost:8080/api/simplifications"; // Endpoint for initial save
+// 			? "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit" // Endpoint for updating
+// 			: "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications"; // Endpoint for initial save
 	  
 // 		  const method = isEditable ? "PUT" : "POST"; // Use PUT for updates, POST for saves
 	  

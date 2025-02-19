@@ -16,7 +16,7 @@ const Login = () => {
 		e.preventDefault();
 		console.log("hahahaha");
 		try {
-			const url = "http://localhost:8080/api/auth";
+			const url = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/auth";
 			const { data: res } = await axios.post(url, data);
 			console.log("Response from server:", res);
 			// localStorage.setItem("token", res.data);

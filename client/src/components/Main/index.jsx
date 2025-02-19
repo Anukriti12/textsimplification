@@ -62,7 +62,7 @@ const Main = () => {
 	  try {
 		const prompt = `Simplify the following text for better readability while preserving meaning:\n\n"${inputText}"`;
   
-		const response = await fetch("http://localhost:8080/api/gpt4", {
+		const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
 		  body: JSON.stringify({ prompt }),
