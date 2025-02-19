@@ -12,6 +12,9 @@ const Signup = () => {
 	});
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
+	const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
 	const handleChange = ({ currentTarget: input }) => {
 		setData({ ...data, [input.name]: input.value });
@@ -75,7 +78,58 @@ const Signup = () => {
 							className={styles.input}
 						/>
 
-						<input
+						 {/* Email Input */}
+						 <input
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                onChange={handleChange}
+                                value={data.email}
+                                required
+                                className={styles.input}
+                            />
+
+                            {/* Password Input with Show/Hide Toggle */}
+                            <div className={styles.passwordContainer}>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    name="password"
+                                    onChange={handleChange}
+                                    value={data.password}
+                                    required
+                                    className={styles.input}
+                                />
+                                <button
+                                    type="button"
+                                    className={styles.showHideBtn}
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
+                            </div>
+
+                            {/* Confirm Password Input with Show/Hide Toggle */}
+                            <div className={styles.passwordContainer}>
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm Password"
+                                    name="confirmPassword"
+                                    onChange={handleChange}
+                                    value={data.confirmPassword}
+                                    required
+                                    className={styles.input}
+                                />
+                                <button
+                                    type="button"
+                                    className={styles.showHideBtn}
+                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                >
+                                    {showConfirmPassword ? "Hide" : "Show"}
+                                </button>
+                            </div>
+
+						{/* <input
 							type="email"
 							placeholder="Email"
 							name="email"
@@ -94,7 +148,7 @@ const Signup = () => {
 							className={styles.input}
 						/>
 
-					
+					 */}
 				
 
 

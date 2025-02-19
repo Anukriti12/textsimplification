@@ -7,6 +7,7 @@ import {jwtDecode} from "jwt-decode"; // Import the jwt-decode library
 const Login = () => {
 	const [data, setData] = useState({ email: "", password: "" });
 	const [error, setError] = useState("");
+	const [showPassword, setShowPassword] = useState(false); 
 
 	const handleChange = ({ currentTarget: input }) => {
 		setData({ ...data, [input.name]: input.value });
@@ -63,7 +64,39 @@ const Login = () => {
 				<div className={styles.left}>
 					<form className={styles.form_container} onSubmit={handleSubmit}>
 						<h1>Login to Your Account</h1>
-						<input
+
+							{/* Email Input */}
+							<input
+								type="email"
+								placeholder="Email"
+								name="email"
+								onChange={handleChange}
+								value={data.email}
+								required
+								className={styles.input}
+							/>
+
+							{/* Password Input with Show/Hide Toggle */}
+							<div className={styles.passwordContainer}>
+								<input
+									type={showPassword ? "text" : "password"}
+									placeholder="Password"
+									name="password"
+									onChange={handleChange}
+									value={data.password}
+									required
+									className={styles.input}
+								/>
+								<button
+									type="button"
+									className={styles.showHideBtn}
+									onClick={() => setShowPassword((prev) => !prev)}
+								>
+									{showPassword ? "Hide" : "Show"}
+								</button>
+							</div>
+
+						{/* <input
 							type="email"
 							placeholder="Email"
 							name="email"
@@ -80,7 +113,7 @@ const Login = () => {
 							value={data.password}
 							required
 							className={styles.input}
-						/>
+						/> */}
 						{error && <div className={styles.error_msg}>{error}</div>}
 						<button type="submit" className={styles.green_btn}>
 							Sign In
