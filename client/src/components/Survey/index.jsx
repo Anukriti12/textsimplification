@@ -90,7 +90,7 @@ const SurveyPage = () => {
     <>
 		{/* Navbar */}
 		<nav className={styles.navbar}>
-		  <h1>Text Simplification Study</h1>
+		  <h1>Text Simplification Tool</h1>
 		  <button className={styles.white_btn} onClick={handleLogout}>
 			Logout
 		  </button>

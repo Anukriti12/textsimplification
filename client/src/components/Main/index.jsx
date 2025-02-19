@@ -19,6 +19,8 @@ const Main = () => {
 	const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(true);
 	const [showSurveyPrompt, setShowSurveyPrompt] = useState(false); // State for survey prompt
 	const navigate = useNavigate();
+	const [isUploading, setIsUploading] = useState(false); // State for showing buffer
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -30,8 +32,11 @@ const Main = () => {
 	  const file = event.target.files[0];
 	  if (!file) return;
   
+	  setIsUploading(true); // Show buffer while processing
+	  setUploadedFileName(file.name); // Set file name
+
 	  try {
-		setUploadedFileName(file.name); // Set the uploaded file name
+		//setUploadedFileName(file.name); // Set the uploaded file name
 		const fileReader = new FileReader();
 		fileReader.onload = async function () {
 		  const typedArray = new Uint8Array(this.result);
@@ -52,6 +57,8 @@ const Main = () => {
 	  } catch (error) {
 		console.error("Error reading PDF:", error);
 		alert("Failed to extract text from the PDF.");
+	  } finally {
+		setIsUploading(false); // Hide buffer once done
 	  }
 	};
  
@@ -87,7 +94,7 @@ const Main = () => {
   return (
     <>
       <nav className={styles.navbar}>
-        <h1>Text Simplification Study</h1>
+        <h1>Text Simplification Tool</h1>
         <button className={styles.white_btn} onClick={handleLogout}>
           Logout
         </button>
@@ -127,7 +134,21 @@ const Main = () => {
 				  {/* File Upload */}
 				  <div className={styles.upload_area}>
 					<label htmlFor="fileUpload" className={styles.upload_box}>
-					  {uploadedFileName ? (
+						
+						{isUploading ? (
+							<span className={styles.loadingText}>Extracting text, please wait...</span>
+							) : uploadedFileName ? (
+							<>
+								File uploaded: <strong>{uploadedFileName}</strong>
+							</>
+							) : (
+							<>
+								Click to Upload a PDF
+								<br />
+								<span>...or drag and drop a file.</span>
+							</>
+						)}
+					  {/* {uploadedFileName ? (
 						<>
 						  File uploaded: <strong>{uploadedFileName}</strong>
 						</>
@@ -137,7 +158,7 @@ const Main = () => {
 						  <br />
 						  <span>...or drag and drop a file.</span>
 						</>
-					  )}
+					  )} */}
 					</label>
 					<input
 					  type="file"
@@ -145,6 +166,7 @@ const Main = () => {
 					  accept="application/pdf"
 					  onChange={handleFileUpload}
 					  className={styles.hidden_input}
+					  disabled={isUploading} // Disable upload while processing
 					/>
 				  </div>
 				</div>
@@ -153,7 +175,7 @@ const Main = () => {
 			  <button
 				className={styles.submit_btn}
 				onClick={handleSubmit}
-				disabled={!inputText.trim() || isLoading}
+				disabled={!inputText.trim() || isLoading || isUploading}
 			  >
 				{isLoading ? "Processing..." : "Simplfiy Text"}
 			  </button>

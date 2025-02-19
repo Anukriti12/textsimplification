@@ -43,7 +43,7 @@ const Signup = () => {
 		<div className={styles.main_container}>
 			{/* Navbar */}
 			<nav className={styles.navbar}>
-				<h1>Text Simplification Study</h1>
+				<h1>Text Simplification Tool</h1>
 			</nav>
 
 		<div className={styles.signup_container}>

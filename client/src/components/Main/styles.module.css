@@ -5,6 +5,13 @@ html, body {
     height: 100%;
 }
 
+.loadingText {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  
 /* Full-width navbar */
 .navbar {
     width: 100%;
