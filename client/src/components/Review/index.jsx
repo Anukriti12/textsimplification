@@ -284,8 +284,9 @@ const Review = () => {
         >
 			<div className={styles.description}>
 			<p>
-				Review the simplified text and make any edits as needed. Your changes will be saved, and you can compare them with the original version using the ‘Show Difference’ button.
-			</p>
+	
+        Please review the simplified text carefully and make any edits as needed to suit your requirements. Once you are satisfied with your revisions, submit the final version and complete the short survey to provide your feedback.
+      </p>
 			</div>
 
 			<div className={styles.textareas_container}>
@@ -349,7 +350,7 @@ const Review = () => {
         className={styles.toggleDiffBtn}
         onClick={() => setShowDifference(!showDifference)}
       >
-        {showDifference ? "Hide Difference" : "Show Difference"}
+        {showDifference ? "Hide Difference with input text" : "Show Difference with input text"}
       </button>
     </div>
   </div>
@@ -369,7 +370,7 @@ const Review = () => {
 				<div className={styles.text_container}>
            <div className={styles.labelWrapper}>
 				<label className={styles.label} htmlFor="outputText">
-					Difference from original text
+					Difference from input text
 				</label>
         </div>   
          

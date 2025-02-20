@@ -73,8 +73,10 @@ html, body {
   font-size: 16px;
 }
 
-.submitButton:hover {
-  background-color: #0056b3; /* Add hover effect for the button */
+/* Disable the submit button until input is provided */
+.submitButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .textarea {
@@ -103,6 +105,24 @@ html, body {
   background-color: #f0f0f0; /* Slightly darker background on hover */
   color: #000000; /* Keep text black on hover */
 }
+
+
+.thankYouContainer {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.redirectButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* .submitButton:hover {
+  background-color: #0056b3; 
+}  */
 
 /* .submitButton {
   margin-top: 20px;

@@ -68,7 +68,7 @@ const generatePrompt = (inputText) => {
 	return `
 	You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD). 
 	
-	Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information.
+	Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information. The output length should be very similar to the input length.
 	
 	Follow these detailed guidelines to ensure the text is clear, easy to understand, and accessible:
   
@@ -81,7 +81,7 @@ const generatePrompt = (inputText) => {
 	- Start a new paragraph when introducing a different idea.
   
 	2. Word Choice and Vocabulary
-	- Use simple, common words (words most people know and use every day).
+	- Replace complex words with simple, common words (words most people know and use every day).
 	- Use words with few syllables (e.g., "help" instead of "assist").
 	- Avoid figurative language (no metaphors, similes, or idioms).
 	  - ❌ "It’s a piece of cake."  
@@ -94,11 +94,10 @@ const generatePrompt = (inputText) => {
 	- Use headings that are short and direct (max 8 words). Example:
 	  - ❌ "Understanding the Difference Between the Flu and COVID-19"  
 	  - ✅ "Flu vs. COVID-19"  
-	- Keep paragraphs short (2-3 sentences max).
+	- Keep paragraphs short.
   
 	4. Formatting for Readability
 	- Use left-aligned text with wide spacing between lines.
-	- Use bold for important words or phrases (but sparingly).
 	- Ensure the text is high contrast (black text on a white background).
 	- Avoid italics, underlining, or all caps, as they can be hard to read.
   
@@ -142,41 +141,46 @@ const generatePrompt = (inputText) => {
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputText, 30000);
-	  let combinedOutput = "";
+	//   const chunks = splitTextIntoChunks(inputText, 30000);
+	//   let combinedOutput = "";
   
-	  for (let chunk of chunks) {
-		const prompt = generatePrompt(chunk);
-		const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
-		  method: "POST",
-		  headers: { "Content-Type": "application/json" },
-		  body: JSON.stringify({ prompt }),
-		});
+	//   for (let chunk of chunks) {
+	// 	const prompt = generatePrompt(chunk);
+	// 	const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+	// 	  method: "POST",
+	// 	  headers: { "Content-Type": "application/json" },
+	// 	  body: JSON.stringify({ prompt }),
+	// 	});
 		
-		if (!response.ok) {
-			console.error(`API request failed with status: ${response.status}`);
-			continue; // Skip this chunk if the API request failed
-		  }
+	// 	if (!response.ok) {
+	// 		console.error(`API request failed with status: ${response.status}`);
+	// 		continue; // Skip this chunk if the API request failed
+	// 	  }
 
-		const data = await response.json();
-		console.log("Full API Response: ", data);
+	// 	const data = await response.json();
+	// 	console.log("Full API Response: ", data);
 
-		// if (data) {
-		// 	const textResponse = data.choices[0].message.content;
-		// 	console.log("Extracted Text Response: ", textResponse); // Log the extracted content
-		// 	combinedOutput += textResponse + " "; // Append the response text
-		// } else {
-		// 	console.warn("Empty or unexpected API response structure:", data);
-		//   }
-		const data1 = data?.response?.replace(/^"|"$/g, "") || "No response received."; // Append results
-		combinedOutput += data1 + " ";
-	}
-	  console.log("Final Combined Output: ", combinedOutput);
-	//   const cleanedResponse =
-	//   			combinedOutput?.response?.replace(/^"|"$/g, "") || "No response received.";
-	
-	console.log("Data: ", combinedOutput);
-	const cleanedResponse = combinedOutput.trim();
+
+	// 	const data1 = data?.response?.replace(/^"|"$/g, "") || "No response received."; // Append results
+	// 	combinedOutput += data1 + " ";
+	// }
+	//   console.log("Final Combined Output: ", combinedOutput);
+
+	// console.log("Data: ", combinedOutput);
+	// const cleanedResponse = combinedOutput.trim();
+	//   setOutputText(cleanedResponse);
+	//   setIsSubmitted(true);
+	//   navigate("/review", { state: { inputText, outputText: cleanedResponse } });
+	const prompt = generatePrompt(inputText);
+	  const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ prompt }),
+	  });
+
+	  const data = await response.json();
+	  const cleanedResponse =
+		data?.response?.replace(/^"|"$/g, "") || "No response received.";
 	  setOutputText(cleanedResponse);
 	  setIsSubmitted(true);
 	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });

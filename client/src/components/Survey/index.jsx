@@ -179,7 +179,7 @@ const SurveyPage = () => {
         className={styles.toggleDiffBtn}
         onClick={() => setShowDifference1(!showDifference1)}
       >
-        {showDifference1 ? "Hide the comparison with input text" : "Compare with input text"}
+        {showDifference1 ? "Hide the comparison" : "Compare with input text"}
       </button>
 
     </div>
@@ -220,7 +220,7 @@ readOnly placeholder="Initial Generated Text"
         className={styles.toggleDiffBtn}
         onClick={() => setShowDifference2(!showDifference2)}
       >
-        {showDifference2 ? "Hide the comparison with system-generated text" : "Compare with system-generated text"}
+        {showDifference2 ? "Hide the comparison" : "Compare with system-generated text"}
       </button>
 
     </div>
@@ -383,11 +383,11 @@ readOnly placeholder="Initial Generated Text"
   <div className={styles.surveyQuestion}>
     <label><strong>[OPTIONAL]</strong> How much effort was needed to edit the simplified text to make it acceptable? </label>
     <div className={styles.surveyOptions}>
-    <label><input type="radio" name="editing_effort" value="many-errors" onChange={handleOptionChange} required />  A lot of effort</label>
-      <label><input type="radio" name="editing_effort" value="several-errors" onChange={handleOptionChange} required />  Significant effort</label>
-      <label><input type="radio" name="editing_effort" value="some-errors" onChange={handleOptionChange} required />  Moderate effort</label>
-      <label><input type="radio" name="editing_effort" value="few-errors" onChange={handleOptionChange} required />  Minimal effort</label>
-      <label><input type="radio" name="editing_effort" value="no-errors" onChange={handleOptionChange} required />  No effort at all</label>
+    <label><input type="radio" name="editing_effort" value="many-errors" onChange={handleOptionChange}/>  A lot of effort</label>
+      <label><input type="radio" name="editing_effort" value="several-errors" onChange={handleOptionChange}/>  Significant effort</label>
+      <label><input type="radio" name="editing_effort" value="some-errors" onChange={handleOptionChange}/>  Moderate effort</label>
+      <label><input type="radio" name="editing_effort" value="few-errors" onChange={handleOptionChange}/>  Minimal effort</label>
+      <label><input type="radio" name="editing_effort" value="no-errors" onChange={handleOptionChange}/>  No effort at all</label>
     </div>
   </div>
 
