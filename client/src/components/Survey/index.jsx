@@ -23,6 +23,29 @@ const SurveyPage = () => {
   const [diffHtml2, setDiffHtml2] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      event.preventDefault();
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Going back may result in losing your edits. Do you want to continue?\n\nIf you want to edit your already submitted text, copy it from here."
+      );
+      if (!confirmLeave) {
+        window.history.pushState(null, "", window.location.href); // Prevent navigation
+      } else {
+        navigate(-1);
+      }
+    };
+
+    // **Push a history state to detect back button click**
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
+  
   const [submitted, setSubmitted] = useState(false);
 
   const [responses, setResponses] = useState({
@@ -33,6 +56,7 @@ const SurveyPage = () => {
     guidelines: "",
     coherent: "",
     editing_effort: null, // Track selection for this question
+    comments: "",
   });
 
   // Handle input changes

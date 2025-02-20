@@ -287,17 +287,7 @@ const generatePrompt = (inputText) => {
 								<span>...or drag and drop a file.</span>
 							</>
 						)}
-					  {/* {uploadedFileName ? (
-						<>
-						  File uploaded: <strong>{uploadedFileName}</strong>
-						</>
-					  ) : (
-						<>
-						  Click to Upload a PDF
-						  <br />
-						  <span>...or drag and drop a file.</span>
-						</>
-					  )} */}
+			
 					</label>
 					<input
 					  type="file"
