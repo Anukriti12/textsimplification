@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4", // Use GPT-4 model
+      model: "gpt-4o-2024-08-06", // Use GPT-4o model
       messages: [
         { role: "system", content: "You are a helpful assistant." },
         { role: "user", content: prompt },
