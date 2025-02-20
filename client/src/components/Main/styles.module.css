@@ -113,6 +113,12 @@ html, body {
     cursor: not-allowed;
 }
 
+.disabled {
+    pointer-events: none;
+    opacity: 0.5; /* Makes it visually blurred */
+    filter: blur(2px); /* Adds a slight blur */
+  }
+  
 
 .upload_container {
 	margin-top: 10px;

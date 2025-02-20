@@ -159,21 +159,21 @@ const generatePrompt = (inputText) => {
 		  }
 
 		const data = await response.json();
-		console.log("Data: ", data);
+		console.log("Full API Response: ", data);
 
-		if (data?.choices?.length > 0 && data.choices[0]?.message?.content) {
-
-			combinedOutput += data.choices[0].message.content + " "; // Append the response text
-		  
+		if (data) {
+			const textResponse = data.choices[0].message.content;
+			console.log("Extracted Text Response: ", textResponse); // Log the extracted content
+			combinedOutput += textResponse + " "; // Append the response text
 		} else {
 			console.warn("Empty or unexpected API response structure:", data);
 		  }
 		//combinedOutput += data.simplifiedText + " "; // Append results
 	  }
-
+	  console.log("Final Combined Output: ", combinedOutput);
 	//   const cleanedResponse =
 	//   			combinedOutput?.response?.replace(/^"|"$/g, "") || "No response received.";
-	  
+	console.log("Data: ", combinedOutput);
 	  const cleanedResponse = combinedOutput.trim() || "No response received.";
 	  setOutputText(cleanedResponse.trim());
 	  setIsSubmitted(true);
@@ -242,10 +242,12 @@ const generatePrompt = (inputText) => {
 					</label>
 					<textarea
 					  id="inputText"
-					  className={styles.textarea}
+					  className={`${styles.textarea} ${isLoading ? styles.disabled : ""}`}
+					//   className={styles.textarea}
 					  placeholder="Write/Paste your text here or upload a PDF document to extract content automatically."
 					  value={inputText}
 					  onChange={(e) => setInputText(e.target.value)}
+					  disabled={isLoading} // Disable input when loading
 					></textarea>
 				  </div>
   
@@ -253,7 +255,7 @@ const generatePrompt = (inputText) => {
 				  <div className={styles.or_divider}>OR</div>
   
 				  {/* File Upload */}
-				  <div className={styles.upload_area} 
+				  <div className={`${styles.upload_area} ${isLoading ? styles.disabled : ""}`}
 					onDragOver={(e) => e.preventDefault()} // Prevent default behavior
 					onDrop={(e) => {
 						e.preventDefault();
@@ -295,7 +297,8 @@ const generatePrompt = (inputText) => {
 					  accept="application/pdf"
 					  onChange={handleFileUpload}
 					  className={styles.hidden_input}
-					  disabled={isUploading} // Disable upload while processing
+					  disabled={isUploading || isLoading} // Disable upload while processing
+					  //disabled={isUploading} // Disable upload while processing
 					/>
 				  </div>
 				</div>
