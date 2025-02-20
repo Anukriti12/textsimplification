@@ -66,7 +66,9 @@ const Main = () => {
 	// Function to format the prompt with user input
 const generatePrompt = (inputText) => {
 	return `
-	You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD).
+	You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD). 
+	
+	Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information.
 	
 	Follow these detailed guidelines to ensure the text is clear, easy to understand, and accessible:
   
@@ -88,7 +90,7 @@ const generatePrompt = (inputText) => {
 	- Avoid negatives when possible (e.g., instead of "Do not touch," say "Keep hands away").
   
 	3. Text Organization
-	- Clearly state the topic at the beginning of each section.
+	If necessary,
 	- Use headings that are short and direct (max 8 words). Example:
 	  - ❌ "Understanding the Difference Between the Flu and COVID-19"  
 	  - ✅ "Flu vs. COVID-19"  
@@ -117,14 +119,34 @@ const generatePrompt = (inputText) => {
 	`;
   };
 
+  const splitTextIntoChunks = (text, maxTokens) => {
+	const words = text.split(" ");
+	let chunks = [];
+	let currentChunk = [];
   
-  	const handleSubmit = async () => {
-	  if (!inputText.trim()) return;
-	  setIsLoading(true);
+	for (let word of words) {
+	  if (currentChunk.join(" ").length + word.length < maxTokens) {
+		currentChunk.push(word);
+	  } else {
+		chunks.push(currentChunk.join(" "));
+		currentChunk = [word];
+	  }
+	}
+	if (currentChunk.length > 0) chunks.push(currentChunk.join(" "));
+	return chunks;
+  };
+
+
+  const handleSubmit = async () => {
+	if (!inputText.trim()) return;
+	setIsLoading(true);
   
-	  try {
-		const prompt = generatePrompt(inputText);
-		//`Simplify the following text for better readability while preserving meaning:\n\n"${inputText}"`;
+	try {
+	  const chunks = splitTextIntoChunks(inputText, 8000);
+	  let combinedOutput = "";
+  
+	  for (let chunk of chunks) {
+		const prompt = generatePrompt(chunk);
 		const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
@@ -132,20 +154,52 @@ const generatePrompt = (inputText) => {
 		});
   
 		const data = await response.json();
-		const cleanedResponse =
-		  data?.response?.replace(/^"|"$/g, "") || "No response received.";
-		setOutputText(cleanedResponse);
-		setIsSubmitted(true);
-		navigate("/review", { state: { inputText, outputText: cleanedResponse } });
-
-		// navigate("/simplify");
-	  } catch (error) {
-		console.error("Error fetching GPT-4 response:", error);
-		setOutputText("An error occurred while fetching the response.");
+		combinedOutput += data.simplifiedText + " "; // Append results
 	  }
+
+	  const cleanedResponse =
+	  			combinedOutput?.response?.replace(/^"|"$/g, "") || "No response received.";
+	  setOutputText(cleanedResponse.trim());
+	  setIsSubmitted(true);
+	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });
+
+	} catch (error) {
+	  console.error("Error fetching GPT-4o response:", error);
+	  setOutputText("An error occurred while simplifying the text.");
+	}
   
-	  setIsLoading(false);
-	};
+	setIsLoading(false);
+  };
+
+  
+  	// const handleSubmit = async () => {
+	//   if (!inputText.trim()) return;
+	//   setIsLoading(true);
+  
+	//   try {
+	// 	const prompt = generatePrompt(inputText);
+	// 	//`Simplify the following text for better readability while preserving meaning:\n\n"${inputText}"`;
+	// 	const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+	// 	  method: "POST",
+	// 	  headers: { "Content-Type": "application/json" },
+	// 	  body: JSON.stringify({ prompt }),
+	// 	});
+  
+	// 	const data = await response.json();
+	// 	const cleanedResponse =
+	// 	  data?.response?.replace(/^"|"$/g, "") || "No response received.";
+	// 	setOutputText(cleanedResponse);
+	// 	setIsSubmitted(true);
+	// 	navigate("/review", { state: { inputText, outputText: cleanedResponse } });
+
+	// 	// navigate("/simplify");
+	//   } catch (error) {
+	// 	console.error("Error fetching GPT-4 response:", error);
+	// 	setOutputText("An error occurred while fetching the response.");
+	//   }
+  
+	//   setIsLoading(false);
+	// };
 
   return (
     <>

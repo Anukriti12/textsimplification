@@ -409,7 +409,7 @@ const Review = () => {
             >
             Submit
             </button>
-      
+      </div>
             <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
 
   {/* Survey Prompt (Appears Only After Submitting) */}
@@ -437,8 +437,8 @@ const Review = () => {
       </p>
     </div>
   )}
-  
-    	</div>
+
+
           {/* Survey Prompt */}
     	  {/* {showSurveyPrompt && (
                   <div className={styles.survey_prompt}>
