@@ -161,21 +161,23 @@ const generatePrompt = (inputText) => {
 		const data = await response.json();
 		console.log("Full API Response: ", data);
 
-		if (data) {
-			const textResponse = data.choices[0].message.content;
-			console.log("Extracted Text Response: ", textResponse); // Log the extracted content
-			combinedOutput += textResponse + " "; // Append the response text
-		} else {
-			console.warn("Empty or unexpected API response structure:", data);
-		  }
-		//combinedOutput += data.simplifiedText + " "; // Append results
-	  }
+		// if (data) {
+		// 	const textResponse = data.choices[0].message.content;
+		// 	console.log("Extracted Text Response: ", textResponse); // Log the extracted content
+		// 	combinedOutput += textResponse + " "; // Append the response text
+		// } else {
+		// 	console.warn("Empty or unexpected API response structure:", data);
+		//   }
+		const data1 = data?.response?.replace(/^"|"$/g, "") || "No response received."; // Append results
+		combinedOutput += data1 + " ";
+	}
 	  console.log("Final Combined Output: ", combinedOutput);
 	//   const cleanedResponse =
 	//   			combinedOutput?.response?.replace(/^"|"$/g, "") || "No response received.";
+	
 	console.log("Data: ", combinedOutput);
-	  const cleanedResponse = combinedOutput.trim() || "No response received.";
-	  setOutputText(cleanedResponse.trim());
+	const cleanedResponse = combinedOutput.trim();
+	  setOutputText(cleanedResponse);
 	  setIsSubmitted(true);
 	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });
 

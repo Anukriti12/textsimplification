@@ -129,6 +129,7 @@ const SurveyPage = () => {
 		  </button>
 		</nav>
 
+    {!submitted ? (
     <div className={styles.main_container}>
     <div className={styles.description}>
 			 
@@ -266,7 +267,7 @@ readOnly placeholder="Initial Generated Text"
 
       {/* <div> */}
   <div className={styles.surveyContainer}>
-  {!submitted ? (
+
     <form className={styles.surveyForm} onSubmit={handleFormSubmit}>
       <h2>Survey</h2>
       <p><strong>Your feedback is valuable. Please answer all required questions.</strong></p>
@@ -282,7 +283,157 @@ readOnly placeholder="Initial Generated Text"
 <form class={styles.surveyForm} onSubmit={handleFormSubmit}> */}
 
        {/* Survey Questions */}
-       <div className={styles.surveyQuestion}>
+
+<div className={styles.surveyQuestion}>
+    <label>Is the system generated text clear and free of confusing language? <span style={{ color: "red" }}>*</span> </label>
+    <div className={styles.surveyOptions}>
+      <label>
+        <input type="radio" name="clarity" value="not-clear" onChange={handleOptionChange} required />  Not clear at all
+      </label>
+      <label>
+        <input type="radio" name="clarity" value="somewhat-clear" onChange={handleOptionChange} required />  Somewhat clear
+      </label>
+      <label>
+        <input type="radio" name="clarity" value="moderately-clear" onChange={handleOptionChange} required />  Moderately clear
+      </label>
+      <label>
+        <input type="radio" name="clarity" value="mostly-clear" onChange={handleOptionChange} required />  Mostly clear
+      </label>
+      <label>
+        <input type="radio" name="clarity" value="very-clear" onChange={handleOptionChange} required />  Very clear
+      </label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label>Does the system generated text preserve the original meaning? <span style={{ color: "red" }}>*</span> </label>
+    <div className={styles.surveyOptions}>
+      <label>
+        <input type="radio" name="meaning" value="not-at-all" onChange={handleOptionChange} required />  Not at all
+      </label>
+      <label>
+        <input type="radio" name="meaning" value="somewhat-preserves" onChange={handleOptionChange} required />  Somewhat preserves
+      </label>
+      <label>
+        <input type="radio" name="meaning" value="moderately-preserves" onChange={handleOptionChange} required />  Moderately preserves
+      </label>
+      <label>
+        <input type="radio" name="meaning" value="mostly-preserves" onChange={handleOptionChange} required />  Mostly preserves
+      </label>
+      <label>
+        <input type="radio" name="meaning" value="completely-preserves" onChange={handleOptionChange} required />  Completely preserves
+      </label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label>Are there grammatical errors in the system generated text? <span style={{ color: "red" }}>*</span> </label>
+    <div className={styles.surveyOptions}>
+      <label>
+        <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange} required />  Many errors
+      </label>
+      <label>
+        <input type="radio" name="grammar" value="several-errors" onChange={handleOptionChange} required />  Several errors
+      </label>
+      <label>
+        <input type="radio" name="grammar" value="some-errors" onChange={handleOptionChange} required />  Some errors
+      </label>
+      <label>
+        <input type="radio" name="grammar" value="few-errors" onChange={handleOptionChange} required />  Few errors
+      </label>
+      <label>
+        <input type="radio" name="grammar" value="no-errors" onChange={handleOptionChange} required />  No errors
+      </label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label>Does the system generated text meet your needs? <span style={{ color: "red" }}>*</span> </label>
+    <div className={styles.surveyOptions}>
+    <label><input type="radio" name="needs" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
+      <label><input type="radio" name="needs" value="somewhat-meets" onChange={handleOptionChange} required />  Somewhat meets</label>
+      <label><input type="radio" name="needs" value="moderately-meets" onChange={handleOptionChange} required />  Moderately meets</label>
+      <label><input type="radio" name="needs" value="mostly-meets" onChange={handleOptionChange} required />  Mostly meets</label>
+      <label><input type="radio" name="needs" value="completely-meets" onChange={handleOptionChange} required />  Completely meets</label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label>Does the system generated text follow the IDD guidelines for sentence structure and organization? <span style={{ color: "red" }}>*</span> </label>
+    <div className={styles.surveyOptions}>
+    <label><input type="radio" name="guidelines" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
+      <label><input type="radio" name="guidelines" value="somewhat-follows" onChange={handleOptionChange} required />  Somewhat follows</label>
+      <label><input type="radio" name="guidelines" value="moderately-follows" onChange={handleOptionChange} required />  Moderately follows</label>
+      <label><input type="radio" name="guidelines" value="mostly-follows" onChange={handleOptionChange} required />  Mostly follows</label>
+      <label><input type="radio" name="guidelines" value="completely-follows" onChange={handleOptionChange} required />  Completely follows</label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label>Is the system generated text coherent in terms of sentence flow and organization? <span style={{ color: "red" }}>*</span> </label>
+    <div className={styles.surveyOptions}>
+    <label><input type="radio" name="coherent" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
+      <label><input type="radio" name="coherent" value="somewhat-follows" onChange={handleOptionChange} required />  Somewhat coherent</label>
+      <label><input type="radio" name="coherent" value="moderately-follows" onChange={handleOptionChange} required />  Moderately coherent</label>
+      <label><input type="radio" name="coherent" value="mostly-follows" onChange={handleOptionChange} required />  Mostly coherent</label>
+      <label><input type="radio" name="coherent" value="completely-follows" onChange={handleOptionChange} required />  Completely coherent</label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label><strong>[OPTIONAL]</strong> How much effort was needed to edit the simplified text to make it acceptable? </label>
+    <div className={styles.surveyOptions}>
+    <label><input type="radio" name="editing_effort" value="many-errors" onChange={handleOptionChange} required />  A lot of effort</label>
+      <label><input type="radio" name="editing_effort" value="several-errors" onChange={handleOptionChange} required />  Significant effort</label>
+      <label><input type="radio" name="editing_effort" value="some-errors" onChange={handleOptionChange} required />  Moderate effort</label>
+      <label><input type="radio" name="editing_effort" value="few-errors" onChange={handleOptionChange} required />  Minimal effort</label>
+      <label><input type="radio" name="editing_effort" value="no-errors" onChange={handleOptionChange} required />  No effort at all</label>
+    </div>
+  </div>
+
+  <div className={styles.surveyQuestion}>
+    <label><strong>[OPTIONAL]</strong> Do you have any additional comments about the system generated text? </label>
+    <textarea
+      // className={styles.textarea}
+      name="comments"
+      rows="4"
+      cols="70"
+      placeholder="Enter your feedback or any additional comments here"
+    ></textarea>
+  </div>
+
+  <div>
+    <button className={styles.submitButton} type="submit" disabled={!isFormComplete}>Submit</button>
+  </div>
+
+</form>
+</div>
+
+</div>
+</div>
+) : (
+  // Thank You Message & Redirect
+  <div className={styles.thankYouContainer}>
+    <h2>Thank You!</h2>
+    <p>Your responses have been saved. We appreciate your feedback.</p>
+    <button
+      className={styles.redirectButton}
+      onClick={() => navigate("/simplify", { replace: true })}
+    >
+      Start Another Simplification
+    </button>
+  </div>
+)}
+
+
+
+</>
+  );
+};
+
+export default SurveyPage;
+
+       {/* <div className={styles.surveyQuestion}>
             <label>Is the system-generated text clear and free of confusing language?</label>
             <div className={styles.surveyOptions}>
               {["not-clear", "somewhat-clear", "moderately-clear", "mostly-clear", "very-clear"].map((option) => (
@@ -354,156 +505,20 @@ readOnly placeholder="Initial Generated Text"
             </div>
           </div>
 
-          {/* Optional Comments */}
+          <div className={styles.surveyQuestion}>
+            <label>Is the system-generated text coherent in terms of sentence flow and organization?</label>
+            <div className={styles.surveyOptions}>
+              {["not-at-all", "somewhat-coherent", "moderately-coherent", "mostly-coherent", "completely-coherent"].map((option) => (
+                <label key={option}>
+                  <input type="radio" name="editing_effort" value={option} onChange={handleOptionChange} required />
+                  {option.replace("-", " ")}
+                </label>
+              ))}
+            </div>
+          </div>
+
+
           <div className={styles.surveyQuestion}>
             <label><strong>[OPTIONAL]</strong> Additional comments:</label>
             <textarea name="comments" rows="4" cols="70" placeholder="Enter your feedback here"></textarea>
-          </div>
-{/* 
-<div className={styles.surveyQuestion}>
-    <label>Is the system generated text clear and free of confusing language?</label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="clarity" value="not-clear" /> Not clear at all
-      </label>
-      <label>
-        <input type="radio" name="clarity" value="somewhat-clear" /> Somewhat clear
-      </label>
-      <label>
-        <input type="radio" name="clarity" value="moderately-clear" /> Moderately clear
-      </label>
-      <label>
-        <input type="radio" name="clarity" value="mostly-clear" /> Mostly clear
-      </label>
-      <label>
-        <input type="radio" name="clarity" value="very-clear" /> Very clear
-      </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the system generated text preserve the original meaning?</label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="meaning" value="not-at-all" /> Not at all
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="somewhat-preserves" /> Somewhat preserves
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="moderately-preserves" /> Moderately preserves
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="mostly-preserves" /> Mostly preserves
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="completely-preserves" /> Completely preserves
-      </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Are there grammatical errors in the system generated text?</label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="grammar" value="many-errors" /> Many errors
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="several-errors" /> Several errors
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="some-errors" /> Some errors
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="few-errors" /> Few errors
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="no-errors" /> No errors
-      </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the system generated text meet your needs?</label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="needs" value="not-at-all" /> Not at all</label>
-      <label><input type="radio" name="needs" value="somewhat-meets" /> Somewhat meets</label>
-      <label><input type="radio" name="needs" value="moderately-meets" /> Moderately meets</label>
-      <label><input type="radio" name="needs" value="mostly-meets" /> Mostly meets</label>
-      <label><input type="radio" name="needs" value="completely-meets" /> Completely meets</label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the system generated text follow the IDD guidelines for sentence structure and organization?</label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="guidelines" value="not-at-all" /> Not at all</label>
-      <label><input type="radio" name="guidelines" value="somewhat-follows" /> Somewhat follows</label>
-      <label><input type="radio" name="guidelines" value="moderately-follows" /> Moderately follows</label>
-      <label><input type="radio" name="guidelines" value="mostly-follows" /> Mostly follows</label>
-      <label><input type="radio" name="guidelines" value="completely-follows" /> Completely follows</label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Is the system generated text coherent in terms of sentence flow and organization?</label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="coherent" value="not-at-all" /> Not at all</label>
-      <label><input type="radio" name="coherent" value="somewhat-follows" /> Somewhat coherent</label>
-      <label><input type="radio" name="coherent" value="moderately-follows" /> Moderately coherent</label>
-      <label><input type="radio" name="coherent" value="mostly-follows" /> Mostly coherent</label>
-      <label><input type="radio" name="coherent" value="completely-follows" /> Completely coherent</label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label><strong>[OPTIONAL]</strong> How much effort was needed to edit the simplified text to make it acceptable?</label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="editing_effort" value="many-errors" /> A lot of effort</label>
-      <label><input type="radio" name="editing_effort" value="several-errors" /> Significant effort</label>
-      <label><input type="radio" name="editing_effort" value="some-errors" /> Moderate effort</label>
-      <label><input type="radio" name="editing_effort" value="few-errors" /> Minimal effort</label>
-      <label><input type="radio" name="editing_effort" value="no-errors" /> No effort at all</label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label><strong>[OPTIONAL]</strong> Do you have any additional comments about the system generated text? </label>
-    <textarea
-      // className={styles.textarea}
-      name="comments"
-      rows="4"
-      cols="70"
-      placeholder="Enter your feedback or any additional comments here"
-    ></textarea>
-  </div> */}
-
-
-  <div>
-    <button className={styles.submitButton} type="submit" disabled={!isFormComplete}>Submit</button>
-  </div>
-</form>
-) : (
-  // Thank You Message & Redirect
-  <div className={styles.thankYouContainer}>
-    <h2>Thank You!</h2>
-    <p>Your responses have been saved. We appreciate your feedback.</p>
-    <button
-      className={styles.redirectButton}
-      onClick={() => navigate("/simplify", { replace: true })}
-    >
-      Start Another Simplification
-    </button>
-  </div>
-)}
-
-
-</div>
-
-</div>
-</div>
-</>
-  );
-};
-
-export default SurveyPage;
+          </div> */}

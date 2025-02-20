@@ -115,8 +115,9 @@ html, body {
 
 .disabled {
     pointer-events: none;
-    opacity: 0.5; /* Makes it visually blurred */
-    filter: blur(2px); /* Adds a slight blur */
+    opacity: 0.2; /* Makes it visually blurred */
+    /* filter: blur(1px);  */
+    /* Adds a slight blur */
   }
   
 
