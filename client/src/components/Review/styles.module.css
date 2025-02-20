@@ -239,22 +239,53 @@ html, body {
 
 /* Submit and Save button styles */
 .submit_btn {
-    background-color: #333;
-    color: white;
-    /* width: auto; */
-    width: 800px;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 20px;
-    text-align: center;
-    align-self: center;
+  background-color: #333;
+  color: white;
+  /* width: auto; */
+  width: 100%;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  align-self: center;
 }
 
 .submit_btn:hover {
-    background-color: #555;
+  background-color: #555;
+}
+
+/* Disable the submit button until input is provided */
+.submit_btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.survey_prompt {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.survey_text {
+  font-size: 14px;
+  color: #333; /* Darker text for readability */
+}
+
+.survey_btn {
+  background: none;
+  border: none;
+  color: #0073e6; /* Blue for contrast */
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline; /* Mimics a hyperlink */
+  margin-left: 5px;
+  padding: 5px;
+}
+
+.survey_btn:hover {
+  color: #005bb5; /* Slightly darker blue on hover */
 }
 
 .upload_container {
@@ -308,11 +339,6 @@ html, body {
     display: none;
 }
 
-/* Disable the submit button until input is provided */
-.submit_btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
 
 
 

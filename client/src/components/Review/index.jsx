@@ -391,36 +391,62 @@ const Review = () => {
 			<div className={styles.button_container}>
 
     
-    				<button
+    				{/* <button
     					className={`${styles.save_btn} ${styles.text_btn}`}
               onClick={saveFinalOutput}
               disabled={!isSaveButtonEnabled || isLoading}
+              title={!isSaveButtonEnabled ? "Please make an edit before submitting." : ""}
+
     				>
     					Submit
-    				</button>
-    				
-    
+    				</button> */}
 
-    				</div>
+            <button
+            className={styles.submit_btn}
+            onClick={saveFinalOutput}
+            disabled={!isSaveButtonEnabled || isLoading}
+            title={!isSaveButtonEnabled ? "Please make an edit before submitting." : ""}
+            >
+            Submit
+            </button>
+      
+            <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
+
+  {/* Survey Prompt (Appears Only After Submitting) */}
+  {showSurveyPrompt && (
+    <div className={styles.survey_prompt}>
+      <p className={styles.survey_text}>
+        Please take the survey to help us improve.
+        <button
+          className={styles.survey_btn}
+          onClick={() => {
+            const reviewPageState = { inputText, outputText, editHistory };
+            localStorage.setItem("reviewPageState", JSON.stringify(reviewPageState));
+            navigate("/survey", {
+              state: {
+                email: JSON.parse(localStorage.getItem("user")).email,
+                inputText,
+                outputText,
+                editHistory,
+              },
+            });
+          }}
+        >
+          📑 Take the Survey
+        </button>
+      </p>
+    </div>
+  )}
+  
+    	</div>
           {/* Survey Prompt */}
-    	  {showSurveyPrompt && (
+    	  {/* {showSurveyPrompt && (
                   <div className={styles.survey_prompt}>
                     <p>
-                      Please take the survey to help us improve {" "}
+                      Please take the survey {" "}
                       <button
                         className={styles.link_btn}
-                      //   onClick={() => 
-                      //     navigate("/survey", {
-                      //       //state: { email: JSON.parse(localStorage.getItem("user")).email, inputText },
-                      //       state: {
-                      //         email: JSON.parse(localStorage.getItem("user")).email,
-                      //         inputText,
-                      //         outputText, // Pass the current output text as well
-                      //         editHistory,
-                      //       },
-                      //     })
-                      //   }
-                      // >
+ 
                       onClick={() => {
                         const reviewPageState = {
                           inputText,
@@ -438,11 +464,13 @@ const Review = () => {
                         });
                       }}
                     >
-                        Take the Survey
+                        📑 Take the Survey
                       </button>
+                    
+                    to help us improve!
                     </p>
                   </div>
-                )}
+                )} */}
 
 
         </div>

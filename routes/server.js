@@ -29,8 +29,8 @@ router.post("/", async (req, res) => {
       messages: [
         { role: "system", content: "You are a specialized assistant in text accessibility." },
         { role: "user", content: prompt },
-      ],
-      temperature: 0.7 // Limit response length
+      ]
+    // max_tokens: 2000
     });
     console.log("Full API Response:", response);
     if (response.choices && response.choices.length > 0) {

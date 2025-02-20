@@ -237,7 +237,7 @@ const generatePrompt = (inputText) => {
 				disabled={!inputText.trim() || isLoading || isUploading}
 				//title={!inputText.trim() ? "Enter text or upload a file to enable simplification." : ""}
 			  >
-				{isLoading ? "Processing..." : "Simplfiy Text"}
+				{isLoading ? "Processing..." : "Simplify Text"}
 			  </button>
 	
 			  <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
