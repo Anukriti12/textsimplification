@@ -62,13 +62,69 @@ const Main = () => {
 	  }
 	};
  
+
+	// Function to format the prompt with user input
+const generatePrompt = (inputText) => {
+	return `
+	You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD).
+	
+	Follow these detailed guidelines to ensure the text is clear, easy to understand, and accessible:
+  
+	1. Sentence and Structure Simplification
+	- Use short sentences (8-10 words max).
+	- Keep one main idea per sentence to avoid confusion.
+	- Write in active voice (e.g., "A doctor gives medicine" instead of "Medicine is given by a doctor").
+	- Avoid bulleted lists. Instead, write short, direct sentences in paragraph form.
+	- Repeat important words instead of using synonyms to improve comprehension.
+	- Start a new paragraph when introducing a different idea.
+  
+	2. Word Choice and Vocabulary
+	- Use simple, common words (words most people know and use every day).
+	- Use words with few syllables (e.g., "help" instead of "assist").
+	- Avoid figurative language (no metaphors, similes, or idioms).
+	  - ❌ "It’s a piece of cake."  
+	  - ✅ "It is easy to do."  
+	- If a difficult word is necessary, provide a simple definition within the text.
+	- Avoid negatives when possible (e.g., instead of "Do not touch," say "Keep hands away").
+  
+	3. Text Organization
+	- Clearly state the topic at the beginning of each section.
+	- Use headings that are short and direct (max 8 words). Example:
+	  - ❌ "Understanding the Difference Between the Flu and COVID-19"  
+	  - ✅ "Flu vs. COVID-19"  
+	- Keep paragraphs short (2-3 sentences max).
+  
+	4. Formatting for Readability
+	- Use left-aligned text with wide spacing between lines.
+	- Use bold for important words or phrases (but sparingly).
+	- Ensure the text is high contrast (black text on a white background).
+	- Avoid italics, underlining, or all caps, as they can be hard to read.
+  
+	5. Instructions and Steps
+	- If the text includes instructions, keep steps short and clear.
+	- Example:
+	  - ❌ "First, you will need to open the box carefully and remove the contents before proceeding to step two, which involves assembling the parts."  
+	  - ✅ "Step 1: Open the box.  
+		 Step 2: Take out the parts."  
+  
+	6. Retaining Meaning and Key Details
+	- Do not remove important information, but explain it in a simpler way.
+	- Ensure the simplified version does not change the facts.
+	- The output should remain accurate, informative, and accessible.
+  
+	Now, simplify the following text according to these guidelines:
+	"${inputText}"
+	`;
+  };
+
+  
   	const handleSubmit = async () => {
 	  if (!inputText.trim()) return;
 	  setIsLoading(true);
   
 	  try {
-		const prompt = `Simplify the following text for better readability while preserving meaning:\n\n"${inputText}"`;
-  
+		const prompt = generatePrompt(inputText);
+		//`Simplify the following text for better readability while preserving meaning:\n\n"${inputText}"`;
 		const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },

@@ -25,12 +25,12 @@ router.post("/", async (req, res) => {
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-2024-08-06", // Use GPT-4o model
+      model: "o1", // Use GPT-4o model
       messages: [
-        { role: "system", content: "You are a helpful assistant." },
+        { role: "system", content: "You are a specialized assistant in text accessibility." },
         { role: "user", content: prompt },
       ],
-      max_tokens: 200, // Limit response length
+      temperature: 0.7 // Limit response length
     });
     console.log("Full API Response:", response);
     if (response.choices && response.choices.length > 0) {
