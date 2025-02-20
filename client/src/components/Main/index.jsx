@@ -142,7 +142,7 @@ const generatePrompt = (inputText) => {
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputText, 28000);
+	  const chunks = splitTextIntoChunks(inputText, 30000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {
@@ -152,13 +152,29 @@ const generatePrompt = (inputText) => {
 		  headers: { "Content-Type": "application/json" },
 		  body: JSON.stringify({ prompt }),
 		});
-  
+		
+		if (!response.ok) {
+			console.error(`API request failed with status: ${response.status}`);
+			continue; // Skip this chunk if the API request failed
+		  }
+
 		const data = await response.json();
-		combinedOutput += data.simplifiedText + " "; // Append results
+		console.log("Data: ", data);
+
+		if (data?.choices?.length > 0 && data.choices[0]?.message?.content) {
+
+			combinedOutput += data.choices[0].message.content + " "; // Append the response text
+		  
+		} else {
+			console.warn("Empty or unexpected API response structure:", data);
+		  }
+		//combinedOutput += data.simplifiedText + " "; // Append results
 	  }
 
-	  const cleanedResponse =
-	  			combinedOutput?.response?.replace(/^"|"$/g, "") || "No response received.";
+	//   const cleanedResponse =
+	//   			combinedOutput?.response?.replace(/^"|"$/g, "") || "No response received.";
+	  
+	  const cleanedResponse = combinedOutput.trim() || "No response received.";
 	  setOutputText(cleanedResponse.trim());
 	  setIsSubmitted(true);
 	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });
