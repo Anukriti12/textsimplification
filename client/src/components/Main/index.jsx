@@ -142,7 +142,7 @@ const generatePrompt = (inputText) => {
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputText, 8000);
+	  const chunks = splitTextIntoChunks(inputText, 28000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {

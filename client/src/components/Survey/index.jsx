@@ -373,13 +373,13 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>Do you have any additional comments about the system generated text? (Open-ended)</label>
+    <label><strong>[OPTIONAL]</strong> Do you have any additional comments about the system generated text? </label>
     <textarea
       // className={styles.textarea}
       name="comments"
       rows="4"
-      cols="50"
-      placeholder="Enter your comments here..."
+      cols="70"
+      placeholder="Enter your feedback or any additional comments here"
     ></textarea>
   </div>
 

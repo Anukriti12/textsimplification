@@ -284,8 +284,7 @@ const Review = () => {
         >
 			<div className={styles.description}>
 			<p>
-				Review the generated output and make any necessary edits. Changes
-				are highlighted in real-time for easy visualization.
+				Review the simplified text and make any edits as needed. Your changes will be saved, and you can compare them with the original version using the ‘Show Difference’ button.
 			</p>
 			</div>
 

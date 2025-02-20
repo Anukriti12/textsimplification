@@ -288,6 +288,23 @@ html, body {
   color: #005bb5; /* Slightly darker blue on hover */
 }
 
+.help_text {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 14px;
+  color: #555;
+}
+
+.help_text a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.help_text a:hover {
+  text-decoration: underline;
+}
+
+
 .upload_container {
 	margin-top: 10px;
 }
