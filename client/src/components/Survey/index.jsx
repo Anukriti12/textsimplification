@@ -32,13 +32,22 @@ const SurveyPage = () => {
     needs: "",
     guidelines: "",
     coherent: "",
+    editing_effort: null, // Track selection for this question
   });
 
   // Handle input changes
-  const handleOptionChange = (event) => {
-    setResponses({ ...responses, [event.target.name]: event.target.value });
-  };
+  // const handleOptionChange = (event) => {
+  //   setResponses({ ...responses, [event.target.name]: event.target.value });
+  // };
 
+  // Handle input changes, allowing deselection
+const handleOptionChange = (event) => {
+  const { name, value } = event.target;
+  setResponses((prevResponses) => ({
+    ...prevResponses,
+    [name]: prevResponses[name] === value ? null : value, // Toggle selection
+  }));
+};
   // Check if all required fields are filled
   const isFormComplete = Object.values(responses).every((value) => value !== "");
 
@@ -383,11 +392,11 @@ readOnly placeholder="Initial Generated Text"
   <div className={styles.surveyQuestion}>
     <label><strong>[OPTIONAL]</strong> How much effort was needed to edit the simplified text to make it acceptable? </label>
     <div className={styles.surveyOptions}>
-    <label><input type="radio" name="editing_effort" value="many-errors" onChange={handleOptionChange}/>  A lot of effort</label>
-      <label><input type="radio" name="editing_effort" value="several-errors" onChange={handleOptionChange}/>  Significant effort</label>
-      <label><input type="radio" name="editing_effort" value="some-errors" onChange={handleOptionChange}/>  Moderate effort</label>
-      <label><input type="radio" name="editing_effort" value="few-errors" onChange={handleOptionChange}/>  Minimal effort</label>
-      <label><input type="radio" name="editing_effort" value="no-errors" onChange={handleOptionChange}/>  No effort at all</label>
+    <label><input type="radio" name="editing_effort" value="many-errors" checked={responses.editing_effort === "many-errors"} onChange={handleOptionChange}/>  A lot of effort</label>
+      <label><input type="radio" name="editing_effort" value="several-errors" checked={responses.editing_effort === "several-errors"} onChange={handleOptionChange}/>  Significant effort</label>
+      <label><input type="radio" name="editing_effort" value="some-errors" checked={responses.editing_effort === "some-errors"} onChange={handleOptionChange}/>  Moderate effort</label>
+      <label><input type="radio" name="editing_effort" value="few-errors" checked={responses.editing_effort === "few-errors"} onChange={handleOptionChange}/>  Minimal effort</label>
+      <label><input type="radio" name="editing_effort" value="no-errors" checked={responses.editing_effort === "no-errors"} onChange={handleOptionChange}/>  No effort at all</label>
     </div>
   </div>
 

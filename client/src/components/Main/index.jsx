@@ -141,49 +141,51 @@ const generatePrompt = (inputText) => {
 	setIsLoading(true);
   
 	try {
-	//   const chunks = splitTextIntoChunks(inputText, 30000);
-	//   let combinedOutput = "";
+	  const chunks = splitTextIntoChunks(inputText, 30000);
+	  let combinedOutput = "";
   
-	//   for (let chunk of chunks) {
-	// 	const prompt = generatePrompt(chunk);
-	// 	const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
-	// 	  method: "POST",
-	// 	  headers: { "Content-Type": "application/json" },
-	// 	  body: JSON.stringify({ prompt }),
-	// 	});
+	  for (let chunk of chunks) {
+		const prompt = generatePrompt(chunk);
+		const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+		  method: "POST",
+		  headers: { "Content-Type": "application/json" },
+		  body: JSON.stringify({ prompt }),
+		});
 		
-	// 	if (!response.ok) {
-	// 		console.error(`API request failed with status: ${response.status}`);
-	// 		continue; // Skip this chunk if the API request failed
-	// 	  }
+		if (!response.ok) {
+			console.error(`API request failed with status: ${response.status}`);
+			continue; // Skip this chunk if the API request failed
+		  }
 
-	// 	const data = await response.json();
-	// 	console.log("Full API Response: ", data);
+		const data = await response.json();
+		console.log("Full API Response: ", data);
 
 
-	// 	const data1 = data?.response?.replace(/^"|"$/g, "") || "No response received."; // Append results
-	// 	combinedOutput += data1 + " ";
-	// }
-	//   console.log("Final Combined Output: ", combinedOutput);
+		const data1 = data?.response?.replace(/^"|"$/g, "") || "No response received."; // Append results
+		combinedOutput += data1 + " ";
+	}
+	  console.log("Final Combined Output: ", combinedOutput);
 
-	// console.log("Data: ", combinedOutput);
-	// const cleanedResponse = combinedOutput.trim();
-	//   setOutputText(cleanedResponse);
-	//   setIsSubmitted(true);
-	//   navigate("/review", { state: { inputText, outputText: cleanedResponse } });
-	const prompt = generatePrompt(inputText);
-	  const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ prompt }),
-	  });
-
-	  const data = await response.json();
-	  const cleanedResponse =
-		data?.response?.replace(/^"|"$/g, "") || "No response received.";
+	console.log("Data: ", combinedOutput);
+	const cleanedResponse = combinedOutput.trim();
 	  setOutputText(cleanedResponse);
 	  setIsSubmitted(true);
 	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });
+	
+	
+	// const prompt = generatePrompt(inputText);
+	//   const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+	// 	method: "POST",
+	// 	headers: { "Content-Type": "application/json" },
+	// 	body: JSON.stringify({ prompt }),
+	//   });
+
+	//   const data = await response.json();
+	//   const cleanedResponse =
+	// 	data?.response?.replace(/^"|"$/g, "") || "No response received.";
+	//   setOutputText(cleanedResponse);
+	//   setIsSubmitted(true);
+	//   navigate("/review", { state: { inputText, outputText: cleanedResponse } });
 
 	} catch (error) {
 	  console.error("Error fetching GPT-4o response:", error);
