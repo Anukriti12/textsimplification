@@ -11,6 +11,21 @@ html, body {
     color: #555;
   }
 
+  .help_text {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .help_text a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .help_text a:hover {
+    text-decoration: underline;
+  }
   
 /* Full-width navbar */
 .navbar {

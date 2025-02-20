@@ -104,12 +104,7 @@ const Main = () => {
 	
 			<div className={styles.description}>
 			  <p>
-				This app is about simplifying text for improved readability and
-				accessibility.
-			  </p>
-			  <p>
-				Upload a document or paste your text to get a simplified version
-				with just a click.
+			  This tool helps make complex text easier to read while preserving its original meaning. Whether you're simplifying academic content, technical documents, or general text for better accessibility, this tool provides a quick and efficient way to generate a more readable version. You can enter text manually or upload a document to get started.
 			  </p>
   
 			  <div className={styles.form_container}>
@@ -122,7 +117,7 @@ const Main = () => {
 					<textarea
 					  id="inputText"
 					  className={styles.textarea}
-					  placeholder="Original Text"
+					  placeholder="Write/Paste your text here or upload a PDF document to extract content automatically."
 					  value={inputText}
 					  onChange={(e) => setInputText(e.target.value)}
 					></textarea>
@@ -132,7 +127,15 @@ const Main = () => {
 				  <div className={styles.or_divider}>OR</div>
   
 				  {/* File Upload */}
-				  <div className={styles.upload_area}>
+				  <div className={styles.upload_area} 
+					onDragOver={(e) => e.preventDefault()} // Prevent default behavior
+					onDrop={(e) => {
+						e.preventDefault();
+						const file = e.dataTransfer.files[0]; // Get the first dropped file
+						if (file) {
+						handleFileUpload({ target: { files: [file] } }); // Simulate file selection event
+						}
+					}}>
 					<label htmlFor="fileUpload" className={styles.upload_box}>
 						
 						{isUploading ? (
@@ -176,10 +179,13 @@ const Main = () => {
 				className={styles.submit_btn}
 				onClick={handleSubmit}
 				disabled={!inputText.trim() || isLoading || isUploading}
+				//title={!inputText.trim() ? "Enter text or upload a file to enable simplification." : ""}
 			  >
 				{isLoading ? "Processing..." : "Simplfiy Text"}
 			  </button>
 	
+			  <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
+
         </div>
       </div>
     </>

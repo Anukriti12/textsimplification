@@ -110,7 +110,7 @@ const Signup = () => {
                             </div>
 
                             {/* Confirm Password Input with Show/Hide Toggle */}
-                            <div className={styles.passwordContainer}>
+                            {/* <div className={styles.passwordContainer}>
                                 <input
                                     type={showConfirmPassword ? "text" : "password"}
                                     placeholder="Confirm Password"
@@ -127,7 +127,7 @@ const Signup = () => {
                                 >
                                     {showConfirmPassword ? "Hide" : "Show"}
                                 </button>
-                            </div>
+                            </div> */}
 
 						{/* <input
 							type="email"
