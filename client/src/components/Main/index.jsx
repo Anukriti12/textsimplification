@@ -230,7 +230,12 @@ const generatePrompt = (inputText) => {
   return (
     <>
       <nav className={styles.navbar}>
-        <h1>Text Simplification Tool</h1>
+        {/* <h1>Text Simplification Tool</h1> */}
+		<h1 
+    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+    style={{ cursor: "pointer" }} // Makes it look clickable
+ 		>
+		Text Simplification Tool</h1>
         <button className={styles.white_btn} onClick={handleLogout}>
           Logout
         </button>
