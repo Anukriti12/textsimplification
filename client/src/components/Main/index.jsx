@@ -68,7 +68,7 @@ const generatePrompt = (inputText) => {
 	return `
 	You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD). 
 	
-	Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information. The output length should be very similar to the input length.
+	Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information. The output length should be similar to the input length.
 	
 	Follow these detailed guidelines to ensure the text is clear, easy to understand, and accessible:
   
@@ -112,8 +112,10 @@ const generatePrompt = (inputText) => {
 	- Do not remove important information, but explain it in a simpler way.
 	- Ensure the simplified version does not change the facts.
 	- The output should remain accurate, informative, and accessible.
+
+	7. Do not simplify unnecessarily and the output should contain only the simplified text, nothing else.
   
-	Now, simplify the following text according to these guidelines:
+	Now, simplify the following text line-by-line according to these guidelines:
 	"${inputText}"
 	`;
   };

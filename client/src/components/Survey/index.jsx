@@ -4,10 +4,10 @@ import styles from "./styles.module.css";
 import { saveAs } from "file-saver";
 import DiffMatchPatch from "diff-match-patch";
 
-const handleFormSubmit = (e) => {
-  e.preventDefault();
-  alert("Survey responses saved");
-};
+// const handleFormSubmit = (e) => {
+//   e.preventDefault();
+//   alert("Survey responses saved");
+// };
 
 const SurveyPage = () => {
   const { state } = useLocation();
@@ -55,8 +55,7 @@ const SurveyPage = () => {
     needs: "",
     guidelines: "",
     coherent: "",
-    editing_effort: null, // Track selection for this question
-    comments: "",
+    editing_effort: null
   });
 
   // Handle input changes
@@ -69,11 +68,11 @@ const handleOptionChange = (event) => {
   const { name, value } = event.target;
   setResponses((prevResponses) => ({
     ...prevResponses,
-    [name]: prevResponses[name] === value ? null : value, // Toggle selection
+    [name]: value, // Toggle selection
   }));
 };
   // Check if all required fields are filled
-  const isFormComplete = Object.values(responses).every((value) => value !== "");
+  const isFormComplete = Object.values(responses).every((value) => value !== "" && value !== null);
 
 
   const handleLogout = () => {
