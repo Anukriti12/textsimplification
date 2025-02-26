@@ -45,7 +45,7 @@ const SurveyPage = () => {
       window.removeEventListener("popstate", handleBackButton);
     };
   }, [navigate]);
-  
+
   const [submitted, setSubmitted] = useState(false);
 
   const [responses, setResponses] = useState({
@@ -414,7 +414,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label><strong>[OPTIONAL]</strong> How much effort was needed to edit the simplified text to make it acceptable? </label>
+    <label>How much effort was needed to edit the simplified text to make it acceptable? </label>
     <div className={styles.surveyOptions}>
     <label><input type="radio" name="editing_effort" value="many-errors" checked={responses.editing_effort === "many-errors"} onChange={handleOptionChange}/>  A lot of effort</label>
       <label><input type="radio" name="editing_effort" value="several-errors" checked={responses.editing_effort === "several-errors"} onChange={handleOptionChange}/>  Significant effort</label>
