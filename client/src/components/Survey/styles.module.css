@@ -424,14 +424,22 @@ color: #555;
   margin-top: 20px; /* Add spacing from the main content */
 }
 
-.diff_box {
-  flex: 1; /* Ensure both boxes take equal space */
-  border: 1px solid #ccc; /* Add a border for better visual separation */
+/* .diff_box {
+  flex: 1; 
+  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 15px;
-  /* background-color: #f9f9f9; */
-  overflow-y: auto; /* Handle overflow if content is too long */
-  max-height: 200px; /* Limit height of the boxes */
+  overflow-y: auto; 
+  max-height: 200px;
+} */
+
+.diff_box {
+  width: 100%;
+  margin-top: 10px; /* Adds spacing between text area and difference box */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
 }
 
 .diff_output {

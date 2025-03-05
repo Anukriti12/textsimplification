@@ -210,7 +210,24 @@ const handleOptionChange = (event) => {
 		  </button>
 		</nav>
 
-
+    <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
+         
+         <button className={styles.historyIcon} onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+           🕒 <p style={{ fontSize: "15px" }}>History</p>
+         </button>
+         {isSidebarVisible && (
+           <div className={styles.historyContent}>
+             <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
+             <ul className={styles.historyList}>
+               {saveHistory.map((entry, index) => (
+                 <li key={index} className={styles.historyItem} onClick={() => handleHistoryClick(entry)}>
+                   {entry.timestamp}
+                 </li>
+               ))}
+             </ul>
+           </div>
+         )}
+       </div>
 
 
     {!submitted ? (
@@ -221,24 +238,7 @@ const handleOptionChange = (event) => {
     <div className={styles.description}>
 			 
                     {/* Sidebar for History Navigation */}
-        <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
-         
-          <button className={styles.historyIcon} onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
-            🕒 <p style={{ fontSize: "15px" }}>History</p>
-          </button>
-          {isSidebarVisible && (
-            <div className={styles.historyContent}>
-              <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
-              <ul className={styles.historyList}>
-                {saveHistory.map((entry, index) => (
-                  <li key={index} className={styles.historyItem} onClick={() => handleHistoryClick(entry)}>
-                    {entry.timestamp}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+
 
       			<div className={styles.textareas_container}>
 
@@ -280,7 +280,7 @@ const handleOptionChange = (event) => {
       <div
         className={styles.copyIcon}
         onClick={() => handleDownload(outputText, "GeneratedText", "txt")}
-        title="Download as TXT"
+        title="Download as .txt file"
       >
         📥 {/* Download Icon */}
       </div>
@@ -302,6 +302,13 @@ const handleOptionChange = (event) => {
 readOnly placeholder="Initial Generated Text"
 
   ></textarea>
+    {/* Difference Box appears right below System-generated Text */}
+    {showDifference1 && (
+    <div className={styles.diff_box}>
+      <label className={styles.label}>Input vs System-generated Text</label>
+      <div className={`${styles.diff_output}`} dangerouslySetInnerHTML={{ __html: diffHtml1 }}></div>
+    </div>
+  )}
 </div>
 
 <div className={styles.text_container}>
@@ -324,7 +331,7 @@ readOnly placeholder="Initial Generated Text"
       <div
         className={styles.copyIcon}
         onClick={() => handleDownload(outputText, "SubmittedText", "txt")}
-        title="Download as TXT"
+        title="Download as .txt file"
       >
         📥 {/* Download Icon */}
       </div>
@@ -350,13 +357,21 @@ readOnly placeholder="Initial Generated Text"
               readOnly
               placeholder="Submitted Text"
             ></textarea>
+
+              {/* Difference Box appears right below Submitted Text */}
+  {showDifference2 && (
+    <div className={styles.diff_box}>
+      <label className={styles.label}>System-generated vs Submitted Text</label>
+      <div className={`${styles.diff_output}`} dangerouslySetInnerHTML={{ __html: diffHtml2 }}></div>
+    </div>
+  )}
 </div>
 			
 			</div>
 
       <div className={styles.diff_container}>
   {/* Difference for Input vs System-generated Text */}
-  {showDifference1 && (
+  {/* {showDifference1 && (
     <div className={styles.diff_box}>
       <label className={styles.label}>Input vs System-generated Text</label>
 
@@ -365,10 +380,10 @@ readOnly placeholder="Initial Generated Text"
         dangerouslySetInnerHTML={{ __html: diffHtml1 }}
       ></div>
     </div>
-  )}
+  )} */}
 
   {/* Difference for System-generated vs Submitted Text */}
-  {showDifference2 && (
+  {/* {showDifference2 && (
     <div className={styles.diff_box}>
       <label className={styles.label}>System-generated vs Submitted Text</label>
 
@@ -377,7 +392,7 @@ readOnly placeholder="Initial Generated Text"
         dangerouslySetInnerHTML={{ __html: diffHtml2 }}
       ></div>
     </div>
-  )}
+  )} */}
 </div>
 
 
