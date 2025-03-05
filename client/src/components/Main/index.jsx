@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import styles from "./styles.module.css";
 import { useNavigate } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
@@ -21,6 +21,8 @@ const Main = () => {
 	const navigate = useNavigate();
 	const [isUploading, setIsUploading] = useState(false); // State for showing buffer
 
+	const [inputWordCount, setInputWordCount] = useState(0);
+	const [inputCharCount, setInputCharCount] = useState(0);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -62,60 +64,75 @@ const Main = () => {
 	  }
 	};
  
+	const countWordsAndChars = (text) => {
+		const words = text.trim().split(/\s+/).filter(Boolean).length;
+		const chars = text.length;
+		return { words, chars };
+	  };
+	  
+	    useEffect(() => {
+		  const { words: inputWords, chars: inputChars } = countWordsAndChars(inputText);
+
+		  setInputWordCount(inputWords);
+		  setInputCharCount(inputChars);
+
+		}, [inputText]);
+	  
+		
 
 	// Function to format the prompt with user input
 const generatePrompt = (inputText) => {
 	return `
-	You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD). 
-	
-	Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information. The output length should be similar to the input length.
-	
-	Follow these detailed guidelines to ensure the text is clear, easy to understand, and accessible:
-  
-	1. Sentence and Structure Simplification
-	- Use short sentences (8-10 words max).
-	- Keep one main idea per sentence to avoid confusion.
-	- Write in active voice (e.g., "A doctor gives medicine" instead of "Medicine is given by a doctor").
-	- Avoid bulleted lists. Instead, write short, direct sentences in paragraph form.
-	- Repeat important words instead of using synonyms to improve comprehension.
-	- Start a new paragraph when introducing a different idea.
-  
-	2. Word Choice and Vocabulary
-	- Replace complex words with simple, common words (words most people know and use every day).
-	- Use words with few syllables (e.g., "help" instead of "assist").
-	- Avoid figurative language (no metaphors, similes, or idioms).
-	  - ❌ "It’s a piece of cake."  
-	  - ✅ "It is easy to do."  
-	- If a difficult word is necessary, provide a simple definition within the text.
-	- Avoid negatives when possible (e.g., instead of "Do not touch," say "Keep hands away").
-  
-	3. Text Organization
-	If necessary,
-	- Use headings that are short and direct (max 8 words). Example:
-	  - ❌ "Understanding the Difference Between the Flu and COVID-19"  
-	  - ✅ "Flu vs. COVID-19"  
-	- Keep paragraphs short.
-  
-	4. Formatting for Readability
-	- Use left-aligned text with wide spacing between lines.
-	- Ensure the text is high contrast (black text on a white background).
-	- Avoid italics, underlining, or all caps, as they can be hard to read.
-  
-	5. Instructions and Steps
-	- If the text includes instructions, keep steps short and clear.
-	- Example:
-	  - ❌ "First, you will need to open the box carefully and remove the contents before proceeding to step two, which involves assembling the parts."  
-	  - ✅ "Step 1: Open the box.  
-		 Step 2: Take out the parts."  
-  
-	6. Retaining Meaning and Key Details
-	- Do not remove important information, but explain it in a simpler way.
-	- Ensure the simplified version does not change the facts.
-	- The output should remain accurate, informative, and accessible.
+	You are an expert in accessible communication, tasked with transforming complex text into clear, accessible plain language for individuals with Intellectual and Developmental Disabilities (IDD) or those requiring simplified content. Retain all essential information and intent while prioritizing readability, comprehension, and inclusivity.
 
-	7. Do not simplify unnecessarily and the output should contain only the simplified text, nothing else.
-  
-	Now, simplify the following text line-by-line according to these guidelines:
+	Guidelines for Simplification:
+	Vocabulary and Terminology:
+	Replace uncommon, technical, or abstract words with simple, everyday language.
+	Define unavoidable complex terms in plain language within parentheses upon first use (example: “cardiologist (heart doctor)”).
+	Avoid idioms, metaphors, sarcasm, or culturally specific references.
+
+	Sentence Structure:
+	Use short sentences (10--15 words max). Break long sentences into 1–2 ideas each.
+	Prefer active voice (example: “The doctor examined the patient” vs. “The patient was examined by the doctor”).
+	Avoid nested clauses, passive voice, and ambiguous pronouns (example: “they,” “it”).
+
+	Clarity and Flow:
+	Organize content logically, using headings/subheadings to group related ideas.
+	Use bullet points or numbered lists for steps, options, or key points.
+	Ensure each paragraph focuses on one main idea.
+
+	Tone and Engagement:
+	Write in a neutral, conversational tone (avoid formal or academic language).
+	Address the reader directly with “you” or “we” where appropriate.
+	Use consistent terms for concepts (avoid synonyms that may confuse).
+
+	Avoid Exclusionary Elements:
+	Remove jargon, acronyms (unless defined), and expand abbreviations if needed (example: “ASAP” → “as soon as possible”).
+	Eliminate metaphors, idioms, or implied meanings (example: “hit the books” → “study”).
+	Avoid double negatives (example: “not uncommon” → “common”).
+
+	Structural Support:
+	Add clear headings to label sections (example: “How to Apply for Benefits”).
+	Use formatting tools like bold for key terms or warnings.
+	Chunk information into short paragraphs with line breaks for visual ease.
+
+	Inclusivity Checks:
+	Ensure content is free of bias, stereotypes, or assumptions about the reader.
+	Use gender-neutral language (example: “they” instead of “he/she”).
+
+
+	Output Requirements:
+	Return only the simplified text, without markdown, emojis, or images.
+	Preserve original context, facts, and intent. Do not omit critical details.
+	Prioritize clarity over brevity; focus on simplification and not summarization. The length of generated output text should be same or similar to that of input text.
+	Do not simplify already simple text.
+
+	Example Transformation:
+	Original: “Individuals experiencing adverse climatic conditions may necessitate relocation to mitigate health risks.”
+	Simplified: “If weather conditions become dangerous, people might need to move to stay safe.”
+
+	For the provided input text, apply the above guidelines rigorously. Ensure the output is accessible to readers with varied cognitive abilities, emphasizing clarity, simplicity, and logical structure. Verify that the simplified text aligns with plain language standards like WCAG and PlainLanguage.gov.
+
 	"${inputText}"
 	`;
   };
@@ -221,6 +238,9 @@ const generatePrompt = (inputText) => {
 					  onChange={(e) => setInputText(e.target.value)}
 					  disabled={isLoading} // Disable input when loading
 					></textarea>
+				 
+				 <p className={styles.countText}>Words: {inputWordCount} | Characters: {inputCharCount}</p>
+					
 				  </div>
   
 				  {/* OR Divider */}
