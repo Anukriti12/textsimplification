@@ -357,16 +357,16 @@ const Review = () => {
    // saveSimplification();
   }, [inputText, outputText]);
 
-  // useEffect(() => {
-  //   saveSimplification(); 
-  //   setIsSaveButtonEnabled(true);
+  useEffect(() => {
+    saveSimplification(); 
+    setIsSaveButtonEnabled(true);
 
-  //   const savedState = JSON.parse(localStorage.getItem("reviewPageState"));
-  //   if (savedState) {
-  //     setOutputText(savedState.outputText || "");
-  //     setEditHistory(savedState.editHistory || []);
-  //   }
-  // }, []);
+    const savedState = JSON.parse(localStorage.getItem("reviewPageState"));
+    if (savedState) {
+      setOutputText(savedState.outputText || "");
+      setEditHistory(savedState.editHistory || []);
+    }
+  }, []);
   
   useEffect(() => {
     const { words: inputWords, chars: inputChars } = countWordsAndChars(inputText);

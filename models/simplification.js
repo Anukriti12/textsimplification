@@ -8,18 +8,18 @@ const simplificationSchema = new mongoose.Schema(
     outputText: { type: String, required: true },
     editHistory: [
       {
-        text: { type: String, required: true }, // Text from each edit
+        text: { type: String }, // Text from each edit
         timestamp: { type: Date, default: Date.now }, // Fix typo (tsype → type)
-        numWords: { type: Number, required: true }, // Store word count for edits
-        numChars: { type: Number, required: true }, // Store character count for edits
+        numWords: { type: Number }, // Store word count for edits
+        numChars: { type: Number }, // Store character count for edits
       },
     ],
     saveHistory: [
       {
-        finalText: { type: String, required: true }, // Final text after saving
+        finalText: { type: String }, // Final text after saving
         timestamp: { type: Date, default: Date.now }, // Timestamp of save
-        numWords: { type: Number, required: true }, // Word count for saved version
-        numChars: { type: Number, required: true }, // Character count for saved version
+        numWords: { type: Number }, // Word count for saved version
+        numChars: { type: Number }, // Character count for saved version
         surveyAnswers: {  // Store survey per final submission
           readability: { type: Number, default: null },
           accuracy: { type: Number, default: null },
@@ -29,10 +29,10 @@ const simplificationSchema = new mongoose.Schema(
     ],
     metrics: {
       processingTimeMs: { type: Number, default: null },
-      numWordsInput: { type: Number, required: true }, // Required to track input stats
-      numCharsInput: { type: Number, required: true },
-      numWordsOutput: { type: Number, required: true },
-      numCharsOutput: { type: Number, required: true },
+      numWordsInput: { type: Number }, // Required to track input stats
+      numCharsInput: { type: Number },
+      numWordsOutput: { type: Number },
+      numCharsOutput: { type: Number },
     },
   },
   { timestamps: true }
