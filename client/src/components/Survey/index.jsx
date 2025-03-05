@@ -30,12 +30,36 @@ const SurveyPage = () => {
 
   const navigate = useNavigate();
 
+  // Word count states
+  const [inputWordCount, setInputWordCount] = useState(0);
+  const [outputWordCount, setOutputWordCount] = useState(0);
+  const [submittedWordCount, setSubmittedWordCount] = useState(0);
+
+  // Function to count words
+  const countWords = (text) => {
+    return text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+  };
+
+  // Update word counts when data changes
+  useEffect(() => {
+    setInputWordCount(countWords(inputText));
+    setOutputWordCount(countWords(initialOutputText));
+    setSubmittedWordCount(countWords(latestFinalText));
+  }, [inputText, initialOutputText, latestFinalText]);
+
+
+  useEffect(() => {
+    if (saveHistory.length > 0) {
+      setLatestFinalText(saveHistory[saveHistory.length - 1]?.finalText || "");
+      setSubmittedWordCount(countWords(saveHistory[saveHistory.length - 1]?.finalText || ""));
+    }
+  }, [saveHistory]);
 
   // Handler to update "Submitted Text" when a history entry is clicked
   const handleHistoryClick = (entry) => {
     setLatestFinalText(entry.finalText); // Update the Submitted Text box
   };
-  
+
   useEffect(() => {
     const handleBackButton = (event) => {
       event.preventDefault();
@@ -73,7 +97,8 @@ const SurveyPage = () => {
     grammar: "",
     needs: "",
     guidelines: "",
-    coherent: ""
+    coherent: "",
+    editing_effort: "",
   });
 
   // Handle input changes
@@ -86,7 +111,7 @@ const handleOptionChange = (event) => {
   const { name, value } = event.target;
   setResponses((prevResponses) => ({
     ...prevResponses,
-    [name]: value, // Toggle selection
+    [name]: prevResponses[name] === value ? "" : value,  // Toggle selection
   }));
 };
   // Check if all required fields are filled
@@ -186,8 +211,18 @@ const handleOptionChange = (event) => {
 		</nav>
 
 
-        {/* Sidebar for History Navigation */}
+
+
+    {!submitted ? (
+      <div className={styles.container}>
+
+    {/* <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
+    */}
+    <div className={styles.description}>
+			 
+                    {/* Sidebar for History Navigation */}
         <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
+         
           <button className={styles.historyIcon} onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
             🕒 <p style={{ fontSize: "15px" }}>History</p>
           </button>
@@ -205,21 +240,19 @@ const handleOptionChange = (event) => {
           )}
         </div>
 
-    {!submitted ? (
-    <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
-    <div className={styles.description}>
-			 
-            
       			<div className={styles.textareas_container}>
 
   {/* Input Text */}
   <div className={styles.text_container}>
+    
     <div className={styles.labelWrapper}>
       <label className={styles.label} htmlFor="inputText">
         Input Text
       </label>
 
     </div>
+    <div className={styles.wordCount}>Words: {inputWordCount}</div>
+
     <textarea
       id="inputText"
       className={`${styles.textarea} ${styles.side_by_side}`}
@@ -260,6 +293,8 @@ const handleOptionChange = (event) => {
 
     </div>
   </div>
+  <div className={styles.wordCount}>Words: {outputWordCount}</div>
+
   <textarea
     id="outputText"
     className={`${styles.output_box} ${styles.side_by_side}`}
@@ -305,6 +340,9 @@ readOnly placeholder="Initial Generated Text"
   </div>
   {/* <textarea id="EditedText" className={`${styles.output_box} ${styles.side_by_side}`} value={latestFinalText} readOnly/>
   */}
+               
+                <div className={styles.wordCount}>Words: {submittedWordCount}</div>
+
   <textarea
               id="submittedText"
               className={`${styles.output_box} ${styles.side_by_side}`}
