@@ -54,8 +54,7 @@ const SurveyPage = () => {
     grammar: "",
     needs: "",
     guidelines: "",
-    coherent: "",
-    editing_effort: null
+    coherent: ""
   });
 
   // Handle input changes
@@ -155,7 +154,12 @@ const handleOptionChange = (event) => {
     <>
 		{/* Navbar */}
 		<nav className={styles.navbar}>
-		  <h1>Text Simplification Tool</h1>
+		  {/* <h1>Text Simplification Tool</h1> */}
+      <h1 
+    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+    style={{ cursor: "pointer" }} // Makes it look clickable
+ 		>
+		Text Simplification Tool</h1>
 		  <button className={styles.white_btn} onClick={handleLogout}>
 			Logout
 		  </button>
@@ -413,7 +417,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>How much effort was needed to edit the simplified text to make it acceptable? </label>
+    <label><strong>[OPTIONAL]</strong> How much effort was needed to edit the simplified text to make it acceptable? </label>
     <div className={styles.surveyOptions}>
     <label><input type="radio" name="editing_effort" value="many-errors" checked={responses.editing_effort === "many-errors"} onChange={handleOptionChange}/>  A lot of effort</label>
       <label><input type="radio" name="editing_effort" value="several-errors" checked={responses.editing_effort === "several-errors"} onChange={handleOptionChange}/>  Significant effort</label>

@@ -174,21 +174,6 @@ const generatePrompt = (inputText) => {
 	  setIsSubmitted(true);
 	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });
 	
-	
-	// const prompt = generatePrompt(inputText);
-	//   const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
-	// 	method: "POST",
-	// 	headers: { "Content-Type": "application/json" },
-	// 	body: JSON.stringify({ prompt }),
-	//   });
-
-	//   const data = await response.json();
-	//   const cleanedResponse =
-	// 	data?.response?.replace(/^"|"$/g, "") || "No response received.";
-	//   setOutputText(cleanedResponse);
-	//   setIsSubmitted(true);
-	//   navigate("/review", { state: { inputText, outputText: cleanedResponse } });
-
 	} catch (error) {
 	  console.error("Error fetching GPT-4o response:", error);
 	  setOutputText("An error occurred while simplifying the text.");
@@ -198,34 +183,6 @@ const generatePrompt = (inputText) => {
   };
 
   
-  	// const handleSubmit = async () => {
-	//   if (!inputText.trim()) return;
-	//   setIsLoading(true);
-  
-	//   try {
-	// 	const prompt = generatePrompt(inputText);
-	// 	//`Simplify the following text for better readability while preserving meaning:\n\n"${inputText}"`;
-	// 	const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
-	// 	  method: "POST",
-	// 	  headers: { "Content-Type": "application/json" },
-	// 	  body: JSON.stringify({ prompt }),
-	// 	});
-  
-	// 	const data = await response.json();
-	// 	const cleanedResponse =
-	// 	  data?.response?.replace(/^"|"$/g, "") || "No response received.";
-	// 	setOutputText(cleanedResponse);
-	// 	setIsSubmitted(true);
-	// 	navigate("/review", { state: { inputText, outputText: cleanedResponse } });
-
-	// 	// navigate("/simplify");
-	//   } catch (error) {
-	// 	console.error("Error fetching GPT-4 response:", error);
-	// 	setOutputText("An error occurred while fetching the response.");
-	//   }
-  
-	//   setIsLoading(false);
-	// };
 
   return (
     <>

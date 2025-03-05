@@ -48,7 +48,80 @@ const Review = () => {
    // window.location.reload();
   };
 
-
+	// Function to format the prompt with user input
+  const generatePrompt = (inputText) => {
+    return `
+    You are an expert in accessible communication, tasked with simplifying a given text for individuals with intellectual and developmental disabilities (IDD). 
+    
+    Please do not summarize or reduce the length of output content. Instead, simplify the text preserving the intended meaning or information. The output length should be similar to the input length.
+    
+    Follow these detailed guidelines to ensure the text is clear, easy to understand, and accessible:
+    
+    1. Sentence and Structure Simplification
+    - Use short sentences (8-10 words max).
+    - Keep one main idea per sentence to avoid confusion.
+    - Write in active voice (e.g., "A doctor gives medicine" instead of "Medicine is given by a doctor").
+    - Avoid bulleted lists. Instead, write short, direct sentences in paragraph form.
+    - Repeat important words instead of using synonyms to improve comprehension.
+    - Start a new paragraph when introducing a different idea.
+    
+    2. Word Choice and Vocabulary
+    - Replace complex words with simple, common words (words most people know and use every day).
+    - Use words with few syllables (e.g., "help" instead of "assist").
+    - Avoid figurative language (no metaphors, similes, or idioms).
+      - ❌ "It’s a piece of cake."  
+      - ✅ "It is easy to do."  
+    - If a difficult word is necessary, provide a simple definition within the text.
+    - Avoid negatives when possible (e.g., instead of "Do not touch," say "Keep hands away").
+    
+    3. Text Organization
+    If necessary,
+    - Use headings that are short and direct (max 8 words). Example:
+      - ❌ "Understanding the Difference Between the Flu and COVID-19"  
+      - ✅ "Flu vs. COVID-19"  
+    - Keep paragraphs short.
+    
+    4. Formatting for Readability
+    - Use left-aligned text with wide spacing between lines.
+    - Ensure the text is high contrast (black text on a white background).
+    - Avoid italics, underlining, or all caps, as they can be hard to read.
+    
+    5. Instructions and Steps
+    - If the text includes instructions, keep steps short and clear.
+    - Example:
+      - ❌ "First, you will need to open the box carefully and remove the contents before proceeding to step two, which involves assembling the parts."  
+      - ✅ "Step 1: Open the box.  
+       Step 2: Take out the parts."  
+    
+    6. Retaining Meaning and Key Details
+    - Do not remove important information, but explain it in a simpler way.
+    - Ensure the simplified version does not change the facts.
+    - The output should remain accurate, informative, and accessible.
+  
+    7. Do not simplify unnecessarily and the output should contain only the simplified text, nothing else.
+    
+    Now, simplify the following text line-by-line according to these guidelines:
+    "${inputText}"
+    `;
+    };
+  
+    const splitTextIntoChunks = (text, maxTokens) => {
+    const words = text.split(" ");
+    let chunks = [];
+    let currentChunk = [];
+    
+    for (let word of words) {
+      if (currentChunk.join(" ").length + word.length < maxTokens) {
+      currentChunk.push(word);
+      } else {
+      chunks.push(currentChunk.join(" "));
+      currentChunk = [word];
+      }
+    }
+    if (currentChunk.length > 0) chunks.push(currentChunk.join(" "));
+    return chunks;
+    };
+    
   const saveSimplification = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -76,7 +149,51 @@ const Review = () => {
     }
   };
 
+  const handleResimplify = async () => {
+    if (!inputText.trim()) return;
   
+    setIsLoading(true); // Show loading state
+  
+    try {
+
+      const chunks = splitTextIntoChunks(inputText, 30000);
+      let combinedOutput = "";
+    
+      for (let chunk of chunks) {
+      const prompt = generatePrompt(chunk);
+      const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+      
+  
+      if (!response.ok) {
+        console.error("Error with API request:", response.status);
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("Full API Response: ", data);
+      const newOutput = data?.response?.replace(/^"|"$/g, "") || "No response received.";
+  
+      // Update System-generated Text
+      combinedOutput += newOutput + " ";
+      console.log("Final Combined Output: ", combinedOutput);
+    
+      }
+      setOutputText(combinedOutput);
+    } catch (error) {
+      console.error("Error fetching GPT-4o response:", error);
+      setOutputText("An error occurred while simplifying the text.");
+    }
+  
+    setIsLoading(false);
+  };
+
+
+  
+  //
   const saveEditToHistory = async (editedText) => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -233,7 +350,12 @@ const Review = () => {
   return (
     <>
       <nav className={styles.navbar}>
-        <h1>Text Simplification Tool</h1>
+        {/* <h1>Text Simplification Tool</h1> */}
+        <h1 
+    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+    style={{ cursor: "pointer" }} // Makes it look clickable
+ 		>
+		Text Simplification Tool</h1>
         <button className={styles.white_btn} onClick={handleLogout}>
           Logout
         </button>
@@ -310,10 +432,21 @@ const Review = () => {
         <div
         className={styles.copyIcon}
         onClick={() => handleDownload(inputText, "InputText", "txt")}
-        title="Download as TXT"
+        title="Download as .txt file"
       >
         📥 {/* Download Icon */}
       </div>
+
+            {/* New Re-simplify Button */}
+      <div
+        className={styles.copyIcon}
+        onClick={handleResimplify}
+        title="Re-simplify Text"
+        style={{ cursor: "pointer" }}
+      >
+        🔄 {/* Re-simplify Icon */}
+      </div>
+
       </div>
     </div>
     <textarea
@@ -342,7 +475,7 @@ const Review = () => {
       <div
         className={styles.copyIcon}
         onClick={() => handleDownload(outputText, "GeneratedText", "txt")}
-        title="Download as TXT"
+        title="Download as .txt file"
       >
         📥 {/* Download Icon */}
       </div>
@@ -438,39 +571,6 @@ const Review = () => {
     </div>
   )}
 
-
-          {/* Survey Prompt */}
-    	  {/* {showSurveyPrompt && (
-                  <div className={styles.survey_prompt}>
-                    <p>
-                      Please take the survey {" "}
-                      <button
-                        className={styles.link_btn}
- 
-                      onClick={() => {
-                        const reviewPageState = {
-                          inputText,
-                          outputText,
-                          editHistory,
-                        };
-                        localStorage.setItem("reviewPageState", JSON.stringify(reviewPageState));
-                        navigate("/survey", {
-                          state: {
-                            email: JSON.parse(localStorage.getItem("user")).email,
-                            inputText,
-                            outputText,
-                            editHistory,
-                          },
-                        });
-                      }}
-                    >
-                        📑 Take the Survey
-                      </button>
-                    
-                    to help us improve!
-                    </p>
-                  </div>
-                )} */}
 
 
         </div>
