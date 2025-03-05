@@ -27,6 +27,13 @@ const Review = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [showDifference, setShowDifference] = useState(false);
 
+  const [inputWordCount, setInputWordCount] = useState(0);
+  const [inputCharCount, setInputCharCount] = useState(0);
+
+  const [outputWordCount, setOutputWordCount] = useState(0);
+  const [outputCharCount, setOutputCharCount] = useState(0);
+
+
 
 //   const navigate = useNavigate();
 
@@ -48,6 +55,12 @@ const Review = () => {
    // window.location.reload();
   };
 
+  const countWordsAndChars = (text) => {
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    const chars = text.length;
+    return { words, chars };
+  };
+  
 	// Function to format the prompt with user input
   const generatePrompt = (inputText) => {
     return `
@@ -121,7 +134,7 @@ const Review = () => {
     if (currentChunk.length > 0) chunks.push(currentChunk.join(" "));
     return chunks;
     };
-    
+
   const saveSimplification = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -288,6 +301,7 @@ const Review = () => {
     const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
     saveAs(blob, `${filename}.${format}`);
   };
+
   useEffect(() => {
     const reviewPageState = {
       inputText,
@@ -331,6 +345,17 @@ const Review = () => {
       setEditHistory(savedState.editHistory || []);
     }
   }, []);
+  
+  useEffect(() => {
+    const { words: inputWords, chars: inputChars } = countWordsAndChars(inputText);
+    const { words: outputWords, chars: outputChars } = countWordsAndChars(outputText);
+  
+    setInputWordCount(inputWords);
+    setInputCharCount(inputChars);
+    setOutputWordCount(outputWords);
+    setOutputCharCount(outputChars);
+  }, [inputText, outputText]);
+
   
   const handleHistoryClick = (edit) => {
     setOutputText(edit.text);
@@ -449,6 +474,8 @@ const Review = () => {
 
       </div>
     </div>
+    <p className={styles.countText}>Words: {inputWordCount} | Characters: {inputCharCount}</p>
+
     <textarea
       id="inputText"
       className={`${styles.textarea} ${styles.side_by_side}`}
@@ -487,6 +514,9 @@ const Review = () => {
       </button>
     </div>
   </div>
+    {/* Word and Character Count */}
+    <p className={styles.countText}>Words: {outputWordCount} | Characters: {outputCharCount}</p>
+
   <textarea
     id="outputText"
     className={`${styles.output_box} ${styles.side_by_side}`}
