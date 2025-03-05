@@ -497,6 +497,75 @@ font-weight: bold;
 text-align: center;
 }
   
+ 
+.sidebar {
+  width: 60px;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  border-right: 1px solid #ddd;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar.expanded {
+  width: 250px;
+}
+
+.historyIcon {
+  margin-top: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.historyContent {
+  width: 100%;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.closeButton {
+  display: block;
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.historyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.historyItem {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.historyItem:hover {
+  background-color: #f0f0f0;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.mainContent.withSidebar {
+  margin-left: 0px; /* Adjust when sidebar is visible */
+}
+
+
 /* Save/Edit Button Styling */
 .text_btn {
     margin-top: 10px; /* Space between the button and the text box */

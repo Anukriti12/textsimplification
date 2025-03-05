@@ -17,6 +17,8 @@ const Review = () => {
 
   const [outputText, setOutputText] = useState(initialOutputText);
   const [editHistory, setEditHistory] = useState(restoredEditHistory || []);
+  const [saveHistory, setSaveHistory] = useState([]);
+
 
   const [diffHtml, setDiffHtml] = useState("");
   const [isSaveButtonEnabled, setIsSaveButtonEnabled] = useState(false);
@@ -281,6 +283,10 @@ const Review = () => {
         console.log("Final output saved successfully.");
         setIsSaveButtonEnabled(false); // Disable save button
         setShowSurveyPrompt(true);    // Ensure survey prompt is displayed
+
+        const timestamp = new Date().toISOString();
+        setSaveHistory((prev) => [...prev, { timestamp, finalText: outputText }]); // 🔹 Save to history
+  
       } else {
         const error = await response.json();
         console.error("Error saving final output:", error.message);
@@ -342,7 +348,7 @@ const Review = () => {
       setEditHistory(restoredEditHistory || []);
     }
   
-    saveSimplification(); // Save the initial inputText and outputText
+   saveSimplification(); // Save the initial inputText and outputText
     setIsSaveButtonEnabled(true);
   }, [initialOutputText, restoredEditHistory]);
   
@@ -595,7 +601,6 @@ const Review = () => {
             Submit
             </button>
       </div>
-            <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
 
   {/* Survey Prompt (Appears Only After Submitting) */}
   {showSurveyPrompt && (
@@ -605,7 +610,7 @@ const Review = () => {
         <button
           className={styles.survey_btn}
           onClick={() => {
-            const reviewPageState = { inputText, outputText, editHistory };
+            const reviewPageState = { inputText, outputText, editHistory, saveHistory };
             localStorage.setItem("reviewPageState", JSON.stringify(reviewPageState));
             navigate("/survey", {
               state: {
@@ -613,6 +618,7 @@ const Review = () => {
                 inputText,
                 outputText,
                 editHistory,
+                saveHistory,
               },
             });
           }}
@@ -622,6 +628,9 @@ const Review = () => {
       </p>
     </div>
   )}
+
+<p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
+
 
 
 

@@ -12,7 +12,7 @@ import DiffMatchPatch from "diff-match-patch";
 const SurveyPage = () => {
   const { state } = useLocation();
   //const { email, inputText } = state || {};
-  const { email, inputText, outputText: initialOutputText, editHistory } = state || {};
+  const { email, inputText, outputText: initialOutputText, editHistory, saveHistory } = state || {};
 
 
   const [data, setData] = useState(null);
@@ -22,8 +22,20 @@ const SurveyPage = () => {
   const [diffHtml1, setDiffHtml1] = useState("");
   const [diffHtml2, setDiffHtml2] = useState("");
 
+
+    // Store latest submitted text from history selection
+    const [latestFinalText, setLatestFinalText] = useState(""); 
+    const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+    
+
   const navigate = useNavigate();
 
+
+  // Handler to update "Submitted Text" when a history entry is clicked
+  const handleHistoryClick = (entry) => {
+    setLatestFinalText(entry.finalText); // Update the Submitted Text box
+  };
+  
   useEffect(() => {
     const handleBackButton = (event) => {
       event.preventDefault();
@@ -37,6 +49,7 @@ const SurveyPage = () => {
       }
     };
 
+
     // **Push a history state to detect back button click**
     window.history.pushState(null, "", window.location.href);
     window.addEventListener("popstate", handleBackButton);
@@ -46,6 +59,12 @@ const SurveyPage = () => {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    if (saveHistory.length > 0) {
+      setLatestFinalText(saveHistory[saveHistory.length - 1]?.finalText || ""); // Default to last submitted text
+    }
+  }, [saveHistory]);
+  
   const [submitted, setSubmitted] = useState(false);
 
   const [responses, setResponses] = useState({
@@ -110,6 +129,7 @@ const handleOptionChange = (event) => {
     // Show the thank-you message
     setSubmitted(true);
   };
+
   const generateDiff = (input, output) => {
     const dmp = new DiffMatchPatch();
     const diffs = dmp.diff_main(input, output);
@@ -148,7 +168,7 @@ const handleOptionChange = (event) => {
     {return <p>Loading...</p>;}
 
   // const { inputText: input, outputText, editedText } = data;
-  const { inputText: input, outputText, latestFinalText } = data;
+  const { inputText: input, outputText, latestText } = data;
 
   return (
     <>
@@ -165,8 +185,28 @@ const handleOptionChange = (event) => {
 		  </button>
 		</nav>
 
+
+        {/* Sidebar for History Navigation */}
+        <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
+          <button className={styles.historyIcon} onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+            🕒 <p style={{ fontSize: "15px" }}>History</p>
+          </button>
+          {isSidebarVisible && (
+            <div className={styles.historyContent}>
+              <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
+              <ul className={styles.historyList}>
+                {saveHistory.map((entry, index) => (
+                  <li key={index} className={styles.historyItem} onClick={() => handleHistoryClick(entry)}>
+                    {entry.timestamp}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
     {!submitted ? (
-    <div className={styles.main_container}>
+    <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
     <div className={styles.description}>
 			 
             
@@ -232,6 +272,8 @@ readOnly placeholder="Initial Generated Text"
 <div className={styles.text_container}>
   <div className={styles.labelWrapper}>
   <label className={styles.label} htmlFor="outputText">Submitted Text</label>
+  {/* <textarea className={styles.textarea} value={latestText} readOnly></textarea> */}
+
         {/* <textarea value={latestFinalText} readOnly /> */}
 
 
