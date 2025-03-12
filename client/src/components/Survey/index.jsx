@@ -97,8 +97,7 @@ const SurveyPage = () => {
     grammar: "",
     needs: "",
     guidelines: "",
-    coherent: "",
-    editing_effort: "",
+    coherent: ""
   });
 
   // Handle input changes
@@ -186,7 +185,7 @@ const handleOptionChange = (event) => {
     if (email && inputText) {
       fetchSimplification();
     }
-  }, [email, inputText]);
+  }, [email, inputText, initialOutputText]);
 
 
   if (!data)
@@ -227,7 +226,7 @@ const handleOptionChange = (event) => {
              </ul>
            </div>
          )}
-       </div>
+    </div>
 
 
     {!submitted ? (
@@ -298,7 +297,7 @@ const handleOptionChange = (event) => {
   <textarea
     id="outputText"
     className={`${styles.output_box} ${styles.side_by_side}`}
-    value={outputText}
+    value={initialOutputText}
 readOnly placeholder="Initial Generated Text"
 
   ></textarea>
@@ -313,7 +312,7 @@ readOnly placeholder="Initial Generated Text"
 
 <div className={styles.text_container}>
   <div className={styles.labelWrapper}>
-  <label className={styles.label} htmlFor="outputText">Submitted Text</label>
+  <label className={styles.label} htmlFor="outputText">Final Revised Text</label>
   {/* <textarea className={styles.textarea} value={latestText} readOnly></textarea> */}
 
         {/* <textarea value={latestFinalText} readOnly /> */}
@@ -370,29 +369,7 @@ readOnly placeholder="Initial Generated Text"
 			</div>
 
       <div className={styles.diff_container}>
-  {/* Difference for Input vs System-generated Text */}
-  {/* {showDifference1 && (
-    <div className={styles.diff_box}>
-      <label className={styles.label}>Input vs System-generated Text</label>
 
-      <div
-        className={`${styles.diff_output}`}
-        dangerouslySetInnerHTML={{ __html: diffHtml1 }}
-      ></div>
-    </div>
-  )} */}
-
-  {/* Difference for System-generated vs Submitted Text */}
-  {/* {showDifference2 && (
-    <div className={styles.diff_box}>
-      <label className={styles.label}>System-generated vs Submitted Text</label>
-
-      <div
-        className={`${styles.diff_output}`}
-        dangerouslySetInnerHTML={{ __html: diffHtml2 }}
-      ></div>
-    </div>
-  )} */}
 </div>
 
 
@@ -403,17 +380,7 @@ readOnly placeholder="Initial Generated Text"
       <h2>Survey</h2>
       <p><strong>Your feedback is valuable. Please answer all required questions.</strong></p>
 
-			{/* <h3 class="centered">Survey</h3>
 
-      <p>
-        <strong>Kindly answer the questions below. Your feedback is valuable to us.</strong>
-      </p> */}
-
-{/* <form onSubmit={handleFormSubmit}> */}
-{/* 
-<form class={styles.surveyForm} onSubmit={handleFormSubmit}> */}
-
-       {/* Survey Questions */}
 
 <div className={styles.surveyQuestion}>
     <label>Is the system generated text clear and free of confusing language? <span style={{ color: "red" }}>*</span> </label>
@@ -563,93 +530,3 @@ readOnly placeholder="Initial Generated Text"
 };
 
 export default SurveyPage;
-
-       {/* <div className={styles.surveyQuestion}>
-            <label>Is the system-generated text clear and free of confusing language?</label>
-            <div className={styles.surveyOptions}>
-              {["not-clear", "somewhat-clear", "moderately-clear", "mostly-clear", "very-clear"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="clarity" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.surveyQuestion}>
-            <label>Does the system-generated text preserve the original meaning?</label>
-            <div className={styles.surveyOptions}>
-              {["not-at-all", "somewhat-preserves", "moderately-preserves", "mostly-preserves", "completely-preserves"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="meaning" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.surveyQuestion}>
-            <label>Are there grammatical errors in the system-generated text?</label>
-            <div className={styles.surveyOptions}>
-              {["many-errors", "several-errors", "some-errors", "few-errors", "no-errors"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="grammar" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.surveyQuestion}>
-            <label>Does the system-generated text meet your needs?</label>
-            <div className={styles.surveyOptions}>
-              {["not-at-all", "somewhat-meets", "moderately-meets", "mostly-meets", "completely-meets"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="needs" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.surveyQuestion}>
-            <label>Does the system-generated text follow the IDD guidelines for sentence structure and organization?</label>
-            <div className={styles.surveyOptions}>
-              {["not-at-all", "somewhat-follows", "moderately-follows", "mostly-follows", "completely-follows"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="guidelines" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.surveyQuestion}>
-            <label>Is the system-generated text coherent in terms of sentence flow and organization?</label>
-            <div className={styles.surveyOptions}>
-              {["not-at-all", "somewhat-coherent", "moderately-coherent", "mostly-coherent", "completely-coherent"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="coherent" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.surveyQuestion}>
-            <label>Is the system-generated text coherent in terms of sentence flow and organization?</label>
-            <div className={styles.surveyOptions}>
-              {["not-at-all", "somewhat-coherent", "moderately-coherent", "mostly-coherent", "completely-coherent"].map((option) => (
-                <label key={option}>
-                  <input type="radio" name="editing_effort" value={option} onChange={handleOptionChange} required />
-                  {option.replace("-", " ")}
-                </label>
-              ))}
-            </div>
-          </div>
-
-
-          <div className={styles.surveyQuestion}>
-            <label><strong>[OPTIONAL]</strong> Additional comments:</label>
-            <textarea name="comments" rows="4" cols="70" placeholder="Enter your feedback here"></textarea>
-          </div> */}

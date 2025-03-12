@@ -48,6 +48,9 @@ const Review = () => {
 	const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(true);
 	const [showSurveyPrompt, setShowSurveyPrompt] = useState(false); // State for survey prompt
 
+  const surveyRef = useRef(null);
+
+
     const handleLogout = () => {
     localStorage.removeItem("token");
 	navigate("/Login"); 
@@ -67,6 +70,8 @@ const Review = () => {
   const generatePrompt = (inputText) => {
     return `
     You are an expert in accessible communication, tasked with transforming complex text into clear, accessible plain language for individuals with Intellectual and Developmental Disabilities (IDD) or those requiring simplified content. Retain all essential information and intent while prioritizing readability, comprehension, and inclusivity.
+
+    Text simplification refers to rewriting or adapting text to make it easier to read and understand while keeping the same level of detail and precision. Make sure you focus on simplification and not summarization. The length of generated output text must be similar to that of input text.
 
     Guidelines for Simplification:
     Vocabulary and Terminology:
@@ -179,7 +184,7 @@ const Review = () => {
   
     try {
 
-      const chunks = splitTextIntoChunks(inputText, 30000);
+      const chunks = splitTextIntoChunks(inputText, 1000);
       let combinedOutput = "";
     
       for (let chunk of chunks) {
@@ -283,6 +288,13 @@ const Review = () => {
         console.log("Final output saved successfully.");
         setIsSaveButtonEnabled(false); // Disable save button
         setShowSurveyPrompt(true);    // Ensure survey prompt is displayed
+
+        // ✅ Automatically scroll to survey prompt
+        setTimeout(() => {
+            if (surveyRef.current) {
+                surveyRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }, 300);
 
         const timestamp = new Date().toISOString();
         setSaveHistory((prev) => [...prev, { timestamp, finalText: outputText }]); // 🔹 Save to history
@@ -460,7 +472,7 @@ const Review = () => {
 			<div className={styles.description}>
 			<p>
 	
-        Please review the simplified text carefully and make any edits as needed to suit your requirements. Once you are satisfied with your revisions, submit the final version and complete the short survey to provide your feedback.
+        Please review the simplified text carefully and if needed, correct/edit it to suit your requirements. Once you are satisfied with your revisions, save the final version and complete the short survey to provide your feedback.
       </p>
 			</div>
 
@@ -596,15 +608,15 @@ const Review = () => {
             className={styles.submit_btn}
             onClick={saveFinalOutput}
             disabled={!isSaveButtonEnabled || isLoading}
-            title={!isSaveButtonEnabled ? "Please make an edit before submitting." : ""}
+            title={!isSaveButtonEnabled ? "Please make an edit before saving again." : ""}
             >
-            Submit
+            Save
             </button>
       </div>
 
   {/* Survey Prompt (Appears Only After Submitting) */}
   {showSurveyPrompt && (
-    <div className={styles.survey_prompt}>
+    <div className={styles.survey_prompt} ref={surveyRef}>
       <p className={styles.survey_text}>
         Please take the survey to help us improve.
         <button

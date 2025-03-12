@@ -23,6 +23,7 @@ const Main = () => {
 
 	const [inputWordCount, setInputWordCount] = useState(0);
 	const [inputCharCount, setInputCharCount] = useState(0);
+	const [pdfPageCount, setPdfPageCount] = useState(0);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -44,6 +45,9 @@ const Main = () => {
 		  const typedArray = new Uint8Array(this.result);
   
 		  const pdf = await pdfjsLib.getDocument(typedArray).promise;
+
+		  setPdfPageCount(pdf.numPages);
+
 		  let text = "";
   
 		  // Extract text from all pages
@@ -84,6 +88,8 @@ const Main = () => {
 const generatePrompt = (inputText) => {
 	return `
 	You are an expert in accessible communication, tasked with transforming complex text into clear, accessible plain language for individuals with Intellectual and Developmental Disabilities (IDD) or those requiring simplified content. Retain all essential information and intent while prioritizing readability, comprehension, and inclusivity.
+
+	Text simplification refers to rewriting or adapting text to make it easier to read and understand while keeping the same level of detail and precision. Make sure you focus on simplification and not summarization. The length of generated output text must be similar to that of input text.
 
 	Guidelines for Simplification:
 	Vocabulary and Terminology:
@@ -160,7 +166,7 @@ const generatePrompt = (inputText) => {
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputText, 30000);
+	  const chunks = splitTextIntoChunks(inputText, 1000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {
@@ -239,7 +245,9 @@ const generatePrompt = (inputText) => {
 					  disabled={isLoading} // Disable input when loading
 					></textarea>
 				 
-				 <p className={styles.countText}>Words: {inputWordCount} | Characters: {inputCharCount}</p>
+				 <p className={styles.countText}>Words: {inputWordCount} | Characters: {inputCharCount}
+				 {pdfPageCount > 0 && ` | Pages: ${pdfPageCount}`}
+				 </p>
 					
 				  </div>
   
