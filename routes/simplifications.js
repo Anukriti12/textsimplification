@@ -35,33 +35,6 @@ router.post("/", async (req, res) => {
 });
 
 
-// router.put("/edit", async (req, res) => {
-//   try {
-//     const { email, inputText, editedText } = req.body;
-
-//     if (!email || !inputText || !editedText) {
-//       return res.status(400).send({ message: "Missing required fields" });
-//     }
-
-//     const simplification = await Simplification.findOne({ email, inputText });
-
-//     if (!simplification) {
-//       return res.status(404).send({ message: "Simplification not found" });
-//     }
-
-//     simplification.editHistory.push({ text: editedText, timestamp: new Date() });
-
-//     await simplification.save();
-//     res.status(200).send({
-//       message: "Edit saved successfully",
-//       data: simplification,
-//     });
-//   } catch (error) {
-//     console.error("Error saving edit:", error);
-//     res.status(500).send({ message: "Internal Server Error" });
-//   }
-// });
-
 router.put("/edit", async (req, res) => {
   try {
     const { email, inputText, editedText } = req.body;
@@ -138,32 +111,6 @@ router.put("/save", async (req, res) => {
 });
 
 
-// router.put("/save", async (req, res) => {
-//   try {
-//     const { email, inputText, finalText } = req.body;
-
-//     if (!email || !inputText || !finalText) {
-//       return res.status(400).send({ message: "Missing required fields" });
-//     }
-
-//     const simplification = await Simplification.findOne({ email, inputText });
-
-//     if (!simplification) {
-//       return res.status(404).send({ message: "Simplification not found" });
-//     }
-
-//     simplification.saveHistory.push({ finalText, timestamp: new Date() });
-
-//     await simplification.save();
-//     res.status(200).send({
-//       message: "Final output saved successfully",
-//       data: simplification,
-//     });
-//   } catch (error) {
-//     console.error("Error saving final output:", error);
-//     res.status(500).send({ message: "Internal Server Error" });
-//   }
-// });
 
 router.post("/fetch", async (req, res) => {
   try {
@@ -200,6 +147,27 @@ router.post("/fetch", async (req, res) => {
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
+router.get("/user/:email", async (req, res) => {
+  try {
+    const { email } = req.params;
+    if (!email) {
+      return res.status(400).send({ message: "Email is required" });
+    }
+
+    const simplifications = await Simplification.find({ email }).sort({ createdAt: -1 });
+
+    if (!simplifications.length) {
+      return res.status(404).send({ message: "No simplifications found for this user" });
+    }
+
+    res.status(200).json({ data: simplifications });
+  } catch (error) {
+    console.error("Error fetching user's simplifications:", error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
 
 // GET route to fetch all simplifications for a user
 router.get("/:userId", async (req, res) => {

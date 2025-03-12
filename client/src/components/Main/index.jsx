@@ -166,7 +166,7 @@ const generatePrompt = (inputText) => {
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputText, 1000);
+	  const chunks = splitTextIntoChunks(inputText, 5000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {

@@ -50,6 +50,14 @@ const Review = () => {
 
   const surveyRef = useRef(null);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const email = user?.email;
+
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [selectedVersion, setSelectedVersion] = useState(null);
+  // const [outputText, setOutputText] = useState("");
+
 
     const handleLogout = () => {
     localStorage.removeItem("token");
@@ -184,7 +192,7 @@ const Review = () => {
   
     try {
 
-      const chunks = splitTextIntoChunks(inputText, 1000);
+      const chunks = splitTextIntoChunks(inputText, 5000);
       let combinedOutput = "";
     
       for (let chunk of chunks) {
@@ -342,6 +350,52 @@ const Review = () => {
   };
 
   useEffect(() => {
+    if (!email) return;
+
+    const fetchDocuments = async () => {
+      try {
+        const response = await fetch(`https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/user/${email}`);
+        const result = await response.json();
+
+        if (response.ok) {
+          setDocuments(result.data);
+          if (result.data.length > 0) {
+            setSelectedDocument(result.data[0]);  // Default to first document
+            setSelectedVersion(result.data[0].outputText);  // Default to Version 1
+            setOutputText(result.data[0].outputText);
+          }
+        } else {
+          console.error("Error fetching documents:", result.message);
+        }
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+      }
+    };
+
+    fetchDocuments();
+  }, [email]);
+
+  // Handle selecting a document
+  const handleDocumentClick = (doc) => {
+    setSelectedDocument(doc);
+    setSelectedVersion(doc.outputText);  // Default to Version 1
+    setOutputText(doc.outputText);
+  };
+
+  // Handle selecting a version
+  const handleVersionChange = (event) => {
+    const versionIndex = event.target.value;
+    const selectedText =
+      versionIndex === "0"
+        ? selectedDocument.outputText  // Version 1
+        : selectedDocument.saveHistory[versionIndex - 1].finalText;  // Version 2+
+
+    setSelectedVersion(selectedText);
+    setOutputText(selectedText);
+  };
+
+    
+  useEffect(() => {
     const reviewPageState = {
       inputText,
       outputText,
@@ -437,7 +491,7 @@ const Review = () => {
             className={styles.historyIcon}
             onClick={() => setIsSidebarVisible(!isSidebarVisible)}
           >
-             🕒   <p style={{ fontSize: "15px" }}> History </p> {/* History Icon */}
+             🕒   <p style={{ fontSize: "15px" }}> History </p> 
           </button>
           {isSidebarVisible && (
             <div className={styles.historyContent}>
@@ -447,20 +501,33 @@ const Review = () => {
               >
                ✖
               </button>
-              {/* <h3>History</h3> */}
+              
               <ul className={styles.historyList}>
-                {editHistory.map((edit, index) => (
-                  <li
-                    key={index}
-                    className={styles.historyItem}
-                    onClick={() => handleHistoryClick(edit)}
-                  >
-                    {edit.timestamp}
-                  </li>
-                ))}
+              {documents.map((doc, index) => (
+                <li key={index} onClick={() => handleDocumentClick(doc)}
+                    className={selectedDocument === doc ? styles.activeTab : ""}>
+                  Document {index + 1}
+                </li>
+              ))}
               </ul>
             </div>
+
+            
+
           )}
+
+        <div className={styles.versionSelector}>
+          <label>Select Version:</label>
+          <select onChange={handleVersionChange} value={documents.indexOf(selectedDocument)}>
+            <option value="0">Version 1 (Generated Text)</option>
+            {selectedDocument?.saveHistory.map((version, index) => (
+              <option key={index + 1} value={index + 1}>
+                Version {index + 2} (Saved on {new Date(version.timestamp).toLocaleDateString()})
+              </option>
+            ))}
+          </select>
+        </div>
+
         </div>
 
         {/* Main Content */}
@@ -528,7 +595,7 @@ const Review = () => {
 <div className={styles.text_container}>
   <div className={styles.labelWrapper}>
     <label className={styles.label} htmlFor="outputText">
-      System-generated Text
+      AI-generated Text
     </label>
     <div className={styles.actions}>
       <div
