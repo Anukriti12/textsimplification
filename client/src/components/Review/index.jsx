@@ -56,6 +56,7 @@ const Review = () => {
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(null);
+  const [expandedDocs, setExpandedDocs] = useState({});
   // const [outputText, setOutputText] = useState("");
 
 
@@ -192,7 +193,7 @@ const Review = () => {
   
     try {
 
-      const chunks = splitTextIntoChunks(inputText, 5000);
+      const chunks = splitTextIntoChunks(inputText, 10000);
       let combinedOutput = "";
     
       for (let chunk of chunks) {
@@ -358,11 +359,13 @@ const Review = () => {
         const result = await response.json();
 
         if (response.ok) {
-          setDocuments(result.data);
-          if (result.data.length > 0) {
-            setSelectedDocument(result.data[0]);  // Default to first document
-            setSelectedVersion(result.data[0].outputText);  // Default to Version 1
-            setOutputText(result.data[0].outputText);
+          
+          const sortedDocs = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setDocuments(sortedDocs);
+          if (sortedDocs.length > 0) {
+            setSelectedDocument(sortedDocs[0]);
+            setSelectedVersion(sortedDocs[0].outputText);
+            setOutputText(sortedDocs[0].outputText);
           }
         } else {
           console.error("Error fetching documents:", result.message);
@@ -375,23 +378,32 @@ const Review = () => {
     fetchDocuments();
   }, [email]);
 
-  // Handle selecting a document
+  const toggleExpandDoc = (docId) => {
+    setExpandedDocs((prev) => ({
+      ...prev,
+      [docId]: !prev[docId],
+    }));
+  };
+
   const handleDocumentClick = (doc) => {
     setSelectedDocument(doc);
-    setSelectedVersion(doc.outputText);  // Default to Version 1
+    setSelectedVersion(doc.outputText);
     setOutputText(doc.outputText);
   };
 
-  // Handle selecting a version
-  const handleVersionChange = (event) => {
-    const versionIndex = event.target.value;
+
+  const handleVersionChange = (docId, versionIndex) => {
+    const doc = documents.find((d) => d._id === docId);
+    if (!doc) return;
+
     const selectedText =
       versionIndex === "0"
-        ? selectedDocument.outputText  // Version 1
-        : selectedDocument.saveHistory[versionIndex - 1].finalText;  // Version 2+
+        ? doc.outputText
+        : doc.saveHistory[versionIndex - 1].finalText;
 
     setSelectedVersion(selectedText);
     setOutputText(selectedText);
+    setSelectedDocument(doc);
   };
 
     
@@ -493,7 +505,7 @@ const Review = () => {
           >
              🕒   <p style={{ fontSize: "15px" }}> History </p> 
           </button>
-          {isSidebarVisible && (
+          {/* {isSidebarVisible && (
             <div className={styles.historyContent}>
               <button
                 className={styles.closeButton}
@@ -501,6 +513,8 @@ const Review = () => {
               >
                ✖
               </button>
+
+             
               
               <ul className={styles.historyList}>
               {documents.map((doc, index) => (
@@ -514,9 +528,40 @@ const Review = () => {
 
             
 
-          )}
+          )} */}
 
-        <div className={styles.versionSelector}>
+{isSidebarVisible && (
+            <div className={styles.historyContent}>
+              <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
+              <ul className={styles.historyList}>
+                {documents.map((doc, index) => (
+                  <li key={doc._id} className={styles.historyItem}>
+                    <div onClick={() => toggleExpandDoc(doc._id)} className={styles.docHeader}>
+                      <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}..., {new Date(doc.createdAt).toLocaleDateString()})
+                    </div>
+
+                    {expandedDocs[doc._id] && (
+                      <ul className={styles.versionList}>
+                        <li key="0" onClick={() => handleVersionChange(doc._id, "0")} className={selectedVersion === doc.outputText ? styles.activeVersion : ""}>
+                          Version 1 (Generated Text)
+                        </li>
+                        {doc.saveHistory.map((version, vIndex) => (
+                          <li
+                            key={vIndex + 1}
+                            onClick={() => handleVersionChange(doc._id, vIndex + 1)}
+                            className={selectedVersion === version.finalText ? styles.activeVersion : ""}
+                          >
+                            Version {vIndex + 2} (Saved on {new Date(version.timestamp).toLocaleDateString()})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        {/* <div className={styles.versionSelector}>
           <label>Select Version:</label>
           <select onChange={handleVersionChange} value={documents.indexOf(selectedDocument)}>
             <option value="0">Version 1 (Generated Text)</option>
@@ -526,7 +571,7 @@ const Review = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         </div>
 
@@ -582,11 +627,12 @@ const Review = () => {
       </div>
     </div>
     <p className={styles.countText}>Words: {inputWordCount} | Characters: {inputCharCount}</p>
+    {/* <textarea id="inputText" className={styles.textarea} value={selectedDocument?.inputText || ""} readOnly></textarea> */}
 
     <textarea
       id="inputText"
       className={`${styles.textarea} ${styles.side_by_side}`}
-      value={inputText}
+      value={selectedDocument?.inputText || ""}
       readOnly
     ></textarea>
   </div>

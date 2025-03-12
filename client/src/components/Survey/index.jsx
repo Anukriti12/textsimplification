@@ -458,7 +458,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>✅ Are there spelling or grammar mistakes in the AI-generated text? <span style={{ color: "red" }}>*</span> </label>
+    <label>Are there spelling or grammar mistakes in the AI-generated text? <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
       <label>
         <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange} required />  Many mistakes
