@@ -602,7 +602,7 @@ const Review = () => {
         title="Re-simplify Text"
         style={{ cursor: "pointer" }}
       >
-        🔄 {/* Re-simplify Icon */}
+        🔄 
       </div>
 
       </div>

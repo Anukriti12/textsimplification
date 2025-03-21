@@ -131,6 +131,8 @@ const generatePrompt = (inputText) => {
 
 	Text simplification refers to rewriting or adapting text to make it easier to read and understand while keeping the same level of detail and precision. Make sure you focus on simplification and not summarization. The length of generated output text must be similar to that of input text.
 
+	Stick to the provided input text and only simplify the language. Don't provide the answer or hallucinate or provide any irrelevant information, not mentioned in the input text. 
+
 	Guidelines for Simplification:
 	Vocabulary and Terminology:
 	Replace uncommon, technical, or abstract words with simple, everyday language.
@@ -262,14 +264,30 @@ const generatePrompt = (inputText) => {
       </nav>
 
 	  <div className={styles.container}>
+
+			 <div
+				  className={`${styles.sidebar} ${
+					isSidebarVisible ? styles.expanded : ""
+				  }`}
+				>
+
+			</div>
+
+			<button
+			className={styles.historyIcon}
+			onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+			>
+				🕒   <p style={{ fontSize: "15px" }}> History </p> 
+			</button>
+
         {/* Sidebar */}
-        <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
+        {/* <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
           <button
             className={styles.historyIcon}
             onClick={() => setIsSidebarVisible(!isSidebarVisible)}
           >
             🕒 <p style={{ fontSize: "15px" }}> History </p>
-          </button>
+          </button> */}
 
           {isSidebarVisible && (
             <div className={styles.historyContent}>
@@ -278,18 +296,26 @@ const generatePrompt = (inputText) => {
               </button>
               <ul className={styles.historyList}>
                 {documents.map((doc, index) => (
-                  <li
-                    key={doc._id}
-                    onClick={() => handleDocumentClick(doc)}
-                    className={selectedDocument?._id === doc._id ? styles.activeDoc : ""}
-                  >
-                    <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}...)
-                  </li>
+                //   <li
+                //     key={doc._id}
+                //     onClick={() => handleDocumentClick(doc)}
+                //     className={selectedDocument?._id === doc._id ? styles.activeDoc : ""}
+                //   >
+                //     <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}...)
+                //   </li>
+
+				<li
+				key={doc._id}
+				onClick={() => handleDocumentClick(doc)}
+				className={`${styles.historyItem} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
+				>
+				<strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}...)
+				</li>
                 ))}
               </ul>
             </div>
           )}
-        </div>
+        {/* </div> */}
 
 	  {/* <div className={styles.main_container}> */}
 	  <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>

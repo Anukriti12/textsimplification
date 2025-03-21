@@ -26,6 +26,7 @@ const SurveyPage = () => {
     // Store latest submitted text from history selection
     const [latestFinalText, setLatestFinalText] = useState(""); 
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+    const [selectedVersion, setSelectedVersion] = useState(null);
     
 
   const navigate = useNavigate();
@@ -51,13 +52,14 @@ const SurveyPage = () => {
   useEffect(() => {
     if (saveHistory.length > 0) {
       setLatestFinalText(saveHistory[saveHistory.length - 1]?.finalText || "");
+      setSelectedVersion(saveHistory.length);
       setSubmittedWordCount(countWords(saveHistory[saveHistory.length - 1]?.finalText || ""));
     }
   }, [saveHistory]);
 
-  // Handler to update "Submitted Text" when a history entry is clicked
-  const handleHistoryClick = (entry) => {
-    setLatestFinalText(entry.finalText); // Update the Submitted Text box
+  const handleHistoryClick = (index) => {
+    setLatestFinalText(saveHistory[index].finalText);
+    setSelectedVersion(index + 1);
   };
 
   useEffect(() => {
@@ -221,9 +223,14 @@ const handleOptionChange = (event) => {
              <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
              <ul className={styles.historyList}>
                {saveHistory.map((entry, index) => (
-                 <li key={index} className={styles.historyItem} onClick={() => handleHistoryClick(entry)}>
-                   {entry.timestamp}
-                 </li>
+                //  <li key={index} className={styles.historyItem} onClick={() => handleHistoryClick(entry)}>
+                //    {entry.timestamp}
+                //  </li>
+                <li key={index} className={`${styles.historyItem} ${selectedVersion === index + 1 ? styles.activeVersion : ""}`} 
+                         onClick={() => handleHistoryClick(index)}>
+                       Version {index + 1}
+                </li>
+
                ))}
              </ul>
            </div>
@@ -237,29 +244,48 @@ const handleOptionChange = (event) => {
     {/* <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
     */}
     <div className={styles.description}>
-			 
+      </div>
+	
                     {/* Sidebar for History Navigation */}
 
 
-      			<div className={styles.textareas_container}>
+  <div className={styles.textareas_container}>
 
-  {/* Input Text */}
-  <div className={styles.text_container}>
-    
-    <div className={styles.labelWrapper}>
-      <label className={styles.label} htmlFor="inputText">
-        Input Text
-      </label>
+    {/* Input Text */}
+    <div className={styles.text_container}>
+      
+      <div className={styles.labelWrapper}>
+        <label className={styles.label} htmlFor="inputText">
+          Input Text
+        </label>
 
+        <div className={styles.actions}>
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleCopy(inputText)}
+            title="Copy to Clipboard"
+          >
+            📋 {/* Clipboard Emoji */}
+          </div>
+
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleDownload(inputText, "inputText", "txt")}
+            title="Download as .txt file"
+          >
+            📥 {/* Download Icon */}
+          </div>
+        </div>
+      </div>
+
+      <p className={styles.wordCount}>Words: {inputWordCount}</p>
+
+      <textarea
+        id="inputText"
+        className={`${styles.textarea} ${styles.side_by_side}`}
+        value={input} readOnly placeholder="Input Text"
+      ></textarea>
     </div>
-    <div className={styles.wordCount}>Words: {inputWordCount}</div>
-
-    <textarea
-      id="inputText"
-      className={`${styles.textarea} ${styles.side_by_side}`}
-      value={input} readOnly placeholder="Input Text"
-    ></textarea>
-  </div>
 
 			{/* system generated text Box */}
 <div className={styles.text_container}>
@@ -294,7 +320,7 @@ const handleOptionChange = (event) => {
 
     </div>
   </div>
-  <div className={styles.wordCount}>Words: {outputWordCount}</div>
+  <p className={styles.wordCount}>Words: {outputWordCount}</p>
 
   <textarea
     id="outputText"
@@ -349,7 +375,7 @@ readOnly placeholder="Initial Generated Text"
   {/* <textarea id="EditedText" className={`${styles.output_box} ${styles.side_by_side}`} value={latestFinalText} readOnly/>
   */}
                
-                <div className={styles.wordCount}>Words: {submittedWordCount}</div>
+                <p className={styles.wordCount}>Words: {submittedWordCount}</p>
 
   <textarea
               id="submittedText"
@@ -380,17 +406,17 @@ readOnly placeholder="Initial Generated Text"
 
     <form className={styles.surveyForm} onSubmit={handleFormSubmit}>
       <h2>Survey</h2>
-      <h3>Your feedback is valuable. Please answer all required questions.</h3>
+      <h3>Your feedback is valuable. Please try to answer all the questions.</h3>
 
 
   <div className={styles.surveyQuestion}>
     <label>Does the AI-generated text meet your needs? <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
-    <label><input type="radio" name="needs" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
-      <label><input type="radio" name="needs" value="somewhat-meets" onChange={handleOptionChange} required />  Somewhat meets</label>
-      <label><input type="radio" name="needs" value="moderately-meets" onChange={handleOptionChange} required />  Moderately meets</label>
-      <label><input type="radio" name="needs" value="mostly-meets" onChange={handleOptionChange} required />  Mostly meets</label>
-      <label><input type="radio" name="needs" value="completely-meets" onChange={handleOptionChange} required />  Completely meets</label>
+    <label><input type="radio" name="needs" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+      <label><input type="radio" name="needs" value="somewhat-meets" onChange={handleOptionChange}  />  Somewhat meets</label>
+      <label><input type="radio" name="needs" value="moderately-meets" onChange={handleOptionChange}  />  Moderately meets</label>
+      <label><input type="radio" name="needs" value="mostly-meets" onChange={handleOptionChange}  />  Mostly meets</label>
+      <label><input type="radio" name="needs" value="completely-meets" onChange={handleOptionChange}  />  Completely meets</label>
     </div>
   </div>
 
@@ -398,19 +424,19 @@ readOnly placeholder="Initial Generated Text"
     <label>Is the AI-generated text easy to understand? <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
       <label>
-        <input type="radio" name="easy" value="not-clear" onChange={handleOptionChange} required />  Not easy at all
+        <input type="radio" name="easy" value="not-clear" onChange={handleOptionChange}  />  Not easy at all
       </label>
       <label>
-        <input type="radio" name="easy" value="somewhat-clear" onChange={handleOptionChange} required />  Somewhat easy
+        <input type="radio" name="easy" value="somewhat-clear" onChange={handleOptionChange}  />  Somewhat easy
       </label>
       <label>
-        <input type="radio" name="easy" value="moderately-clear" onChange={handleOptionChange} required />  Moderately easy
+        <input type="radio" name="easy" value="moderately-clear" onChange={handleOptionChange}  />  Moderately easy
       </label>
       <label>
-        <input type="radio" name="easy" value="mostly-clear" onChange={handleOptionChange} required />  Mostly easy
+        <input type="radio" name="easy" value="mostly-clear" onChange={handleOptionChange}  />  Mostly easy
       </label>
       <label>
-        <input type="radio" name="easy" value="very-clear" onChange={handleOptionChange} required />  Completely easy
+        <input type="radio" name="easy" value="very-clear" onChange={handleOptionChange}  />  Completely easy
       </label>
     </div>
   </div>
@@ -419,19 +445,19 @@ readOnly placeholder="Initial Generated Text"
     <label>Does the AI-generated text preserve the original meaning? <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
       <label>
-        <input type="radio" name="meaning" value="not-at-all" onChange={handleOptionChange} required />  Not at all
+        <input type="radio" name="meaning" value="not-at-all" onChange={handleOptionChange}  />  Not at all
       </label>
       <label>
-        <input type="radio" name="meaning" value="somewhat-preserves" onChange={handleOptionChange} required />  Somewhat preserves
+        <input type="radio" name="meaning" value="somewhat-preserves" onChange={handleOptionChange}  />  Somewhat preserves
       </label>
       <label>
-        <input type="radio" name="meaning" value="moderately-preserves" onChange={handleOptionChange} required />  Moderately preserves
+        <input type="radio" name="meaning" value="moderately-preserves" onChange={handleOptionChange}  />  Moderately preserves
       </label>
       <label>
-        <input type="radio" name="meaning" value="mostly-preserves" onChange={handleOptionChange} required />  Mostly preserves
+        <input type="radio" name="meaning" value="mostly-preserves" onChange={handleOptionChange}  />  Mostly preserves
       </label>
       <label>
-        <input type="radio" name="meaning" value="completely-preserves" onChange={handleOptionChange} required />  Completely preserves
+        <input type="radio" name="meaning" value="completely-preserves" onChange={handleOptionChange}  />  Completely preserves
       </label>
     </div>
   </div>
@@ -440,19 +466,19 @@ readOnly placeholder="Initial Generated Text"
     <label>Does the AI-generated text contain false or irrelevant information? <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
       <label>
-        <input type="radio" name="relevancy" value="not-at-all" onChange={handleOptionChange} required />  A lot of inaccuracies
+        <input type="radio" name="relevancy" value="not-at-all" onChange={handleOptionChange}  />  A lot of inaccuracies
       </label>
       <label>
-        <input type="radio" name="relevancy" value="somewhat" onChange={handleOptionChange} required />  Several inaccuracies
+        <input type="radio" name="relevancy" value="somewhat" onChange={handleOptionChange}  />  Several inaccuracies
       </label>
       <label>
-        <input type="radio" name="relevancy" value="moderately" onChange={handleOptionChange} required />  Some minor inaccuracies
+        <input type="radio" name="relevancy" value="moderately" onChange={handleOptionChange}  />  Some minor inaccuracies
       </label>
       <label>
-        <input type="radio" name="relevancy" value="mostly" onChange={handleOptionChange} required />  Mostly accurate
+        <input type="radio" name="relevancy" value="mostly" onChange={handleOptionChange}  />  Mostly accurate
       </label>
       <label>
-        <input type="radio" name="relevancy" value="completely" onChange={handleOptionChange} required />  Completely accurate
+        <input type="radio" name="relevancy" value="completely" onChange={handleOptionChange}  />  Completely accurate
       </label>
     </div>
   </div>
@@ -461,19 +487,19 @@ readOnly placeholder="Initial Generated Text"
     <label>Are there spelling or grammar mistakes in the AI-generated text? <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
       <label>
-        <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange} required />  Many mistakes
+        <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange}  />  Many mistakes
       </label>
       <label>
-        <input type="radio" name="grammar" value="several-errors" onChange={handleOptionChange} required />  Several mistakes
+        <input type="radio" name="grammar" value="several-errors" onChange={handleOptionChange}  />  Several mistakes
       </label>
       <label>
-        <input type="radio" name="grammar" value="some-errors" onChange={handleOptionChange} required />  Some mistakes
+        <input type="radio" name="grammar" value="some-errors" onChange={handleOptionChange}  />  Some mistakes
       </label>
       <label>
-        <input type="radio" name="grammar" value="few-errors" onChange={handleOptionChange} required />  Few mistakes
+        <input type="radio" name="grammar" value="few-errors" onChange={handleOptionChange}  />  Few mistakes
       </label>
       <label>
-        <input type="radio" name="grammar" value="no-errors" onChange={handleOptionChange} required />  No mistakes
+        <input type="radio" name="grammar" value="no-errors" onChange={handleOptionChange}  />  No mistakes
       </label>
     </div>
   </div>
@@ -483,33 +509,33 @@ readOnly placeholder="Initial Generated Text"
   <div className={styles.surveyQuestion}>
     <label>Does the AI-generated text avoid difficult words?    <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
-    <label><input type="radio" name="guidelines" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
-      <label><input type="radio" name="guidelines" value="somewhat-follows" onChange={handleOptionChange} required />  Somewhat</label>
-      <label><input type="radio" name="guidelines" value="moderately-follows" onChange={handleOptionChange} required />  Moderately</label>
-      <label><input type="radio" name="guidelines" value="mostly-follows" onChange={handleOptionChange} required />  Mostly</label>
-      <label><input type="radio" name="guidelines" value="completely-follows" onChange={handleOptionChange} required />  Completely </label>
+    <label><input type="radio" name="guidelines" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+      <label><input type="radio" name="guidelines" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat</label>
+      <label><input type="radio" name="guidelines" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
+      <label><input type="radio" name="guidelines" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
+      <label><input type="radio" name="guidelines" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
     </div>
   </div>
 
   <div className={styles.surveyQuestion}>
     <label>Does the AI-generated text use short sentences and clear headings?    <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
-    <label><input type="radio" name="clarity" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
-      <label><input type="radio" name="clarity" value="somewhat-follows" onChange={handleOptionChange} required />  Somewhat </label>
-      <label><input type="radio" name="clarity" value="moderately-follows" onChange={handleOptionChange} required />  Moderately</label>
-      <label><input type="radio" name="clarity" value="mostly-follows" onChange={handleOptionChange} required />  Mostly</label>
-      <label><input type="radio" name="clarity" value="completely-follows" onChange={handleOptionChange} required />  Completely </label>
+    <label><input type="radio" name="clarity" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+      <label><input type="radio" name="clarity" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
+      <label><input type="radio" name="clarity" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
+      <label><input type="radio" name="clarity" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
+      <label><input type="radio" name="clarity" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
     </div>
   </div>
 
   <div className={styles.surveyQuestion}>
     <label>Does the AI-generated text flow logically from start to finish?    <span style={{ color: "red" }}>*</span> </label>
     <div className={styles.surveyOptions}>
-    <label><input type="radio" name="coherent" value="not-at-all" onChange={handleOptionChange} required />  Not at all</label>
-      <label><input type="radio" name="coherent" value="somewhat-follows" onChange={handleOptionChange} required />  Somewhat </label>
-      <label><input type="radio" name="coherent" value="moderately-follows" onChange={handleOptionChange} required />  Moderately</label>
-      <label><input type="radio" name="coherent" value="mostly-follows" onChange={handleOptionChange} required />  Mostly</label>
-      <label><input type="radio" name="coherent" value="completely-follows" onChange={handleOptionChange} required />  Completely </label>
+    <label><input type="radio" name="coherent" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+      <label><input type="radio" name="coherent" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
+      <label><input type="radio" name="coherent" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
+      <label><input type="radio" name="coherent" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
+      <label><input type="radio" name="coherent" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
     </div>
   </div>
 
@@ -553,7 +579,7 @@ readOnly placeholder="Initial Generated Text"
 </form>
 </div>
 
-</div>
+{/* </div> */}
 </div>
 ) : (
   // Thank You Message & Redirect
