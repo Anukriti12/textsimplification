@@ -60,6 +60,16 @@ html, body {
     cursor: pointer;
 }
 
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .mainContent.withSidebar {
+    margin-left: 0px; /* Adjust when sidebar is visible */
+  }
+
 /* Main container for content */
 .main_container {
     margin: 0 auto;

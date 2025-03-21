@@ -505,38 +505,19 @@ const Review = () => {
           >
              🕒   <p style={{ fontSize: "15px" }}> History </p> 
           </button>
-          {/* {isSidebarVisible && (
-            <div className={styles.historyContent}>
-              <button
-                className={styles.closeButton}
-                onClick={() => setIsSidebarVisible(false)}
-              >
-               ✖
-              </button>
 
-             
-              
-              <ul className={styles.historyList}>
-              {documents.map((doc, index) => (
-                <li key={index} onClick={() => handleDocumentClick(doc)}
-                    className={selectedDocument === doc ? styles.activeTab : ""}>
-                  Document {index + 1}
-                </li>
-              ))}
-              </ul>
-            </div>
-
-            
-
-          )} */}
-
-{isSidebarVisible && (
+        {isSidebarVisible && (
             <div className={styles.historyContent}>
               <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
               <ul className={styles.historyList}>
                 {documents.map((doc, index) => (
                   <li key={doc._id} className={styles.historyItem}>
-                    <div onClick={() => toggleExpandDoc(doc._id)} className={styles.docHeader}>
+                    {/* <div onClick={() => toggleExpandDoc(doc._id)} className={styles.docHeader}> */}
+                    <div
+                      onClick={() => toggleExpandDoc(doc._id)}
+                      className={`${styles.docHeader} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
+                    >
+
                       <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}..., {new Date(doc.createdAt).toLocaleDateString()})
                     </div>
 

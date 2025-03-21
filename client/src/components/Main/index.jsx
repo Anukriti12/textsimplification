@@ -18,8 +18,16 @@ const Main = () => {
 	const [uploadedFileName, setUploadedFileName] = useState(""); // State for file name
 	const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(true);
 	const [showSurveyPrompt, setShowSurveyPrompt] = useState(false); // State for survey prompt
+
+	const [documents, setDocuments] = useState([]); // Store user documents
+	const [selectedDocument, setSelectedDocument] = useState(null); // Selected doc
+	const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Sidebar toggle
+
 	const navigate = useNavigate();
 	const [isUploading, setIsUploading] = useState(false); // State for showing buffer
+
+	const user = JSON.parse(localStorage.getItem("user"));
+	const email = user?.email;
 
 	const [inputWordCount, setInputWordCount] = useState(0);
 	const [inputCharCount, setInputCharCount] = useState(0);
@@ -30,6 +38,38 @@ const Main = () => {
     navigate("/Login"); 
   };
 
+    // Load user's past documents (original texts only)
+	useEffect(() => {
+		if (!email) return;
+	
+		const fetchDocuments = async () => {
+		  try {
+			const response = await fetch(
+			  `https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/user/${email}`
+			);
+			const result = await response.json();
+	
+			if (response.ok) {
+			  const sortedDocs = result.data.sort(
+				(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+			  );
+			  setDocuments(sortedDocs);
+			} else {
+			  console.error("Error fetching documents:", result.message);
+			}
+		  } catch (error) {
+			console.error("Error fetching documents:", error);
+		  }
+		};
+	
+		fetchDocuments();
+	  }, [email]);
+
+	  // Handle document selection from history
+  const handleDocumentClick = (doc) => {
+    setSelectedDocument(doc);
+    setInputText(doc.inputText);
+  };
 
   	const handleFileUpload = async (event) => {
 	  const file = event.target.files[0];
@@ -221,13 +261,44 @@ const generatePrompt = (inputText) => {
         </button>
       </nav>
 
-	  <div className={styles.main_container}>
-	
+	  <div className={styles.container}>
+        {/* Sidebar */}
+        <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
+          <button
+            className={styles.historyIcon}
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+          >
+            🕒 <p style={{ fontSize: "15px" }}> History </p>
+          </button>
+
+          {isSidebarVisible && (
+            <div className={styles.historyContent}>
+              <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>
+                ✖
+              </button>
+              <ul className={styles.historyList}>
+                {documents.map((doc, index) => (
+                  <li
+                    key={doc._id}
+                    onClick={() => handleDocumentClick(doc)}
+                    className={selectedDocument?._id === doc._id ? styles.activeDoc : ""}
+                  >
+                    <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}...)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+	  {/* <div className={styles.main_container}> */}
+	  <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
+         
 			<div className={styles.description}>
 			  <p>
 			  This tool helps make complex text easier to read while preserving its original meaning. Whether you're simplifying academic content, technical documents, or general text for better accessibility, this tool provides a quick and efficient way to generate a more readable version. You can enter text manually or upload a document to get started.
 			  </p>
-  
+	</div>
 			  <div className={styles.form_container}>
 				{/* Input Area */}
 				<div className={styles.input_area}>

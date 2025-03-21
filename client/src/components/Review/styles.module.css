@@ -136,6 +136,44 @@ html, body {
       flex-direction: column;
   }
 
+.activeDoc {
+  background-color: #e6f7ff;
+  font-weight: bold;
+  border-left: 4px solid #1890ff;
+  padding-left: 8px;
+}
+
+.activeVersion {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  padding-left: 10px;
+  border-left: 3px solid #4CAF50;
+}
+
+.docHeader,
+.versionList li {
+  transition: background-color 0.3s ease, border-left 0.3s ease;
+}
+
+.versionList li:hover,
+.docHeader:hover {
+  cursor: pointer;
+  background-color: #f9f9f9;
+}
+
+/* .docHeader {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+.docHeader:hover {
+  background-color: #f0f0f0;
+} */
+
   .sidebar {
       width: 100%;
       height: auto;
@@ -345,7 +383,7 @@ html, body {
 }
 
 .survey_text {
-  font-size: 14px;
+  font-size: 20px;
   color: #333; /* Darker text for readability */
 }
 
@@ -353,7 +391,7 @@ html, body {
   background: none;
   border: none;
   color: #0073e6; /* Blue for contrast */
-  font-size: 14px;
+  font-size: 20px;
   cursor: pointer;
   text-decoration: underline; /* Mimics a hyperlink */
   margin-left: 5px;
