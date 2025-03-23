@@ -33,6 +33,9 @@ const Main = () => {
 	const [inputCharCount, setInputCharCount] = useState(0);
 	const [pdfPageCount, setPdfPageCount] = useState(0);
 
+	const inputTextSnapshot = useRef("");
+
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/Login"); 
@@ -205,10 +208,12 @@ const generatePrompt = (inputText) => {
 
   const handleSubmit = async () => {
 	if (!inputText.trim()) return;
+
+	inputTextSnapshot.current = inputText; 
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputText, 10000);
+	  const chunks = splitTextIntoChunks(inputTextSnapshot.current, 10000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {
@@ -235,9 +240,9 @@ const generatePrompt = (inputText) => {
 
 	console.log("Data: ", combinedOutput);
 	const cleanedResponse = combinedOutput.trim();
-	  setOutputText(cleanedResponse);
-	  setIsSubmitted(true);
-	  navigate("/review", { state: { inputText, outputText: cleanedResponse } });
+	setOutputText(cleanedResponse);
+	setIsSubmitted(true);
+	navigate("/review", { state: { inputText: inputTextSnapshot.current, outputText: cleanedResponse } });
 	
 	} catch (error) {
 	  console.error("Error fetching GPT-4o response:", error);
@@ -271,7 +276,7 @@ const generatePrompt = (inputText) => {
 				  }`}
 				>
 
-			</div>
+			{/* </div> */}
 
 			<button
 			className={styles.historyIcon}
@@ -315,7 +320,7 @@ const generatePrompt = (inputText) => {
               </ul>
             </div>
           )}
-        {/* </div> */}
+        </div>
 
 	  {/* <div className={styles.main_container}> */}
 	  <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
@@ -402,7 +407,8 @@ const generatePrompt = (inputText) => {
 	
 			  <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
 
-        </div>
+      </div>
+
       </div>
     </>
   );

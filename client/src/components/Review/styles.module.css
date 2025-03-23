@@ -148,6 +148,8 @@ html, body {
   font-weight: bold;
   color: #00796b; /* Text color for active state */
   transition: background-color 0.3s ease, border-left 0.3s ease;
+
+
 }
 
 .activeVersion {
