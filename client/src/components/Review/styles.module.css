@@ -283,7 +283,17 @@ html, body {
     color: #3bb19b; /* Hover color for clipboard icon */
   }
 
-
+  .editableDiv span.diffins {
+    background-color: #d4f8d4; /* green background for additions */
+    color: green;
+  }
+  
+  .editableDiv span.diffdel {
+    background-color: #fdd; /* red background for deletions */
+    color: red;
+    text-decoration: line-through;
+  }
+  
   
   .actions {
     display: flex;

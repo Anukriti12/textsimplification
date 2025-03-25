@@ -41,7 +41,6 @@ const Review = () => {
 
 
   const [isHistoryVisible, setIsHistoryVisible] = useState(false); // Show/Hide history sidebar
-  const contentEditableRef = useRef(null); // Reference to the contentEditable div
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -57,6 +56,10 @@ const Review = () => {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(null);
   const [expandedDocs, setExpandedDocs] = useState({});
+
+  const [liveEditedText, setLiveEditedText] = useState(initialOutputText);
+  const contentEditableRef = useRef(null);
+
   // const [outputText, setOutputText] = useState("");
 
 
@@ -75,6 +78,15 @@ const Review = () => {
     return { words, chars };
   };
   
+      // Function to calculate and render diff
+  const generateDiff = (input, output) => {
+        const dmp = new DiffMatchPatch();
+        const diffs = dmp.diff_main(input, output);
+        dmp.diff_cleanupSemantic(diffs); // Optional cleanup for better readability
+        return dmp.diff_prettyHtml(diffs);
+      };
+
+    
 	// Function to format the prompt with user input
   const generatePrompt = (inputText) => {
     return `
@@ -186,6 +198,18 @@ const Review = () => {
     }
   };
 
+  const handleLiveEdit = (e) => {
+    const updatedHTML = e.currentTarget.innerText; // Use innerText to avoid HTML tags
+    setLiveEditedText(updatedHTML);
+  
+    const diffResult = generateDiff(initialOutputText, updatedHTML);
+    setDiffHtml(diffResult);
+    setIsSaveButtonEnabled(true);
+  };
+
+
+
+
   const handleResimplify = async () => {
     if (!inputText.trim()) return;
   
@@ -263,6 +287,12 @@ const Review = () => {
   };
 
   const saveFinalOutput = async () => {
+
+    const finalText = contentEditableRef.current?.innerText || "";
+    console.log("Final text to submit:", finalText);
+    setOutputText(finalText); // store plain text
+
+
     setIsLoading(true);
 
     try {
@@ -470,13 +500,6 @@ const Review = () => {
     setIsEditable(false);
   };
 
-    // Function to calculate and render diff
-  const generateDiff = (input, output) => {
-    const dmp = new DiffMatchPatch();
-    const diffs = dmp.diff_main(input, output);
-    dmp.diff_cleanupSemantic(diffs); // Optional cleanup for better readability
-    return dmp.diff_prettyHtml(diffs);
-  };
 
   return (
     <>
@@ -651,7 +674,7 @@ const Review = () => {
     {/* Word and Character Count */}
     <p className={styles.countText}>Words: {outputWordCount} | Characters: {outputCharCount}</p>
 
-  <textarea
+  {/* <textarea
     id="outputText"
     className={`${styles.output_box} ${styles.side_by_side}`}
     value={outputText}
@@ -659,23 +682,33 @@ const Review = () => {
     readOnly={isEditable}
     placeholder="Output"
 
-  ></textarea>
+  ></textarea> */}
+
+  <div
+    ref={contentEditableRef}
+    contentEditable={!isEditable}
+    className={`${styles.output_box} ${styles.side_by_side} ${styles.editableDiv}`}
+    onInput={(e) => handleLiveEdit(e)}
+    dangerouslySetInnerHTML={{ __html: diffHtml }}
+  ></div>
+
 </div>
 
             {/* Difference Text */}
 			{showDifference && (
 				<div className={styles.text_container}>
-           <div className={styles.labelWrapper}>
-				<label className={styles.label} htmlFor="outputText">
-					Difference from input text
-				</label>
-        </div>   
+          <div className={styles.labelWrapper}>
+            <label className={styles.label} htmlFor="outputText">
+              Difference from input text
+            </label>
+          </div>   
          
 					<div
-					id="diffText"
-					className={`${styles.output_box} ${styles.side_by_side}`}
-					dangerouslySetInnerHTML={{ __html: diffHtml }}
-					></div>
+            id="diffText"
+            className={`${styles.output_box} ${styles.side_by_side}`}
+            dangerouslySetInnerHTML={{ __html: diffHtml }}
+					>
+          </div>
 				 {/* )} */}
 				</div>
 			)}
