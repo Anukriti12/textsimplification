@@ -551,7 +551,8 @@ const Review = () => {
                       className={`${styles.docHeader} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
                     >
 
-                      <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}..., {new Date(doc.createdAt).toLocaleDateString()})
+                      {/* <strong>Document {index + 1}</strong>  */}
+                      <strong>Document {documents.length - index}</strong> ({doc.inputText.substring(0, 20)}..., {new Date(doc.createdAt).toLocaleDateString()})
                     </div>
 
                     {expandedDocs[doc._id] && (

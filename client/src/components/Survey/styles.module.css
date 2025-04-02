@@ -489,8 +489,10 @@ text-align: center;
 
 .mainContent {
   flex: 1;
-  padding: 20px;
-  transition: margin-left 0.3s ease;
+  /* padding: 20px;
+  transition: margin-left 0.3s ease; */
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .mainContent.withSidebar {
