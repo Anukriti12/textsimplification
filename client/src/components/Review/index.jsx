@@ -383,6 +383,10 @@ const Review = () => {
     //   ...prev,
     //   { timestamp, text: updatedText },
     // ]);
+    const initialAIOutput = localStorage.getItem("initialAIOutput") || initialOutputText;
+    const diffResult = generateDiff(initialAIOutput, updatedText);
+    setDiffHtml(diffResult);
+  
 
     // Save the change to edit history in MongoDB
     saveEditToHistory(updatedText);
@@ -566,20 +570,18 @@ const Review = () => {
               <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>✖</button>
               <ul className={styles.historyList}>
                 {documents.map((doc, index) => (
-                  <li key={doc._id} className={styles.historyItem}>
+                  <li 
+                  key={doc._id}
+                  onClick={() => {toggleExpandDoc(doc._id); handleDocumentClick(doc); }}
+                  className={`${styles.historyItem} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
+                  >
+                  {/* className={styles.historyItem}> */}
                     {/* <div onClick={() => toggleExpandDoc(doc._id)} className={styles.docHeader}> */}
-                    <div
-                      // onClick={() => toggleExpandDoc(doc._id)}
-                      onClick={() => {
-                        toggleExpandDoc(doc._id);
-                        handleDocumentClick(doc);
-                      }}
-                      className={`${styles.docHeader} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
-                    >
+                  
 
                       {/* <strong>Document {index + 1}</strong>  */}
                       <strong>Document {documents.length - index}</strong> ({doc.inputText.substring(0, 20)}..., {new Date(doc.createdAt).toLocaleDateString()})
-                    </div>
+                  
 
                     {expandedDocs[doc._id] && (
                       <ul className={styles.versionList}>
@@ -713,7 +715,11 @@ const Review = () => {
 
   <textarea
     id="outputText"
-    className={`${styles.output_box} ${styles.side_by_side}`}
+    ref={contentEditableRef}
+    contentEditable={true}
+    className={`${styles.output_box} ${styles.side_by_side} ${styles.editableDiv}`}
+    dangerouslySetInnerHTML={{ __html: diffHtml }}
+    onInput={(e) => handleEditChange({ target: { value: e.currentTarget.innerText } })}
     value={outputText}
     onChange={handleEditChange}
     readOnly={isEditable}

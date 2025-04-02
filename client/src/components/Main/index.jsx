@@ -288,14 +288,6 @@ const generatePrompt = (inputText) => {
 				🕒   <p style={{ fontSize: "15px" }}> History </p> 
 			</button>
 
-        {/* Sidebar */}
-        {/* <div className={`${styles.sidebar} ${isSidebarVisible ? styles.expanded : ""}`}>
-          <button
-            className={styles.historyIcon}
-            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-          >
-            🕒 <p style={{ fontSize: "15px" }}> History </p>
-          </button> */}
 
           {isSidebarVisible && (
             <div className={styles.historyContent}>
@@ -304,20 +296,14 @@ const generatePrompt = (inputText) => {
               </button>
               <ul className={styles.historyList}>
                 {documents.map((doc, index) => (
-                //   <li
-                //     key={doc._id}
-                //     onClick={() => handleDocumentClick(doc)}
-                //     className={selectedDocument?._id === doc._id ? styles.activeDoc : ""}
-                //   >
-                //     <strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}...)
-                //   </li>
-
+    
 				<li
 				key={doc._id}
 				onClick={() => handleDocumentClick(doc)}
 				className={`${styles.historyItem} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
 				>
-				<strong>Document {index + 1}</strong> ({doc.inputText.substring(0, 20)}...)
+				{/* <strong>Document {index + 1}</strong>  */}
+				<strong>Document {documents.length - index}</strong>({doc.inputText.substring(0, 20)}...)
 				</li>
                 ))}
               </ul>
