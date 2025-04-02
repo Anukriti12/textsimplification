@@ -82,13 +82,33 @@ const Review = () => {
   };
   
       // Function to calculate and render diff
-  const generateDiff = (input, output) => {
+  // const generateDiff = (input, output) => {
+  //       const dmp = new DiffMatchPatch();
+  //       const diffs = dmp.diff_main(input, output);
+  //       dmp.diff_cleanupSemantic(diffs); // Optional cleanup for better readability
+  //       return dmp.diff_prettyHtml(diffs);
+  //     };
+
+      const generateDiff = (input, output) => {
         const dmp = new DiffMatchPatch();
         const diffs = dmp.diff_main(input, output);
-        dmp.diff_cleanupSemantic(diffs); // Optional cleanup for better readability
-        return dmp.diff_prettyHtml(diffs);
+        dmp.diff_cleanupSemantic(diffs);
+      
+        const html = diffs
+          .map(([op, text]) => {
+            if (op === DiffMatchPatch.DIFF_INSERT) {
+              return `<span style="background-color: #d4fcdc; color: green;">${text}</span>`;
+            } else if (op === DiffMatchPatch.DIFF_DELETE) {
+              return `<span style="background-color: #ffecec; color: red; text-decoration: line-through;">${text}</span>`;
+            } else {
+              return `<span>${text}</span>`;
+            }
+          })
+          .join("");
+      
+        return html;
       };
-
+      
     
 	// Function to format the prompt with user input
   const generatePrompt = (inputText) => {
@@ -462,10 +482,16 @@ const Review = () => {
       setEditHistory(restoredEditHistory || []);
     }
   
+    if (!localStorage.getItem("initialAIOutput")) {
+      localStorage.setItem("initialAIOutput", initialOutputText);
+    }
+
    saveSimplification(); // Save the initial inputText and outputText
     setIsSaveButtonEnabled(true);
   }, [initialOutputText, restoredEditHistory]);
   
+
+
   
   // useEffect(() => {
   //   // Save initial input and output text in MongoDB
@@ -761,13 +787,15 @@ const Review = () => {
           className={styles.survey_btn}
           onClick={() => {
             const currentOutput = document.getElementById("outputText")?.value;
+            const initialAIOutput = localStorage.getItem("initialAIOutput") || initialOutputText;
             const reviewPageState = { inputText, outputText: currentOutput, editHistory, saveHistory };
             localStorage.setItem("reviewPageState", JSON.stringify(reviewPageState));
+
             navigate("/survey", {
               state: {
                 email: JSON.parse(localStorage.getItem("user")).email,
                 inputText,
-                outputText: currentOutput,
+                outputText: initialAIOutput,
                 editHistory,
                 saveHistory: [...saveHistory, { timestamp: new Date().toISOString(), finalText: currentOutput }],
               },
