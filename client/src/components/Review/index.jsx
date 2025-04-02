@@ -41,6 +41,8 @@ const Review = () => {
 
 
   const [isHistoryVisible, setIsHistoryVisible] = useState(false); // Show/Hide history sidebar
+  const contentEditableRef = useRef(null); // Reference to the contentEditable div
+
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -55,10 +57,11 @@ const Review = () => {
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(null);
+  const [selectedVersionIndex, setSelectedVersionIndex] = useState(0); 
   const [expandedDocs, setExpandedDocs] = useState({});
 
   const [liveEditedText, setLiveEditedText] = useState(initialOutputText);
-  const contentEditableRef = useRef(null);
+  // const contentEditableRef = useRef(null);
 
   // const [outputText, setOutputText] = useState("");
 
@@ -198,14 +201,14 @@ const Review = () => {
     }
   };
 
-  const handleLiveEdit = (e) => {
-    const updatedHTML = e.currentTarget.innerText; // Use innerText to avoid HTML tags
-    setLiveEditedText(updatedHTML);
+  // const handleLiveEdit = (e) => {
+  //   const updatedHTML = e.currentTarget.innerText; // Use innerText to avoid HTML tags
+  //   setLiveEditedText(updatedHTML);
   
-    const diffResult = generateDiff(initialOutputText, updatedHTML);
-    setDiffHtml(diffResult);
-    setIsSaveButtonEnabled(true);
-  };
+  //   const diffResult = generateDiff(initialOutputText, updatedHTML);
+  //   setDiffHtml(diffResult);
+  //   setIsSaveButtonEnabled(true);
+  // };
 
 
 
@@ -288,9 +291,9 @@ const Review = () => {
 
   const saveFinalOutput = async () => {
 
-    const finalText = contentEditableRef.current?.innerText || "";
-    console.log("Final text to submit:", finalText);
-    setOutputText(finalText); // store plain text
+    // const finalText = contentEditableRef.current?.innerText || "";
+    // console.log("Final text to submit:", finalText);
+    // setOutputText(finalText);
 
 
     setIsLoading(true);
@@ -419,6 +422,7 @@ const Review = () => {
     setSelectedDocument(doc);
     setSelectedVersion(doc.outputText);
     setOutputText(doc.outputText);
+    setSelectedVersionIndex(0);
   };
 
 
@@ -434,6 +438,7 @@ const Review = () => {
     setSelectedVersion(selectedText);
     setOutputText(selectedText);
     setSelectedDocument(doc);
+    setSelectedVersionIndex(versionIndex);
   };
 
     
@@ -537,7 +542,11 @@ const Review = () => {
                   <li key={doc._id} className={styles.historyItem}>
                     {/* <div onClick={() => toggleExpandDoc(doc._id)} className={styles.docHeader}> */}
                     <div
-                      onClick={() => toggleExpandDoc(doc._id)}
+                      // onClick={() => toggleExpandDoc(doc._id)}
+                      onClick={() => {
+                        toggleExpandDoc(doc._id);
+                        handleDocumentClick(doc);
+                      }}
                       className={`${styles.docHeader} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
                     >
 
@@ -546,14 +555,14 @@ const Review = () => {
 
                     {expandedDocs[doc._id] && (
                       <ul className={styles.versionList}>
-                        <li key="0" onClick={() => handleVersionChange(doc._id, "0")} className={selectedVersion === doc.outputText ? styles.activeVersion : ""}>
+                        <li key="0" onClick={() => handleVersionChange(doc._id, 0)} className={selectedVersionIndex === 0 && selectedDocument?._id === doc._id ? styles.activeVersion : ""}>
                           Version 1 (Generated Text)
                         </li>
                         {doc.saveHistory.map((version, vIndex) => (
                           <li
                             key={vIndex + 1}
                             onClick={() => handleVersionChange(doc._id, vIndex + 1)}
-                            className={selectedVersion === version.finalText ? styles.activeVersion : ""}
+                            className={selectedVersionIndex === vIndex + 1 && selectedDocument?._id === doc._id ? styles.activeVersion : ""}
                           >
                             Version {vIndex + 2} (Saved on {new Date(version.timestamp).toLocaleDateString()})
                           </li>
@@ -674,7 +683,7 @@ const Review = () => {
     {/* Word and Character Count */}
     <p className={styles.countText}>Words: {outputWordCount} | Characters: {outputCharCount}</p>
 
-  {/* <textarea
+  <textarea
     id="outputText"
     className={`${styles.output_box} ${styles.side_by_side}`}
     value={outputText}
@@ -682,15 +691,15 @@ const Review = () => {
     readOnly={isEditable}
     placeholder="Output"
 
-  ></textarea> */}
+  ></textarea>
 
-  <div
+  {/* <div
     ref={contentEditableRef}
     contentEditable={!isEditable}
     className={`${styles.output_box} ${styles.side_by_side} ${styles.editableDiv}`}
     onInput={(e) => handleLiveEdit(e)}
     dangerouslySetInnerHTML={{ __html: diffHtml }}
-  ></div>
+  ></div> */}
 
 </div>
 

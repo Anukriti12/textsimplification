@@ -207,13 +207,15 @@ const generatePrompt = (inputText) => {
 
 
   const handleSubmit = async () => {
-	if (!inputText.trim()) return;
 
-	inputTextSnapshot.current = inputText; 
+	const trimmedInput = inputText.trim();
+	if (!trimmedInput) return;
+
+	// inputTextSnapshot.current = inputText; 
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(inputTextSnapshot.current, 10000);
+	  const chunks = splitTextIntoChunks(trimmedInput, 10000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {
@@ -239,10 +241,11 @@ const generatePrompt = (inputText) => {
 	  console.log("Final Combined Output: ", combinedOutput);
 
 	console.log("Data: ", combinedOutput);
+
 	const cleanedResponse = combinedOutput.trim();
 	setOutputText(cleanedResponse);
 	setIsSubmitted(true);
-	navigate("/review", { state: { inputText: inputTextSnapshot.current, outputText: cleanedResponse } });
+	navigate("/review", { state: { inputText: trimmedInput, outputText: cleanedResponse } });
 	
 	} catch (error) {
 	  console.error("Error fetching GPT-4o response:", error);

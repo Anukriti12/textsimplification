@@ -16,7 +16,7 @@ const SurveyPage = () => {
 
 
   const [data, setData] = useState(null);
-
+       
   const [showDifference1, setShowDifference1] = useState(false); // For Input Text vs System-generated Text
   const [showDifference2, setShowDifference2] = useState(false); // For System-generated Text vs Submitted Text
   const [diffHtml1, setDiffHtml1] = useState("");
@@ -104,7 +104,7 @@ const SurveyPage = () => {
     relevancy: ""
   });
 
-  // Handle input changes
+  // Handle input changes     
   // const handleOptionChange = (event) => {
   //   setResponses({ ...responses, [event.target.name]: event.target.value });
   // };
@@ -146,10 +146,10 @@ const handleOptionChange = (event) => {
   const handleFormSubmit = (event) => {
     event.preventDefault();
 
-    if (!isFormComplete) {
-      alert("Please answer all required questions before submitting.");
-      return;
-    }
+    // if (!isFormComplete) {
+    //   alert("Please answer all required questions before submitting.");
+    //   return;
+    // }
 
     // Simulate saving responses (replace with API call if needed)
     console.log("Survey Responses:", responses);
@@ -410,7 +410,10 @@ readOnly placeholder="Initial Generated Text"
 
 
   <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text meet your needs? <span style={{ color: "red" }}>*</span> </label>
+    <label>Does the AI-generated text meet your needs? 
+      {/* <span style={{ color: "red" }}>*</span> 
+     */}
+    </label>
     <div className={styles.surveyOptions}>
     <label><input type="radio" name="needs" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
       <label><input type="radio" name="needs" value="somewhat-meets" onChange={handleOptionChange}  />  Somewhat meets</label>
@@ -421,7 +424,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
 <div className={styles.surveyQuestion}>
-    <label>Is the AI-generated text easy to understand? <span style={{ color: "red" }}>*</span> </label>
+    <label>Is the AI-generated text easy to understand?  </label>
     <div className={styles.surveyOptions}>
       <label>
         <input type="radio" name="easy" value="not-clear" onChange={handleOptionChange}  />  Not easy at all
@@ -442,7 +445,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text preserve the original meaning? <span style={{ color: "red" }}>*</span> </label>
+    <label>Does the AI-generated text preserve the original meaning? </label>
     <div className={styles.surveyOptions}>
       <label>
         <input type="radio" name="meaning" value="not-at-all" onChange={handleOptionChange}  />  Not at all
@@ -463,7 +466,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text contain false or irrelevant information? <span style={{ color: "red" }}>*</span> </label>
+    <label>Does the AI-generated text contain false or irrelevant information?  </label>
     <div className={styles.surveyOptions}>
       <label>
         <input type="radio" name="relevancy" value="not-at-all" onChange={handleOptionChange}  />  A lot of inaccuracies
@@ -484,7 +487,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>Are there spelling or grammar mistakes in the AI-generated text? <span style={{ color: "red" }}>*</span> </label>
+    <label>Are there spelling or grammar mistakes in the AI-generated text? </label>
     <div className={styles.surveyOptions}>
       <label>
         <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange}  />  Many mistakes
@@ -507,7 +510,7 @@ readOnly placeholder="Initial Generated Text"
 
 
   <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text avoid difficult words?    <span style={{ color: "red" }}>*</span> </label>
+    <label>Does the AI-generated text avoid difficult words?     </label>
     <div className={styles.surveyOptions}>
     <label><input type="radio" name="guidelines" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
       <label><input type="radio" name="guidelines" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat</label>
@@ -518,7 +521,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text use short sentences and clear headings?    <span style={{ color: "red" }}>*</span> </label>
+    <label>Does the AI-generated text use short sentences and clear headings?    </label>
     <div className={styles.surveyOptions}>
     <label><input type="radio" name="clarity" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
       <label><input type="radio" name="clarity" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
@@ -529,7 +532,7 @@ readOnly placeholder="Initial Generated Text"
   </div>
 
   <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text flow logically from start to finish?    <span style={{ color: "red" }}>*</span> </label>
+    <label>Does the AI-generated text flow logically from start to finish? </label>
     <div className={styles.surveyOptions}>
     <label><input type="radio" name="coherent" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
       <label><input type="radio" name="coherent" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
