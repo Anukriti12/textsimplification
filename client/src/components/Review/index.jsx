@@ -304,6 +304,7 @@ const Review = () => {
 
       const numWords = outputText.trim().split(/\s+/).filter(Boolean).length;
       const numChars = outputText.length;
+      const finalText = document.getElementById("outputText")?.value || outputText;
 
       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/save", {
         method: "PUT",
@@ -323,7 +324,7 @@ const Review = () => {
     const timestamp = new Date().toISOString();
     setEditHistory((prev) => [
       ...prev,
-      { timestamp, text: outputText },
+      { timestamp, text: finalText},
     ]);
 
       if (response.ok) {
@@ -339,7 +340,7 @@ const Review = () => {
         }, 300);
 
         const timestamp = new Date().toISOString();
-        setSaveHistory((prev) => [...prev, { timestamp, finalText: outputText }]); // 🔹 Save to history
+        setSaveHistory((prev) => [...prev, { timestamp, finalText: finalText}]); // 🔹 Save to history
   
       } else {
         const error = await response.json();
@@ -758,15 +759,16 @@ const Review = () => {
         <button
           className={styles.survey_btn}
           onClick={() => {
-            const reviewPageState = { inputText, outputText, editHistory, saveHistory };
+            const currentOutput = document.getElementById("outputText")?.value;
+            const reviewPageState = { inputText, outputText: currentOutput, editHistory, saveHistory };
             localStorage.setItem("reviewPageState", JSON.stringify(reviewPageState));
             navigate("/survey", {
               state: {
                 email: JSON.parse(localStorage.getItem("user")).email,
                 inputText,
-                outputText,
+                outputText: currentOutput,
                 editHistory,
-                saveHistory,
+                saveHistory: [...saveHistory, { timestamp: new Date().toISOString(), finalText: currentOutput }],
               },
             });
           }}

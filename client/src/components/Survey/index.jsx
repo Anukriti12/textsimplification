@@ -24,7 +24,7 @@ const SurveyPage = () => {
 
 
     // Store latest submitted text from history selection
-    const [latestFinalText, setLatestFinalText] = useState(""); 
+    const [latestFinalText, setLatestFinalText] = useState("");
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
     const [selectedVersion, setSelectedVersion] = useState(null);
     
@@ -288,302 +288,305 @@ const handleOptionChange = (event) => {
     </div>
 
 			{/* system generated text Box */}
-<div className={styles.text_container}>
-  <div className={styles.labelWrapper}>
-    <label className={styles.label} htmlFor="outputText">
-      AI-generated Text
-    </label>
+    <div className={styles.text_container}>
+      <div className={styles.labelWrapper}>
+        <label className={styles.label} htmlFor="outputText">
+          AI-generated Text
+        </label>
 
 
-    <div className={styles.actions}>
-      <div
-        className={styles.copyIcon}
-        onClick={() => handleCopy(outputText)}
-        title="Copy to Clipboard"
-      >
-        📋 {/* Clipboard Emoji */}
+        <div className={styles.actions}>
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleCopy(outputText)}
+            title="Copy to Clipboard"
+          >
+            📋 {/* Clipboard Emoji */}
+          </div>
+
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleDownload(outputText, "GeneratedText", "txt")}
+            title="Download as .txt file"
+          >
+            📥 {/* Download Icon */}
+          </div>
+          <button
+            className={styles.toggleDiffBtn}
+            onClick={() => setShowDifference1(!showDifference1)}
+          >
+            {showDifference1 ? "Hide the comparison" : "Compare with input text"}
+          </button>
+
+        </div>
       </div>
+      <p className={styles.wordCount}>Words: {outputWordCount}</p>
 
-      <div
-        className={styles.copyIcon}
-        onClick={() => handleDownload(outputText, "GeneratedText", "txt")}
-        title="Download as .txt file"
-      >
-        📥 {/* Download Icon */}
+      <textarea
+        id="outputText"
+        className={`${styles.output_box} ${styles.side_by_side}`}
+        value={initialOutputText}
+    readOnly placeholder="Initial Generated Text"
+
+      ></textarea>
+        {/* Difference Box appears right below System-generated Text */}
+        {showDifference1 && (
+        <div className={styles.diff_box}>
+          <label className={styles.label}>Input vs AI-generated Text</label>
+          <div className={`${styles.diff_output}`} dangerouslySetInnerHTML={{ __html: diffHtml1 }}></div>
+        </div>
+      )}
+    </div>
+
+    <div className={styles.text_container}>
+      <div className={styles.labelWrapper}>
+      <label className={styles.label} htmlFor="submittedText">Final Revised Text</label>
+      {/* <textarea className={styles.textarea} value={latestText} readOnly></textarea> */}
+
+            {/* <textarea value={latestFinalText} readOnly /> */}
+
+
+        <div className={styles.actions}>
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleCopy(latestFinalText)}
+            title="Copy to Clipboard"
+          >
+            📋 {/* Clipboard Emoji */}
+          </div>
+
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleDownload(latestFinalText, "SubmittedText", "txt")}
+            title="Download as .txt file"
+          >
+            📥 {/* Download Icon */}
+          </div>
+
+          <button
+            className={styles.toggleDiffBtn}
+            onClick={() => setShowDifference2(!showDifference2)}
+          >
+            {showDifference2 ? "Hide the comparison" : "Compare with AI-generated text"}
+          </button>
+
+        </div>
       </div>
-      <button
-        className={styles.toggleDiffBtn}
-        onClick={() => setShowDifference1(!showDifference1)}
-      >
-        {showDifference1 ? "Hide the comparison" : "Compare with input text"}
-      </button>
+      {/* <textarea id="EditedText" className={`${styles.output_box} ${styles.side_by_side}`} value={latestFinalText} readOnly/>
+      */}
+                  
+                    <p className={styles.wordCount}>Words: {submittedWordCount}</p>
 
+      <textarea
+                  id="submittedText"
+                  className={`${styles.output_box} ${styles.side_by_side}`}
+                  value={latestFinalText}
+                  readOnly
+                  placeholder="Final Revised Text"
+                ></textarea>
+
+                  {/* Difference Box appears right below Submitted Text */}
+      {showDifference2 && (
+        <div className={styles.diff_box}>
+          <label className={styles.label}>AI-generated vs Final revised Text</label>
+          <div className={`${styles.diff_output}`} dangerouslySetInnerHTML={{ __html: diffHtml2 }}></div>
+        </div>
+      )}
     </div>
-  </div>
-  <p className={styles.wordCount}>Words: {outputWordCount}</p>
-
-  <textarea
-    id="outputText"
-    className={`${styles.output_box} ${styles.side_by_side}`}
-    value={initialOutputText}
-readOnly placeholder="Initial Generated Text"
-
-  ></textarea>
-    {/* Difference Box appears right below System-generated Text */}
-    {showDifference1 && (
-    <div className={styles.diff_box}>
-      <label className={styles.label}>Input vs AI-generated Text</label>
-      <div className={`${styles.diff_output}`} dangerouslySetInnerHTML={{ __html: diffHtml1 }}></div>
-    </div>
-  )}
-</div>
-
-<div className={styles.text_container}>
-  <div className={styles.labelWrapper}>
-  <label className={styles.label} htmlFor="outputText">Final Revised Text</label>
-  {/* <textarea className={styles.textarea} value={latestText} readOnly></textarea> */}
-
-        {/* <textarea value={latestFinalText} readOnly /> */}
-
-
-    <div className={styles.actions}>
-      <div
-        className={styles.copyIcon}
-        onClick={() => handleCopy(outputText)}
-        title="Copy to Clipboard"
-      >
-        📋 {/* Clipboard Emoji */}
-      </div>
-
-      <div
-        className={styles.copyIcon}
-        onClick={() => handleDownload(outputText, "SubmittedText", "txt")}
-        title="Download as .txt file"
-      >
-        📥 {/* Download Icon */}
-      </div>
-
-      <button
-        className={styles.toggleDiffBtn}
-        onClick={() => setShowDifference2(!showDifference2)}
-      >
-        {showDifference2 ? "Hide the comparison" : "Compare with AI-generated text"}
-      </button>
-
-    </div>
-  </div>
-  {/* <textarea id="EditedText" className={`${styles.output_box} ${styles.side_by_side}`} value={latestFinalText} readOnly/>
-  */}
-               
-                <p className={styles.wordCount}>Words: {submittedWordCount}</p>
-
-  <textarea
-              id="submittedText"
-              className={`${styles.output_box} ${styles.side_by_side}`}
-              value={latestFinalText}
-              readOnly
-              placeholder="Final Revised Text"
-            ></textarea>
-
-              {/* Difference Box appears right below Submitted Text */}
-  {showDifference2 && (
-    <div className={styles.diff_box}>
-      <label className={styles.label}>AI-generated vs Final revised Text</label>
-      <div className={`${styles.diff_output}`} dangerouslySetInnerHTML={{ __html: diffHtml2 }}></div>
-    </div>
-  )}
-</div>
 			
-			</div>
+	
 
       <div className={styles.diff_container}>
 
-</div>
-
+      </div>
+  
+  </div>
 
       {/* <div> */}
   <div className={styles.surveyContainer}>
 
     <form className={styles.surveyForm} onSubmit={handleFormSubmit}>
-      <h2>Survey</h2>
-      <h3>Your feedback is valuable. Please try to answer all the questions.</h3>
+          <h2>Survey</h2>
+          <h3>Your feedback is valuable. Please try to answer all the questions.</h3>
 
 
-  <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text meet your needs? 
-      {/* <span style={{ color: "red" }}>*</span> 
-     */}
-    </label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="needs" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
-      <label><input type="radio" name="needs" value="somewhat-meets" onChange={handleOptionChange}  />  Somewhat meets</label>
-      <label><input type="radio" name="needs" value="moderately-meets" onChange={handleOptionChange}  />  Moderately meets</label>
-      <label><input type="radio" name="needs" value="mostly-meets" onChange={handleOptionChange}  />  Mostly meets</label>
-      <label><input type="radio" name="needs" value="completely-meets" onChange={handleOptionChange}  />  Completely meets</label>
-    </div>
+      <div className={styles.surveyQuestion}>
+        <label>Does the AI-generated text meet your needs? 
+          {/* <span style={{ color: "red" }}>*</span> 
+        */}
+        </label>
+        <div className={styles.surveyOptions}>
+        <label><input type="radio" name="needs" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+          <label><input type="radio" name="needs" value="somewhat-meets" onChange={handleOptionChange}  />  Somewhat meets</label>
+          <label><input type="radio" name="needs" value="moderately-meets" onChange={handleOptionChange}  />  Moderately meets</label>
+          <label><input type="radio" name="needs" value="mostly-meets" onChange={handleOptionChange}  />  Mostly meets</label>
+          <label><input type="radio" name="needs" value="completely-meets" onChange={handleOptionChange}  />  Completely meets</label>
+        </div>
+      </div>
+
+    <div className={styles.surveyQuestion}>
+        <label>Is the AI-generated text easy to understand?  </label>
+        <div className={styles.surveyOptions}>
+          <label>
+            <input type="radio" name="easy" value="not-clear" onChange={handleOptionChange}  />  Not easy at all
+          </label>
+          <label>
+            <input type="radio" name="easy" value="somewhat-clear" onChange={handleOptionChange}  />  Somewhat easy
+          </label>
+          <label>
+            <input type="radio" name="easy" value="moderately-clear" onChange={handleOptionChange}  />  Moderately easy
+          </label>
+          <label>
+            <input type="radio" name="easy" value="mostly-clear" onChange={handleOptionChange}  />  Mostly easy
+          </label>
+          <label>
+            <input type="radio" name="easy" value="very-clear" onChange={handleOptionChange}  />  Completely easy
+          </label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label>Does the AI-generated text preserve the original meaning? </label>
+        <div className={styles.surveyOptions}>
+          <label>
+            <input type="radio" name="meaning" value="not-at-all" onChange={handleOptionChange}  />  Not at all
+          </label>
+          <label>
+            <input type="radio" name="meaning" value="somewhat-preserves" onChange={handleOptionChange}  />  Somewhat preserves
+          </label>
+          <label>
+            <input type="radio" name="meaning" value="moderately-preserves" onChange={handleOptionChange}  />  Moderately preserves
+          </label>
+          <label>
+            <input type="radio" name="meaning" value="mostly-preserves" onChange={handleOptionChange}  />  Mostly preserves
+          </label>
+          <label>
+            <input type="radio" name="meaning" value="completely-preserves" onChange={handleOptionChange}  />  Completely preserves
+          </label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label>Does the AI-generated text contain false or irrelevant information?  </label>
+        <div className={styles.surveyOptions}>
+          <label>
+            <input type="radio" name="relevancy" value="not-at-all" onChange={handleOptionChange}  />  A lot of inaccuracies
+          </label>
+          <label>
+            <input type="radio" name="relevancy" value="somewhat" onChange={handleOptionChange}  />  Several inaccuracies
+          </label>
+          <label>
+            <input type="radio" name="relevancy" value="moderately" onChange={handleOptionChange}  />  Some minor inaccuracies
+          </label>
+          <label>
+            <input type="radio" name="relevancy" value="mostly" onChange={handleOptionChange}  />  Mostly accurate
+          </label>
+          <label>
+            <input type="radio" name="relevancy" value="completely" onChange={handleOptionChange}  />  Completely accurate
+          </label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label>Are there spelling or grammar mistakes in the AI-generated text? </label>
+        <div className={styles.surveyOptions}>
+          <label>
+            <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange}  />  Many mistakes
+          </label>
+          <label>
+            <input type="radio" name="grammar" value="several-errors" onChange={handleOptionChange}  />  Several mistakes
+          </label>
+          <label>
+            <input type="radio" name="grammar" value="some-errors" onChange={handleOptionChange}  />  Some mistakes
+          </label>
+          <label>
+            <input type="radio" name="grammar" value="few-errors" onChange={handleOptionChange}  />  Few mistakes
+          </label>
+          <label>
+            <input type="radio" name="grammar" value="no-errors" onChange={handleOptionChange}  />  No mistakes
+          </label>
+        </div>
+      </div>
+
+
+
+      <div className={styles.surveyQuestion}>
+        <label>Does the AI-generated text avoid difficult words?     </label>
+        <div className={styles.surveyOptions}>
+        <label><input type="radio" name="guidelines" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+          <label><input type="radio" name="guidelines" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat</label>
+          <label><input type="radio" name="guidelines" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
+          <label><input type="radio" name="guidelines" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
+          <label><input type="radio" name="guidelines" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label>Does the AI-generated text use short sentences and clear headings?    </label>
+        <div className={styles.surveyOptions}>
+        <label><input type="radio" name="clarity" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+          <label><input type="radio" name="clarity" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
+          <label><input type="radio" name="clarity" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
+          <label><input type="radio" name="clarity" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
+          <label><input type="radio" name="clarity" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label>Does the AI-generated text flow logically from start to finish? </label>
+        <div className={styles.surveyOptions}>
+        <label><input type="radio" name="coherent" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
+          <label><input type="radio" name="coherent" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
+          <label><input type="radio" name="coherent" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
+          <label><input type="radio" name="coherent" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
+          <label><input type="radio" name="coherent" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label><strong>[OPTIONAL]</strong> How much effort did you need to edit the AI-generated text? </label>
+        <div className={styles.surveyOptions}>
+        <label><input type="radio" name="editing_effort" value="many-errors" checked={responses.editing_effort === "many-errors"} onChange={handleOptionChange}/>  A lot of effort</label>
+          <label><input type="radio" name="editing_effort" value="several-errors" checked={responses.editing_effort === "several-errors"} onChange={handleOptionChange}/>  Significant effort</label>
+          <label><input type="radio" name="editing_effort" value="some-errors" checked={responses.editing_effort === "some-errors"} onChange={handleOptionChange}/>  Moderate effort</label>
+          <label><input type="radio" name="editing_effort" value="few-errors" checked={responses.editing_effort === "few-errors"} onChange={handleOptionChange}/>  Minimal effort</label>
+          <label><input type="radio" name="editing_effort" value="no-errors" checked={responses.editing_effort === "no-errors"} onChange={handleOptionChange}/>  No effort at all</label>
+        </div>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label><strong>[OPTIONAL]</strong>  If you edited the AI-generated text, what were your main reasons for it?</label>
+        <textarea
+          // className={styles.textarea}
+          name="edits"
+          rows="3"
+          cols="70"
+          placeholder=""
+        ></textarea>
+      </div>
+
+      <div className={styles.surveyQuestion}>
+        <label><strong>[OPTIONAL]</strong> Do you have any additional comments about the AI-generated text? </label>
+        <textarea
+          // className={styles.textarea}
+          name="comments"
+          rows="4"
+          cols="70"
+          placeholder=""
+        ></textarea>
+      </div>
+
+      <div>
+        <button className={styles.submitButton} type="submit" >Submit</button>
+      </div>
+
+    </form>
+
   </div>
-
-<div className={styles.surveyQuestion}>
-    <label>Is the AI-generated text easy to understand?  </label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="easy" value="not-clear" onChange={handleOptionChange}  />  Not easy at all
-      </label>
-      <label>
-        <input type="radio" name="easy" value="somewhat-clear" onChange={handleOptionChange}  />  Somewhat easy
-      </label>
-      <label>
-        <input type="radio" name="easy" value="moderately-clear" onChange={handleOptionChange}  />  Moderately easy
-      </label>
-      <label>
-        <input type="radio" name="easy" value="mostly-clear" onChange={handleOptionChange}  />  Mostly easy
-      </label>
-      <label>
-        <input type="radio" name="easy" value="very-clear" onChange={handleOptionChange}  />  Completely easy
-      </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text preserve the original meaning? </label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="meaning" value="not-at-all" onChange={handleOptionChange}  />  Not at all
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="somewhat-preserves" onChange={handleOptionChange}  />  Somewhat preserves
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="moderately-preserves" onChange={handleOptionChange}  />  Moderately preserves
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="mostly-preserves" onChange={handleOptionChange}  />  Mostly preserves
-      </label>
-      <label>
-        <input type="radio" name="meaning" value="completely-preserves" onChange={handleOptionChange}  />  Completely preserves
-      </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text contain false or irrelevant information?  </label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="relevancy" value="not-at-all" onChange={handleOptionChange}  />  A lot of inaccuracies
-      </label>
-      <label>
-        <input type="radio" name="relevancy" value="somewhat" onChange={handleOptionChange}  />  Several inaccuracies
-      </label>
-      <label>
-        <input type="radio" name="relevancy" value="moderately" onChange={handleOptionChange}  />  Some minor inaccuracies
-      </label>
-      <label>
-        <input type="radio" name="relevancy" value="mostly" onChange={handleOptionChange}  />  Mostly accurate
-      </label>
-      <label>
-        <input type="radio" name="relevancy" value="completely" onChange={handleOptionChange}  />  Completely accurate
-      </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Are there spelling or grammar mistakes in the AI-generated text? </label>
-    <div className={styles.surveyOptions}>
-      <label>
-        <input type="radio" name="grammar" value="many-errors" onChange={handleOptionChange}  />  Many mistakes
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="several-errors" onChange={handleOptionChange}  />  Several mistakes
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="some-errors" onChange={handleOptionChange}  />  Some mistakes
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="few-errors" onChange={handleOptionChange}  />  Few mistakes
-      </label>
-      <label>
-        <input type="radio" name="grammar" value="no-errors" onChange={handleOptionChange}  />  No mistakes
-      </label>
-    </div>
-  </div>
-
-
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text avoid difficult words?     </label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="guidelines" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
-      <label><input type="radio" name="guidelines" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat</label>
-      <label><input type="radio" name="guidelines" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
-      <label><input type="radio" name="guidelines" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
-      <label><input type="radio" name="guidelines" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text use short sentences and clear headings?    </label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="clarity" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
-      <label><input type="radio" name="clarity" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
-      <label><input type="radio" name="clarity" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
-      <label><input type="radio" name="clarity" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
-      <label><input type="radio" name="clarity" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label>Does the AI-generated text flow logically from start to finish? </label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="coherent" value="not-at-all" onChange={handleOptionChange}  />  Not at all</label>
-      <label><input type="radio" name="coherent" value="somewhat-follows" onChange={handleOptionChange}  />  Somewhat </label>
-      <label><input type="radio" name="coherent" value="moderately-follows" onChange={handleOptionChange}  />  Moderately</label>
-      <label><input type="radio" name="coherent" value="mostly-follows" onChange={handleOptionChange}  />  Mostly</label>
-      <label><input type="radio" name="coherent" value="completely-follows" onChange={handleOptionChange}  />  Completely </label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label><strong>[OPTIONAL]</strong> How much effort did you need to edit the AI-generated text? </label>
-    <div className={styles.surveyOptions}>
-    <label><input type="radio" name="editing_effort" value="many-errors" checked={responses.editing_effort === "many-errors"} onChange={handleOptionChange}/>  A lot of effort</label>
-      <label><input type="radio" name="editing_effort" value="several-errors" checked={responses.editing_effort === "several-errors"} onChange={handleOptionChange}/>  Significant effort</label>
-      <label><input type="radio" name="editing_effort" value="some-errors" checked={responses.editing_effort === "some-errors"} onChange={handleOptionChange}/>  Moderate effort</label>
-      <label><input type="radio" name="editing_effort" value="few-errors" checked={responses.editing_effort === "few-errors"} onChange={handleOptionChange}/>  Minimal effort</label>
-      <label><input type="radio" name="editing_effort" value="no-errors" checked={responses.editing_effort === "no-errors"} onChange={handleOptionChange}/>  No effort at all</label>
-    </div>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label><strong>[OPTIONAL]</strong>  If you edited the AI-generated text, what were your main reasons for it?</label>
-    <textarea
-      // className={styles.textarea}
-      name="edits"
-      rows="3"
-      cols="70"
-      placeholder=""
-    ></textarea>
-  </div>
-
-  <div className={styles.surveyQuestion}>
-    <label><strong>[OPTIONAL]</strong> Do you have any additional comments about the AI-generated text? </label>
-    <textarea
-      // className={styles.textarea}
-      name="comments"
-      rows="4"
-      cols="70"
-      placeholder=""
-    ></textarea>
-  </div>
-
-  <div>
-    <button className={styles.submitButton} type="submit" disabled={!isFormComplete}>Submit</button>
-  </div>
-
-</form>
-</div>
+  {/* disabled={!isFormComplete} */}
 
 {/* </div> */}
-</div>
+  </div>
 ) : (
   // Thank You Message & Redirect
   <div className={styles.thankYouContainer}>
