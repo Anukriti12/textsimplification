@@ -38,12 +38,6 @@ const simplificationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Create a compound index to prevent duplicate inputText for the same user
-simplificationSchema.index({ userId: 1, inputText: 1 }, { unique: true });
-
-// Create a text index for better searching
-simplificationSchema.index({ inputText: 'text', outputText: 'text' });
-
 const Simplification = mongoose.model("Simplification", simplificationSchema);
 
 module.exports = Simplification;

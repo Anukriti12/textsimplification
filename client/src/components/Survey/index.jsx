@@ -22,7 +22,6 @@ const SurveyPage = () => {
   const [diffHtml1, setDiffHtml1] = useState("");
   const [diffHtml2, setDiffHtml2] = useState("");
 
-  const [showStats, setShowStats] = useState(false);
 
     // Store latest submitted text from history selection
     const [latestFinalText, setLatestFinalText] = useState("");
@@ -117,47 +116,6 @@ const SurveyPage = () => {
     relevancy: ""
   });
 
-  const computeTextStats = (text) => {
-    const words = text.trim().split(/\s+/).filter(Boolean);
-    const wordCount = words.length;
-    const uniqueWords = new Set(words).size;
-    const sentenceCount = (text.match(/[.!?]/g) || []).length;
-    const avgSentenceLength = sentenceCount ? (wordCount / sentenceCount).toFixed(2) : wordCount;
-    const charWithSpaces = text.length;
-    const charWithoutSpaces = text.replace(/\s/g, "").length;
-    const avgCharsPerWord = wordCount ? (charWithoutSpaces / wordCount).toFixed(2) : 0;
-  
-    // Approximate syllables: count number of vowel groups
-    const syllableCount = text
-      .toLowerCase()
-      .split(/\s+/)
-      .map(word => (word.match(/[aeiouy]+/g) || []).length)
-      .reduce((a, b) => a + b, 0);
-    const avgSyllablesPerWord = wordCount ? (syllableCount / wordCount).toFixed(2) : 0;
-  
-    // Word length frequency
-    const wordLengths = {};
-    words.forEach((w) => {
-      const len = w.length;
-      wordLengths[len] = (wordLengths[len] || 0) + 1;
-    });
-  
-    return {
-      wordCount,
-      uniqueWords,
-      sentenceCount,
-      avgSentenceLength,
-      charWithSpaces,
-      charWithoutSpaces,
-      avgCharsPerWord,
-      syllableCount,
-      avgSyllablesPerWord,
-      lexicalDensity: (uniqueWords / wordCount).toFixed(2),
-      wordLengths: wordLengths,
-    };
-  };
-
-  
   // Handle input changes     
   // const handleOptionChange = (event) => {
   //   setResponses({ ...responses, [event.target.name]: event.target.value });
@@ -370,14 +328,6 @@ const handleOptionChange = (event) => {
                 >
                   {showDifference1 ? "Hide the comparison" : "Compare with input text"}
                 </button>
-
-                <button
-                  className={styles.toggleDiffBtn}
-                  onClick={() => setShowStats(!showStats)}
-                >
-                  {showStats ? "Hide Stats" : "Show Stats"}
-                </button>
-
 
               </div>
             </div>
