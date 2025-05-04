@@ -413,10 +413,10 @@ const Review = () => {
         const result = await response.json();
 
         if (response.ok) {
-          
+
           const sortedDocs = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           setDocuments(sortedDocs);
-          if (sortedDocs.length > 0) {
+          if (!state && sortedDocs.length > 0) {
             setSelectedDocument(sortedDocs[0]);
             setSelectedVersion(sortedDocs[0].outputText);
             setOutputText(sortedDocs[0].outputText);

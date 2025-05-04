@@ -1,42 +1,94 @@
 const mongoose = require("mongoose");
 
-const simplificationSchema = new mongoose.Schema(
-  {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    email: { type: String, required: true },
-    inputText: { type: String, required: true },
-    outputText: { type: String, required: true },
-    editHistory: [
-      {
-        text: { type: String }, // Text from each edit
-        timestamp: { type: Date, default: Date.now }, // Fix typo (tsype → type)
-        numWords: { type: Number }, // Store word count for edits
-        numChars: { type: Number }, // Store character count for edits
-      },
-    ],
-    saveHistory: [
-      {
-        finalText: { type: String }, // Final text after saving
-        timestamp: { type: Date, default: Date.now }, // Timestamp of save
-        numWords: { type: Number }, // Word count for saved version
-        numChars: { type: Number }, // Character count for saved version
-        surveyAnswers: {  // Store survey per final submission
-          readability: { type: Number, default: null },
-          accuracy: { type: Number, default: null },
-          comments: { type: String, default: null },
-        },
-      },
-    ],
+
+const simplificationSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+  email: { type: String, required: true },
+  inputText: { type: String, required: true },
+  outputHistory: [{
+    text: String,
+    timestamp: { type: Date, default: Date.now },
     metrics: {
-      processingTimeMs: { type: Number, default: null },
-      numWordsInput: { type: Number }, // Required to track input stats
-      numCharsInput: { type: Number },
-      numWordsOutput: { type: Number },
-      numCharsOutput: { type: Number },
+      fleschReadingEase: Number,
+      fleschKincaidGrade: Number,
+      lexicalDensity: Number,
+      wordCount: Number,
+      uniqueWords: Number,
+      sentenceCount: Number,
+      avgSentenceLength: Number,
+      charsWithSpaces: Number,
+      charsWithoutSpaces: Number,
+      avgCharsPerWord: Number,
+      syllableCount: Number,
+      avgSyllablesPerWord: Number
+    }
+  }],
+  editHistory: [{
+    text: String,
+    timestamp: { type: Date, default: Date.now }
+  }],
+  finalOutput: {
+    text: String,
+    timestamp: Date,
+    surveyMetrics: {
+      readability: String,
+      easy: String,
+      clarity: String,
+      meaning: String,
+      grammar: String,
+      needs: String,
+      guidelines: String,
+      coherent: String,
+      relevancy: String,
+      editing_effort: String,
+      edit_reasons: String,
+      additional_comments: String
     },
+    textMetrics: {
+      // Same structure as outputHistory.metrics
+    }
   },
-  { timestamps: true }
-);
+  createdAt: { type: Date, default: Date.now }
+});
+
+
+// const simplificationSchema = new mongoose.Schema(
+//   {
+//     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+//     email: { type: String, required: true },
+//     inputText: { type: String, required: true },
+//     outputText: { type: String, required: true },
+//     editHistory: [
+//       {
+//         text: { type: String }, // Text from each edit
+//         timestamp: { type: Date, default: Date.now }, // Fix typo (tsype → type)
+//         numWords: { type: Number }, // Store word count for edits
+//         numChars: { type: Number }, // Store character count for edits
+//       },
+//     ],
+//     saveHistory: [
+//       {
+//         finalText: { type: String }, // Final text after saving
+//         timestamp: { type: Date, default: Date.now }, // Timestamp of save
+//         numWords: { type: Number }, // Word count for saved version
+//         numChars: { type: Number }, // Character count for saved version
+//         surveyAnswers: {  // Store survey per final submission
+//           readability: { type: Number, default: null },
+//           accuracy: { type: Number, default: null },
+//           comments: { type: String, default: null },
+//         },
+//       },
+//     ],
+//     metrics: {
+//       processingTimeMs: { type: Number, default: null },
+//       numWordsInput: { type: Number }, // Required to track input stats
+//       numCharsInput: { type: Number },
+//       numWordsOutput: { type: Number },
+//       numCharsOutput: { type: Number },
+//     },
+//   },
+//   { timestamps: true }
+// );
 
 const Simplification = mongoose.model("Simplification", simplificationSchema);
 

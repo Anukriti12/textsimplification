@@ -208,6 +208,7 @@ const generatePrompt = (inputText) => {
 
   const handleSubmit = async () => {
 
+	// const inputText = document.getElementById('inputText').value;
 	const trimmedInput = inputText.trim();
 	if (!trimmedInput) return;
 
@@ -389,6 +390,7 @@ const generatePrompt = (inputText) => {
 				className={styles.submit_btn}
 				onClick={handleSubmit}
 				disabled={!inputText.trim() || isLoading || isUploading}
+				id="simplifyBtn"
 				//title={!inputText.trim() ? "Enter text or upload a file to enable simplification." : ""}
 			  >
 				{isLoading ? "Processing..." : "Simplify Text"}
