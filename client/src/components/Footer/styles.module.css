@@ -18,7 +18,7 @@
   }
   
   .text {
-    max-width: 780px;   /* prevents ultra‑wide lines */
+    max-width: 980px;   /* prevents ultra‑wide lines */
     text-align: center;
   }
   

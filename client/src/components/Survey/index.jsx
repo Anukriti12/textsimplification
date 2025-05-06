@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 import { saveAs } from "file-saver";
 import DiffMatchPatch from "diff-match-patch";
+import Footer from "../Footer";
+import StatsButton from "../StatsButton";
 
 // const handleFormSubmit = (e) => {
 //   e.preventDefault();
@@ -170,7 +172,7 @@ const handleFormSubmit = async (e) => {
   e.preventDefault();
   // if (!isFormComplete) return alert("Please answer every question.");
 
-  await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/survey", {
+  await fetch("http://localhost:5001/api/simplifications/survey", {
     method : "PUT",
     headers: { "Content-Type": "application/json" },
     body   : JSON.stringify({ email, inputText, responses }),
@@ -206,7 +208,7 @@ const handleFormSubmit = async (e) => {
 		<nav className={styles.navbar}>
 		  {/* <h1>Text Simplification Tool</h1> */}
       <h1 
-    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+    onClick={() => window.location.href = "http://localhost:5001/"}
     style={{ cursor: "pointer" }} // Makes it look clickable
  		>
 		Text Simplification Tool</h1>
@@ -276,6 +278,8 @@ const handleFormSubmit = async (e) => {
                 >
                   📥 {/* Download Icon */}
                 </div>
+            <StatsButton text={inputText} />
+                
               </div>
             </div>
 
@@ -312,6 +316,8 @@ const handleFormSubmit = async (e) => {
                 >
                   📥 {/* Download Icon */}
                 </div>
+                                  <StatsButton text={inputText} />
+                
                 <button
                   className={styles.toggleDiffBtn}
                   onClick={() => setShowDifference1(!showDifference1)}
@@ -365,6 +371,7 @@ const handleFormSubmit = async (e) => {
                 >
                   📥 {/* Download Icon */}
                 </div>
+                  <StatsButton text={inputText} />
 
                 <button
                   className={styles.toggleDiffBtn}
@@ -604,11 +611,12 @@ const handleFormSubmit = async (e) => {
     >
       Start Another Simplification
     </button>
+    <Footer />  
   </div>
 )}
 </div>
 
-
+<Footer />  
 </>
   );
 };

@@ -40,8 +40,10 @@ function App() {
 
 		{/* Default fallback */}
 		<Route path="*" element={<Navigate replace to={user ? "/simplify" : "/login"} />} />
-		{/* <Footer />     */}
+		
 	  </Routes>
+	 
+  
 	);
 }
 

@@ -1,0 +1,43 @@
+.wrapper { position: relative; display: inline-block; }
+
+.icon {
+  cursor: pointer;
+  margin-left: .4rem;
+  font-size: 1.1rem;
+}
+
+.panel {
+  position: absolute;
+  top: 1.8rem;        /* below the icons row */
+  right: 0;
+  z-index: 999;
+  width: 18rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: .5rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  font-size: .85rem;
+}
+
+.close {
+  position: absolute;
+  top: .25rem;
+  right: .35rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .9rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: .2rem 0;
+}
+
+h4 {
+  margin: .6rem 0 .3rem;
+  font-size: .9rem;
+  border-bottom: 1px solid #ddd;
+}
