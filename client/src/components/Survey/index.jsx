@@ -12,10 +12,18 @@ import DiffMatchPatch from "diff-match-patch";
 const SurveyPage = () => {
   const { state } = useLocation();
   //const { email, inputText } = state || {};
-  const { email, inputText, outputText: initialOutputText, editHistory, saveHistory } = state || {};
+  // const { email, inputText, generatedText: initialgeneratedText, editHistory, saveHistory } = state || {};
 
+  const {
+      email,
+      inputText,
+      generatedText,        // new prop from Review
+      finalText,            // new prop from Review
+      editHistory,
+      saveHistory = [],
+    } = state || {};
 
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
        
   const [showDifference1, setShowDifference1] = useState(false); // For Input Text vs System-generated Text
   const [showDifference2, setShowDifference2] = useState(false); // For System-generated Text vs Submitted Text
@@ -41,13 +49,13 @@ const SurveyPage = () => {
     return text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
   };
 
-  // Update word counts when data changes
-  useEffect(() => {
-    setInputWordCount(countWords(inputText));
-    setOutputWordCount(countWords(initialOutputText));
-    setSubmittedWordCount(countWords(latestFinalText));
-  }, [inputText, initialOutputText, latestFinalText]);
 
+
+    useEffect(() => {
+        setInputWordCount   (countWords(inputText));
+        setOutputWordCount  (countWords(generatedText));
+        setSubmittedWordCount(countWords(latestFinalText));
+     }, [inputText, generatedText, latestFinalText]);
 
   useEffect(() => {
     if (saveHistory.length > 0) {
@@ -58,15 +66,20 @@ const SurveyPage = () => {
   }, [saveHistory]);
 
   useEffect(() => {
-    if (saveHistory.length > 0) {
-      setLatestFinalText(saveHistory[saveHistory.length - 1]?.finalText || "");
-      setSelectedVersion(saveHistory.length);
-      setSubmittedWordCount(countWords(saveHistory[saveHistory.length - 1]?.finalText || ""));
-    } else {
-      // Fallback in case no edit is saved
-      setLatestFinalText(initialOutputText); // fallback if user didn’t save edits
-    }
-  }, [saveHistory, initialOutputText]);
+    setDiffHtml1(generateDiff(inputText, generatedText));
+    setDiffHtml2(generateDiff(generatedText, latestFinalText || finalText));
+  }, [inputText, generatedText, latestFinalText, finalText]);
+  
+
+    useEffect(() => {
+        if (saveHistory.length) {
+          const last = saveHistory[saveHistory.length - 1]?.finalText || "";
+          setLatestFinalText(last);
+          setSelectedVersion(saveHistory.length);
+        } else {
+          setLatestFinalText(finalText);          // from Review
+        }
+      }, [saveHistory, finalText]);
 
   
   const handleHistoryClick = (index) => {
@@ -96,30 +109,28 @@ const SurveyPage = () => {
       window.removeEventListener("popstate", handleBackButton);
     };
   }, [navigate]);
-
-  // useEffect(() => {
-  //   if (saveHistory.length > 0) {
-  //     setLatestFinalText(saveHistory[saveHistory.length - 1]?.finalText || "");
-  //   }
-  // }, [saveHistory]);
   
   const [submitted, setSubmitted] = useState(false);
 
+
   const [responses, setResponses] = useState({
-    easy: "",
-    clarity: "",
-    meaning: "",
-    grammar: "",
-    needs: "",
-    guidelines: "",
-    coherent: "",
-    relevancy: ""
+    /* Likert-scale questions (radio buttons) */
+    needs: null,
+    easy: null,
+    meaning: null,
+    relevancy: null,
+    grammar: null,
+    guidelines: null,
+    clarity: null,
+    coherent: null,
+    editing_effort: null,
+  
+    /* Free‑text questions (text‑areas)        */
+    main_reasons: "",
+    additional_comments: "",
   });
 
   // Handle input changes     
-  // const handleOptionChange = (event) => {
-  //   setResponses({ ...responses, [event.target.name]: event.target.value });
-  // };
 
   // Handle input changes, allowing deselection
 const handleOptionChange = (event) => {
@@ -130,7 +141,7 @@ const handleOptionChange = (event) => {
   }));
 };
   // Check if all required fields are filled
-  const isFormComplete = Object.values(responses).every((value) => value !== "" && value !== null);
+  // const isFormComplete = Object.values(responses).every((value) => value !== "" && value !== null);
 
 
   const handleLogout = () => {
@@ -154,21 +165,25 @@ const handleOptionChange = (event) => {
     saveAs(blob, `${filename}.${format}`);
   };
 
-  // Handle form submission
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
+  // survey/index.jsx
+const handleFormSubmit = async (e) => {
+  e.preventDefault();
+  // if (!isFormComplete) return alert("Please answer every question.");
 
-    // if (!isFormComplete) {
-    //   alert("Please answer all required questions before submitting.");
-    //   return;
-    // }
+  await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/survey", {
+    method : "PUT",
+    headers: { "Content-Type": "application/json" },
+    body   : JSON.stringify({ email, inputText, responses }),
+  });
 
-    // Simulate saving responses (replace with API call if needed)
-    console.log("Survey Responses:", responses);
+  setSubmitted(true);
+};
 
-    // Show the thank-you message
-    setSubmitted(true);
-  };
+
+  const handleTextChange = e => {
+      const { name, value } = e.target;
+      setResponses(prev => ({ ...prev, [name]: value }));
+    };
 
   const generateDiff = (input, output) => {
     const dmp = new DiffMatchPatch();
@@ -177,38 +192,13 @@ const handleOptionChange = (event) => {
     return dmp.diff_prettyHtml(diffs);
   };
 
-  useEffect(() => {
-    const fetchSimplification = async () => {
-      try {
-        const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/fetch", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, inputText }),
-        });
-  
-        const result = await response.json();
-  
-        if (response.ok) {
-          setData(result.data);
-          setDiffHtml1(generateDiff(result.data.inputText, result.data.outputText)); // Input vs System-generated
-          setDiffHtml2(generateDiff(result.data.outputText, result.data.latestFinalText)); // System-generated vs Submitted
-        }
-      } catch (error) {
-        console.error("Error fetching simplification data:", error);
-      }
-    };
-  
-    if (email && inputText) {
-      fetchSimplification();
-    }
-  }, [email, inputText, initialOutputText]);
 
 
-  if (!data)
-    {return <p>Loading...</p>;}
+  // if (!data)
+  //   {return <p>Loading...</p>;}
 
-  // const { inputText: input, outputText, editedText } = data;
-  const { inputText: input, outputText, latestText } = data;
+  // const { inputText: input, generatedText, editedText } = data;
+  // const { inputText: input, generatedText, latestText } = data;
 
   return (
     <>
@@ -294,14 +284,14 @@ const handleOptionChange = (event) => {
             <textarea
               id="inputText"
               className={`${styles.textarea} ${styles.side_by_side}`}
-              value={input} readOnly placeholder="Input Text"
+              value={inputText} readOnly placeholder="Input Text"
             ></textarea>
           </div>
 
             {/* system generated text Box */}
           <div className={styles.text_container}>
             <div className={styles.labelWrapper}>
-              <label className={styles.label} htmlFor="outputText">
+              <label className={styles.label} htmlFor="generatedText">
                 AI-generated Text
               </label>
 
@@ -309,7 +299,7 @@ const handleOptionChange = (event) => {
               <div className={styles.actions}>
                 <div
                   className={styles.copyIcon}
-                  onClick={() => handleCopy(outputText)}
+                  onClick={() => handleCopy(generatedText)}
                   title="Copy to Clipboard"
                 >
                   📋 {/* Clipboard Emoji */}
@@ -317,7 +307,7 @@ const handleOptionChange = (event) => {
 
                 <div
                   className={styles.copyIcon}
-                  onClick={() => handleDownload(outputText, "GeneratedText", "txt")}
+                  onClick={() => handleDownload(generatedText, "GeneratedText", "txt")}
                   title="Download as .txt file"
                 >
                   📥 {/* Download Icon */}
@@ -334,9 +324,10 @@ const handleOptionChange = (event) => {
             <p className={styles.wordCount}>Words: {outputWordCount}</p>
 
             <textarea
-              id="outputText"
+              id="generatedText"
               className={`${styles.output_box} ${styles.side_by_side}`}
-              value={initialOutputText}
+              // value={initialgeneratedText}
+              value={generatedText}
           readOnly
           placeholder="Initial AI-Generated Text"
 
@@ -556,7 +547,7 @@ const handleOptionChange = (event) => {
             </div>
 
             <div className={styles.surveyQuestion}>
-              <label><strong>[OPTIONAL]</strong> How much effort did you need to edit the AI-generated text? </label>
+              <label>How much effort did you need to edit the AI-generated text? </label>
               <div className={styles.surveyOptions}>
               <label><input type="radio" name="editing_effort" value="many-errors" checked={responses.editing_effort === "many-errors"} onChange={handleOptionChange}/>  A lot of effort</label>
                 <label><input type="radio" name="editing_effort" value="several-errors" checked={responses.editing_effort === "several-errors"} onChange={handleOptionChange}/>  Significant effort</label>
@@ -567,24 +558,28 @@ const handleOptionChange = (event) => {
             </div>
 
             <div className={styles.surveyQuestion}>
-              <label><strong>[OPTIONAL]</strong>  If you edited the AI-generated text, what were your main reasons for it?</label>
+              <label>If you edited the AI-generated text, what were your main reasons for it?</label>
               <textarea
                 // className={styles.textarea}
-                name="edits"
+                name="main_reasons"
                 rows="3"
                 cols="70"
                 placeholder=""
+                value={responses.main_reasons}
+                onChange={handleTextChange}
               ></textarea>
             </div>
 
             <div className={styles.surveyQuestion}>
-              <label><strong>[OPTIONAL]</strong> Do you have any additional comments about the AI-generated text? </label>
+              <label>Do you have any additional comments about the AI-generated text? </label>
               <textarea
                 // className={styles.textarea}
-                name="comments"
+                name="additional_comments"
                 rows="4"
                 cols="70"
                 placeholder=""
+                value={responses.additional_comments}
+                onChange={handleTextChange}
               ></textarea>
             </div>
 

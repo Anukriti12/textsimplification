@@ -1,76 +1,209 @@
-const router = require("express").Router();
-const Simplification = require("../models/simplification");
+// const router = require("express").Router();
+// const Simplification = require("../models/simplification");
 const { User } = require("../models/user");
 
+const router = require("express").Router();
+const Simplification = require("../models/simplification");
+const { calcMetrics, diffStats } = require("../client/src/utils/textMetrics"); // §4
 
+/* ------------------------------------------------------------------ */
+/* 1.  CREATE or UPSERT when user clicks “Simplify”                   */
+/* ------------------------------------------------------------------ */
 router.post("/", async (req, res) => {
   try {
-    const { userId, inputText, outputText } = req.body;
-
+    const { userId, email, inputText, outputText, pdfName, pdfPath } = req.body;
     if (!userId || !inputText || !outputText) {
-      return res.status(400).send({ message: "Missing required fields" });
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
+    const filter = { userId, inputText };
+    const update = {
+      $setOnInsert: {
+        userId,
+        email,
+        inputText,
+        inputMetrics:  calcMetrics(inputText),
+        pdfName,
+        pdfPath,
+        "timestamps.submitted":  new Date(),
+      },
+      $set: {
+        outputText,
+        outputMetrics: calcMetrics(outputText),
+        "timestamps.aiGenerated": new Date(),
+      },
+    };
 
-    const simplification = new Simplification({
-      userId,
-      email: user.email,
-      inputText,
-      outputText,
-    });
-
-    await simplification.save();
-    res.status(201).send({
-      message: "Simplification saved successfully",
-      data: simplification,
-    });
-  } catch (error) {
-    console.error("Error saving simplification:", error);
-    res.status(500).send({ message: "Internal Server Error" });
+    const opts = { new: true, upsert: true };
+    const doc  = await Simplification.findOneAndUpdate(filter, update, opts);
+    return res.status(200).json({ data: doc });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: "Server error" });
   }
 });
 
+/* ------------------------------------------------------------------ */
+/* 2.  SAVE FINAL OUTPUT (user presses “Save”)                        */
+/* ------------------------------------------------------------------ */
 
+router.put("/final", async (req, res) => {
+  try {
+    const { email, inputText, finalText } = req.body;
+    if (!email || !inputText || finalText === undefined) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
+
+    const doc = await Simplification.findOne({ email, inputText });
+    if (!doc) return res.status(404).json({ message: "Entry not found" });
+
+    const { distance, insertions, deletions } = diffStats(doc.outputText, finalText);
+
+    doc.saveHistory.push(doc.finalOutput);
+    doc.finalOutput = {
+      text: finalText,
+      timestamp: new Date(),
+      metrics: calcMetrics(finalText),
+      editDistance: distance,
+      insertions,
+      deletions,
+    };
+    doc.timestamps.finalSaved = new Date();
+    await doc.save();
+    res.json({ message: "Final saved", data: doc });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/* 3.  PUSH manual edit into editHistory (called optionally)          */
+/* ------------------------------------------------------------------ */
 router.put("/edit", async (req, res) => {
   try {
     const { email, inputText, editedText } = req.body;
+    const doc = await Simplification.findOne({ email, inputText });
+    if (!doc) return res.status(404).json({ message: "Entry not found" });
 
-    if (!email || !inputText || !editedText) {
-      return res.status(400).send({ message: "Missing required fields" });
-    }
+    const base = doc.editHistory.length
+      ? doc.editHistory[doc.editHistory.length - 1].text
+      : doc.outputText;
 
-    const simplification = await Simplification.findOne({ email, inputText });
+    const { distance, insertions, deletions } = diffStats(base, editedText);
 
-    if (!simplification) {
-      return res.status(404).send({ message: "Simplification not found" });
-    }
-
-    // Count words and characters
-    const numWords = editedText.trim().split(/\s+/).filter(Boolean).length;
-    const numChars = editedText.length;
-
-    // Save edit to history
-    simplification.editHistory.push({
+    doc.editHistory.push({
       text: editedText,
       timestamp: new Date(),
-      numWords,
-      numChars
+      metrics: calcMetrics(editedText),
+      editDistance: distance,
+      insertions,
+      deletions,
     });
-
-    await simplification.save();
-    res.status(200).send({
-      message: "Edit saved successfully",
-      data: simplification,
-    });
-  } catch (error) {
-    console.error("Error saving edit:", error);
-    res.status(500).send({ message: "Internal Server Error" });
+    await doc.save();
+    res.json({ message: "Edit saved" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error" });
   }
 });
+
+/* ------------------------------------------------------------------ */
+/* 4.  SURVEY responses                                               */
+/* ------------------------------------------------------------------ */
+router.put("/survey", async (req, res) => {
+  try {
+    const { email, inputText, responses } = req.body;
+    const doc = await Simplification.findOne({ email, inputText });
+    if (!doc) return res.status(404).json({ message: "Entry not found" });
+
+    if (!doc.finalOutput || !doc.finalOutput.text) {
+      return res.status(400).json({ message: "No final text saved yet" });
+    }
+
+    doc.finalOutput.surveyResponses = responses;
+    await doc.save();
+    res.json({ message: "Survey saved" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/* read helpers remain unchanged ( /fetch , /user/:email … )          */
+/* ------------------------------------------------------------------ */
+
+
+
+// router.post("/", async (req, res) => {
+//   try {
+//     const { userId, inputText, outputText } = req.body;
+
+//     if (!userId || !inputText || !outputText) {
+//       return res.status(400).send({ message: "Missing required fields" });
+//     }
+
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).send({ message: "User not found" });
+//     }
+
+//     const simplification = new Simplification({
+//       userId,
+//       email: user.email,
+//       inputText,
+//       outputText,
+//     });
+
+//     await simplification.save();
+//     res.status(201).send({
+//       message: "Simplification saved successfully",
+//       data: simplification,
+//     });
+//   } catch (error) {
+//     console.error("Error saving simplification:", error);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
+
+
+// router.put("/edit", async (req, res) => {
+//   try {
+//     const { email, inputText, editedText } = req.body;
+
+//     if (!email || !inputText || !editedText) {
+//       return res.status(400).send({ message: "Missing required fields" });
+//     }
+
+//     const simplification = await Simplification.findOne({ email, inputText });
+
+//     if (!simplification) {
+//       return res.status(404).send({ message: "Simplification not found" });
+//     }
+
+//     // Count words and characters
+//     const numWords = editedText.trim().split(/\s+/).filter(Boolean).length;
+//     const numChars = editedText.length;
+
+//     // Save edit to history
+//     simplification.editHistory.push({
+//       text: editedText,
+//       timestamp: new Date(),
+//       numWords,
+//       numChars
+//     });
+
+//     await simplification.save();
+//     res.status(200).send({
+//       message: "Edit saved successfully",
+//       data: simplification,
+//     });
+//   } catch (error) {
+//     console.error("Error saving edit:", error);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
 
 router.put("/save", async (req, res) => {
   try {

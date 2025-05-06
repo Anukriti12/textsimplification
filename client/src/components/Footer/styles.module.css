@@ -1,0 +1,24 @@
+.footer {
+    margin-top: 3rem;
+    padding: 1.25rem 1rem;
+    border-top: 1px solid #d0d7de;
+    background: #f8f9fa;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #3a3a3a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 180px;       /* scales well on mobile */
+    height: auto;
+    margin-bottom: 0.75rem;
+  }
+  
+  .text {
+    max-width: 780px;   /* prevents ultra‑wide lines */
+    text-align: center;
+  }
+  

@@ -130,12 +130,6 @@ html, body {
   color: #3bb19b;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .container {
-      flex-direction: column;
-  }
-
 .activeDoc {
   /* background-color: #e6f7ff;
   font-weight: bold;
@@ -177,6 +171,13 @@ html, body {
   background-color: #f9f9f9;
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+      flex-direction: column;
+  }
+
+
 /* .docHeader {
   padding: 10px;
   cursor: pointer;
@@ -213,6 +214,7 @@ html, body {
     flex: 1;
     padding: 20px;
     transition: margin-left 0.3s ease;
+    padding-bottom: 6rem;
   }
   
   .mainContent.withSidebar {

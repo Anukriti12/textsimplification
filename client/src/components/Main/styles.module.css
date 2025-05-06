@@ -64,6 +64,7 @@ html, body {
     flex: 1;
     padding: 20px;
     transition: margin-left 0.3s ease;
+    padding-bottom: 6rem;
   }
   
   .mainContent.withSidebar {
@@ -462,6 +463,89 @@ text-align: center;
     line-height: 1.5;
   }
   
+
+  .customPanel {
+    /* margin: 1.5rem 0;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background: #fafafa; */
+
+    max-width: 900px;                 /* ↓ shrink overall width            */
+    margin: 1rem auto 2rem;           /* centre & give breathing room      */
+    padding: 1.25rem 1.75rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    background: #ffffff;
+  
+    /* ↓ everything stays INSIDE the rounded box */
+    overflow: hidden;
+  }
+  
+  .hiddenPanel {
+    display: none;
+  }
+
+  /* clickable row that opens / closes the panel */
+  .customToggle {
+    all: unset;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    padding: 0.75rem 0.2rem;
+    font-weight: 600;
+    background: #ececec;
+    /* border-bottom: 1px solid #ddd; */
+      /* border-bottom:1px solid #ccc;
+  border-top-left-radius:0.25rem;
+  border-top-right-radius:0.25rem;
+  margin:0.25rem;                 */
+  }
+  
+  .customToggle:hover {
+    background: #e0e0e0;
+  }
+
+  
+  .customBody {
+    padding: 1rem 1.25rem;
+    line-height: 1.45;
+  }
+  
+  /* headings inside the panel */
+  .customBody h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .flexRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .block {
+    display: block;
+    margin: 0.25rem 0;
+  }
+  
+  /* make checkboxes / radios a little bigger */
+  .customBody input[type="checkbox"],
+  .customBody input[type="radio"] {
+    transform: scale(1.1);
+    margin-right: 0.35rem;
+  }
+  
+  /* textarea in free‑text box */
+  .customBody textarea {
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 /* 
 .navbar {
     width: 100%;
