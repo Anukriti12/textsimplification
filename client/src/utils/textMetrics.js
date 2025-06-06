@@ -51,6 +51,8 @@
 
 /* utils/textMetrics.js
    ------------------------------------------------------------------------ */
+  //  const { fleschKincaid: fk } = require('flesch-kincaid');
+
    const raw = require("syllable");                 // whatever shape it is
    /* 🔹 one line that never fails */
    const syllable =
@@ -62,10 +64,16 @@
 
    const rawFk = require("flesch-kincaid");
 
-const fk =
-  typeof rawFk === "function"
-    ? rawFk
-    : rawFk.default || rawFk.fk || (() => 0);   // fallback dummy fn
+// const fk =
+//   typeof rawFk === "function"
+//     ? rawFk
+//     : rawFk.default || rawFk.fk || (() => 0);   
+
+  const fk =
+  (typeof rawFk === "function" && rawFk)      // (old CJS build)
+  || rawFk.fleschKincaid                      // ← correct property
+  || rawFk.default                            // (transpiled ESM)
+  || (() => 0);                               // last‑ditch fallback
 
    const uniq  = require("lodash/uniq");
    const DMP   = require("diff-match-patch");

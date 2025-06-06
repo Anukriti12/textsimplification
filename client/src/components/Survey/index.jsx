@@ -172,7 +172,7 @@ const handleFormSubmit = async (e) => {
   e.preventDefault();
   // if (!isFormComplete) return alert("Please answer every question.");
 
-  await fetch("http://localhost:5001/api/simplifications/survey", {
+  await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/survey", {
     method : "PUT",
     headers: { "Content-Type": "application/json" },
     body   : JSON.stringify({ email, inputText, responses }),
@@ -208,7 +208,7 @@ const handleFormSubmit = async (e) => {
 		<nav className={styles.navbar}>
 		  {/* <h1>Text Simplification Tool</h1> */}
       <h1 
-    onClick={() => window.location.href = "http://localhost:5001/"}
+    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
     style={{ cursor: "pointer" }} // Makes it look clickable
  		>
 		Text Simplification Tool</h1>
@@ -316,7 +316,7 @@ const handleFormSubmit = async (e) => {
                 >
                   📥 {/* Download Icon */}
                 </div>
-                                  <StatsButton text={inputText} />
+                                  <StatsButton text={generatedText} />
                 
                 <button
                   className={styles.toggleDiffBtn}
@@ -371,7 +371,7 @@ const handleFormSubmit = async (e) => {
                 >
                   📥 {/* Download Icon */}
                 </div>
-                  <StatsButton text={inputText} />
+                  <StatsButton text={latestFinalText} />
 
                 <button
                   className={styles.toggleDiffBtn}

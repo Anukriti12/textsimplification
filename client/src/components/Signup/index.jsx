@@ -23,7 +23,7 @@ const Signup = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:5001/api/users";
+			const url = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/users";
 			console.log(data);
 			const { data: res } = await axios.post(url, data);
 			navigate("/login");
@@ -45,7 +45,7 @@ const Signup = () => {
 			<nav className={styles.navbar}>
 				{/* <h1>Text Simplification Tool</h1> */}
 				<h1 
-    onClick={() => window.location.href = "http://localhost:5001/"}
+    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
     style={{ cursor: "pointer" }} // Makes it look clickable
  		>
 		Text Simplification Tool</h1>

@@ -112,7 +112,7 @@ const handleTogglePanel = () => setShowCustom((s) => !s);   // <─ NEW
 		const fetchDocuments = async () => {
 		  try {
 			const response = await fetch(
-			  `http://localhost:5001/api/simplifications/user/${email}`
+			  `https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/user/${email}`
 			);
 			const result = await response.json();
 	
@@ -195,7 +195,7 @@ const handleTogglePanel = () => setShowCustom((s) => !s);   // <─ NEW
 			const user = JSON.parse(localStorage.getItem("user"));
 			if (!user) return;
 
-			await fetch("http://localhost:5001/api/simplifications", {
+			await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
@@ -368,7 +368,7 @@ const handleTogglePanel = () => setShowCustom((s) => !s);   // <─ NEW
   
 	  for (let chunk of chunks) {
 		const prompt = generatePrompt(chunk);
-		const response = await fetch("http://localhost:5001/api/gpt4", {
+		const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
 		  body: JSON.stringify({ prompt }),
@@ -413,7 +413,7 @@ const handleTogglePanel = () => setShowCustom((s) => !s);   // <─ NEW
       <nav className={styles.navbar}>
         {/* <h1>Text Simplification Tool</h1> */}
 		<h1 
-    onClick={() => window.location.href = "http://localhost:5001/"}
+    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
     style={{ cursor: "pointer" }} // Makes it look clickable
  		>
 		Text Simplification Tool</h1>
