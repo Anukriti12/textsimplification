@@ -287,6 +287,8 @@ const countWordsAndChars = (text) => {
 		return `
 	### USER‑SPECIFIC CUSTOMISATIONS (please follow **strictly**)
 	${prefsText || "• No special preferences."}
+
+	
 	
 	You are an expert in accessible communication, tasked with transforming complex text into clear, accessible plain language for individuals with Intellectual and Developmental Disabilities (IDD) or those requiring simplified content. Retain all essential information and intent while prioritizing readability, comprehension, and inclusivity.
 
