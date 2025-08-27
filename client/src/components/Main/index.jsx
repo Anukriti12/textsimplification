@@ -452,7 +452,7 @@ const handleTogglePanel = () => setShowCustom((s) => !s);   // <─ NEW
                 </label>
                 <label className={styles.block}>
                   <input type="radio" name="lenPreset" value="500"    checked={outputLen === "500"}      /* ← NEW */
-    onChange={(e) => setOutputLen(e.target.value)} /> 5000 words
+    onChange={(e) => setOutputLen(e.target.value)} /> 500 words
                 </label>
 		
         
