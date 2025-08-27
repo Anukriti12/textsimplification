@@ -412,7 +412,7 @@ margin-top: 40px;
 
 /* "OR" Divider Styling */
 .or_divider {
-margin: 260px 0;
+margin: 20px 0;
 font-size: 20px;
 font-weight: bold;
 text-align: center;
@@ -599,3 +599,278 @@ text-align: center;
     width: 100%; 
 }
 */
+/* Add these new styles to your existing CSS file */
+
+/* Slider container and visual elements */
+.sliderContainer {
+  margin-bottom: 25px;
+}
+
+.sliderTrack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sliderMarkers {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.sliderMarkers::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #ddd;
+  z-index: 0;
+}
+
+.marker, .activeMarker {
+  font-size: 20px;
+  transition: color 0.3s ease;
+  z-index: 1;
+  background: white;
+  padding: 0 4px;
+}
+
+.marker {
+  color: #ccc;
+}
+
+.activeMarker {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Length options styling */
+.lengthOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.lengthOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.lengthOption:hover {
+  background-color: #f8f9fa;
+}
+
+/* Structure preferences styling */
+.structurePrefs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Section organization for preference groups */
+.prefSection {
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.prefSection h4 {
+  color: #495057;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #3bb19b; /* Using your brand color */
+  padding-bottom: 5px;
+}
+
+.structureOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 15px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.structureOption:hover {
+  background-color: #ffffff;
+}
+
+.structureOption:last-child {
+  margin-bottom: 0;
+}
+
+.structureOption input[type="checkbox"] {
+  margin-top: 2px;
+  min-width: 16px;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.optionText strong {
+  color: #212529;
+  margin-bottom: 2px;
+}
+
+.reference {
+  color: #6c757d;
+  font-size: 11px;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* Tone options styling */
+.toneOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.toneOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.toneOption:hover {
+  background-color: #f8f9fa;
+  border-color: #3bb19b; /* Using your brand color */
+}
+
+.toneOption input[type="radio"]:checked + span {
+  font-weight: 600;
+  color: #3bb19b; /* Using your brand color */
+}
+
+/* Update existing custom panel styles */
+.customPanel {
+  max-width: 900px;
+  margin: 1rem auto 2rem;
+  padding: 0; /* Remove padding since customBody has it */
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.customToggle {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  padding: 15px 20px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #3bb19b, #2a9d8f); /* Using your brand colors */
+  color: white;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.customToggle:hover {
+  background: linear-gradient(135deg, #2a9d8f, #21867a);
+}
+
+.customBody {
+  padding: 25px;
+  background-color: #ffffff;
+}
+
+.customBody h3 {
+  color: #212529;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  margin-top: 30px;
+  border-left: 4px solid #3bb19b; /* Using your brand color */
+  padding-left: 15px;
+}
+
+.customBody h3:first-child {
+  margin-top: 0;
+}
+
+.hiddenPanel .customBody {
+  display: none;
+}
+
+/* Word count display styling */
+.countText {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sliderMarkers, .sliderLabels {
+    width: 250px;
+  }
+  
+  .toneOptions {
+    grid-template-columns: 1fr;
+  }
+  
+  .lengthOption {
+    flex-wrap: wrap;
+  }
+  
+  .prefSection {
+    padding: 12px;
+  }
+  
+  .customBody {
+    padding: 15px;
+  }
+
+  .customPanel {
+    margin: 1rem 10px 2rem;
+  }
+}
+
+/* Fix for upload area positioning */
+.upload_area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  margin-top: 0; /* Remove the large top margin */
+}
+
+.upload_box {
+  margin-top: 0; /* Remove the large top margin */
+}
