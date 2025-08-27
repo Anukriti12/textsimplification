@@ -197,7 +197,7 @@
 //     const numWordsOutput = outputText.trim().split(/\s+/).filter(Boolean).length;
 //     const numCharsOutput = outputText.length;
 
-//       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications", {
+//       const response = await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -245,7 +245,7 @@
     
 //       for (let chunk of chunks) {
 //       const prompt = generatePrompt(chunk);
-//       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+//       const response = await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ prompt }),
@@ -286,7 +286,7 @@
 //       const numWords = editedText.trim().split(/\s+/).filter(Boolean).length;
 //       const numChars = editedText.length;
 
-//       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit", {
+//       const response = await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/edit", {
 //         method: "PUT",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -326,7 +326,7 @@
 //       const numChars = outputText.length;
 //       const finalText = document.getElementById("outputText")?.value || outputText;
 
-//       const response = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/save", {
+//       const response = await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/save", {
 //         method: "PUT",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -409,7 +409,7 @@
 
 //     const fetchDocuments = async () => {
 //       try {
-//         const response = await fetch(`https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/user/${email}`);
+//         const response = await fetch(`https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/user/${email}`);
 //         const result = await response.json();
 
 //         if (response.ok) {
@@ -538,7 +538,7 @@
 //       <nav className={styles.navbar}>
 //         {/* <h1>Text Simplification Tool</h1> */}
 //         <h1 
-//     onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+//     onClick={() => window.location.href = "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/"}
 //     style={{ cursor: "pointer" }} // Makes it look clickable
 //  		>
 // 		Text Simplification Tool</h1>
@@ -998,7 +998,7 @@ const generateDiff = (a = "", b = "") => {
     if (!user) return;
     const { words: wIn, chars: cIn } = countWordsAndChars(inputText);
     const { words: wOut, chars: cOut } = countWordsAndChars(outputText);
-    await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications", {
+    await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1014,7 +1014,7 @@ const generateDiff = (a = "", b = "") => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
     const { words, chars } = countWordsAndChars(txt);
-    await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/edit", {
+    await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/edit", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: user.email, inputText, editedText: txt, numWords: words, numChars: chars }),
@@ -1029,7 +1029,7 @@ const generateDiff = (a = "", b = "") => {
     if (!email) return;
     (async () => {
       try {
-        const res = await fetch(`https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/user/${email}`);
+        const res = await fetch(`https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/user/${email}`);
         const result = await res.json();
         if (res.ok) {
           const sorted = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -1118,7 +1118,7 @@ const generateDiff = (a = "", b = "") => {
       const chunks = splitTextIntoChunks(inputText, 10000);
       let combo = "";
       for (const ch of chunks) {
-        const res = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/gpt4", {
+        const res = await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt: generatePrompt(ch) }),
@@ -1140,7 +1140,7 @@ const generateDiff = (a = "", b = "") => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) return;
       const { words, chars } = countWordsAndChars(outputText);
-      const res = await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/final", {
+      const res = await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/final", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1200,7 +1200,7 @@ const generateDiff = (a = "", b = "") => {
   return (
     <>
       <nav className={styles.navbar}>
-        <h1 onClick={() => (window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/")} style={{ cursor: "pointer" }}>
+        <h1 onClick={() => (window.location.href = "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/")} style={{ cursor: "pointer" }}>
           Text Simplification Tool
         </h1>
         <button className={styles.white_btn} onClick={handleLogout}>

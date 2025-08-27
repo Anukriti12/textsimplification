@@ -172,7 +172,7 @@ const handleFormSubmit = async (e) => {
   e.preventDefault();
   // if (!isFormComplete) return alert("Please answer every question.");
 
-  await fetch("https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/simplifications/survey", {
+  await fetch("https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/simplifications/survey", {
     method : "PUT",
     headers: { "Content-Type": "application/json" },
     body   : JSON.stringify({ email, inputText, responses }),
@@ -208,7 +208,7 @@ const handleFormSubmit = async (e) => {
 		<nav className={styles.navbar}>
 		  {/* <h1>Text Simplification Tool</h1> */}
       <h1 
-    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+    onClick={() => window.location.href = "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/"}
     style={{ cursor: "pointer" }} // Makes it look clickable
  		>
 		Text Simplification Tool</h1>

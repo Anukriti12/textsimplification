@@ -17,7 +17,7 @@ const Login = () => {
 		e.preventDefault();
 		console.log("hahahaha");
 		try {
-			const url = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/api/auth";
+			const url = "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/auth";
 			const { data: res } = await axios.post(url, data);
 			console.log("Response from server:", res);
 			// localStorage.setItem("token", res.data);
@@ -58,7 +58,7 @@ const Login = () => {
 		<nav className={styles.navbar}>
 			{/* <h1>Text Simplification Tool</h1> */}
 			<h1 
-    onClick={() => window.location.href = "https://textsimplification-eecqhvdcduczf8cz.westus-01.azurewebsites.net/"}
+    onClick={() => window.location.href = "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/"}
     style={{ cursor: "pointer" }} // Makes it look clickable
  		>
 		Text Simplification Tool</h1>
