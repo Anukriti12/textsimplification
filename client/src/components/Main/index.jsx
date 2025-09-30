@@ -1713,6 +1713,7 @@ const Main = () => {
 	const [inputWordCount, setInputWordCount] = useState(0);
 	const [inputCharCount, setInputCharCount] = useState(0);
 	const [pdfPageCount, setPdfPageCount] = useState(0);
+	const [showCustom,  setShowCustom]  = useState(false);  
 
 	const inputTextSnapshot = useRef("");
 	const [pdfPath, setPdfPath] = useState(""); 
