@@ -874,3 +874,618 @@ text-align: center;
 .upload_box {
   margin-top: 0; /* Remove the large top margin */
 }
+
+/* Style for the range slider used for output length */
+
+.sliderInput {
+  width: 100%;
+  height: 8px;
+  /* -webkit-appearance: none; */
+  background: #ddd;
+  border-radius: 4px;
+  outline: none;
+  appearance: none;
+
+}
+
+.sliderInput::-webkit-slider-thumb {
+  /* -webkit-appearance: none; */
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3bb19b;
+  cursor: pointer;
+
+}
+
+.sliderInput::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3bb19b;
+  cursor: pointer;
+
+}
+
+/* html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.loadingText {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+}
+
+.help_text {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 14px;
+    color: #555;
+}
+
+.help_text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.help_text a:hover {
+    text-decoration: underline;
+}
+
+/* Full-width navbar */
+.navbar {
+    width: 100%;
+    height: 70px;
+    background-color: #3bb19b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Navbar title */
+.navbar h1 {
+    color: white;
+    font-size: 25px;
+    margin: 0;
+}
+
+/* Logout button */
+.white_btn {
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    background-color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    padding-bottom: 6rem;
+}
+
+.mainContent.withSidebar {
+    margin-left: 0px; /* Adjust when sidebar is visible */
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Main container for content */
+.main_container {
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+}
+
+/* Form container for single and dual layouts */
+.form_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.sidebar {
+  width: 100px;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  border-right: 1px solid #ddd;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar.expanded {
+  width: 250px;
+}
+
+.historyIcon {
+  margin-top: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.historyContent {
+  width: 100%;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.closeButton {
+  display: block;
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.historyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.historyItem {
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.historyItem:hover {
+  background-color: #f0f0f0;
+}
+
+.historyItem.activeTab {
+  background-color: #3bb19b;
+  color: white;
+  font-weight: bold;
+}
+
+.versionSelector {
+margin: 15px 0;
+padding: 5px;
+}
+
+.versionSelector label {
+font-weight: bold;
+display: block;
+margin-bottom: 5px;
+}
+
+.versionSelector select {
+width: 100%;
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+font-size: 14px;
+background-color: white;
+cursor: pointer;
+}
+
+.versionSelector select:focus {
+outline: none;
+border-color: #3bb19b;
+box-shadow: 0 0 4px rgba(59, 177, 155, 0.5);
+}
+
+/* Active version styling */
+.versionSelector option[selected] {
+font-weight: bold;
+color: #3bb19b;
+}
+
+.activeDoc {
+  background-color: #e0f7fa; /* Light blue background */
+  border-left: 5px solid #00796b; /* Darker blue left border */
+  padding: 10px;
+  font-weight: bold;
+  color: #00796b; /* Text color for active state */
+  transition: background-color 0.3s ease, border-left 0.3s ease;
+}
+
+/* Container for input and output (side-by-side) */
+.textareas_container {
+    display: flex;
+    gap: 20px; /* Space between input and output boxes */
+    width: 100%; /* Full width of the container */
+    align-items: stretch;
+}
+
+/* Submit and Save button styles */
+.submit_btn {
+    background-color: #333;
+    color: white;
+    width: 100%;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    align-self: center;
+}
+
+.submit_btn:hover {
+    background-color: #555;
+}
+
+/* Disable the submit button until input is provided */
+.submit_btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.2;
+}
+
+.upload_container {
+	margin-top: 10px;
+}
+
+.file_input {
+	display: block;
+	margin: 10px auto;
+	padding: 5px;
+}
+
+/* Container for the input area and drag-and-drop box */
+.input_area {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Drag-and-drop upload box */
+.upload_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 100px;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 0; /* reset margin for updated layout */
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover effect for upload box */
+.upload_box:hover {
+    background-color: #eaeaea;
+    border-color: #3bb19b;
+}
+
+/* Hidden file input */
+.hidden_input {
+    display: none;
+}
+
+/* Input box styling */
+.textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+}
+
+/* Equal width for both input and output boxes */
+.side_by_side {
+    flex: 1;
+}
+
+/* Output box styles */
+.output_box {
+    width: 100%;
+    min-height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    color: #333;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+}
+
+/* Container for Input and Output Boxes */
+.text_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* Label Styling */
+.label {
+font-size: 16px;
+font-weight: bold;
+margin-bottom: 8px;
+text-align: left;
+margin-top: 40px;
+}
+
+/* "OR" Divider Styling */
+.or_divider {
+margin: 260px 0;
+font-size: 20px;
+font-weight: bold;
+text-align: center;
+}
+
+/* Save/Edit Button Styling */
+.text_btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    width: fit-content;
+}
+
+/* Save Button Specific Styling */
+.save_btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    margin-right: 20px;
+}
+
+.save_btn:hover {
+    background-color: #45a049;
+}
+
+/* Edit Button Specific Styling */
+.edit_btn {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+}
+
+.edit_btn:hover {
+    background-color: #0b7dda;
+}
+
+/* App Description Styling */
+.description {
+    margin: 20px auto;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    max-width: 80%;
+    line-height: 1.5;
+}
+
+/* Customisation Panel */
+.customPanel {
+    max-width: 900px;
+    margin: 1rem auto 2rem;
+    padding: 0;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.hiddenPanel {
+    display: none;
+}
+
+/* clickable row that opens / closes the panel */
+.customToggle {
+    all: unset;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    padding: 0.75rem 0.2rem;
+    font-weight: 600;
+    background: #ececec;
+}
+
+.customToggle:hover {
+    background: #e0e0e0;
+}
+
+.customBody {
+    padding: 1rem 1.25rem;
+    line-height: 1.45;
+}
+
+/* headings inside the panel */
+.customBody h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.flexRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.block {
+    display: block;
+    margin: 0.25rem 0;
+}
+
+/* make checkboxes / radios a little bigger */
+.customBody input[type="checkbox"],
+.customBody input[type="radio"] {
+    transform: scale(1.1);
+    margin-right: 0.35rem;
+}
+
+/* textarea in free‑text box */
+.customBody textarea {
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Structure preferences styling */
+.structureOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 15px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.structureOption:hover {
+  background-color: #ffffff;
+}
+
+.structureOption:last-child {
+  margin-bottom: 0;
+}
+
+.structureOption input[type="checkbox"] {
+  margin-top: 2px;
+  min-width: 16px;
+}
+
+/* Tone options styling */
+.toneOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.toneOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.toneOption:hover {
+  background-color: #f8f9fa;
+  border-color: #3bb19b;
+}
+
+.toneOption input[type="radio"]:checked + span {
+  font-weight: 600;
+  color: #3bb19b;
+}
+
+/* Word count display styling */
+.countText {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .toneOptions {
+    grid-template-columns: 1fr;
+  }
+  .customBody {
+    padding: 15px;
+  }
+  .customPanel {
+    margin: 1rem 10px 2rem;
+  }
+}
+
+/* Fix for upload area positioning */
+.upload_area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  margin-top: 0;
+}
+
+.upload_box {
+  margin-top: 0;
+}
+
+/* Style for the range slider used for output length */
+.sliderInput {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  background: #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3bb19b;
+  cursor: pointer;
+}
+.sliderInput::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3bb19b;
+  cursor: pointer;
+} */
