@@ -637,3 +637,24 @@ text-align: center;
     max-width: 80%;
     line-height: 1.5;
   }
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.actionButton:hover {
+  color: #3bb19b;
+}
+
+.iconLabel {
+  font-size: 14px;
+}

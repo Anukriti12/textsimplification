@@ -1607,7 +1607,6 @@ const prefsToPlain = (
 
   // Calculate target word count based on slider selection
   const lengthRatios = {
-    very_simple: 0.4,
     much_shorter: 0.5,
     shorter: 0.75,
     same: 1.0,
@@ -1615,7 +1614,7 @@ const prefsToPlain = (
   const ratio = lengthRatios[outputLength] ?? 1.0;
   const target = Math.round(inputWordCount * ratio);
   if (outputLength !== "same") {
-    sections.push(`• Limit output to about **${target} words**.`);
+    sections.push(`• Limit output to about **${target} words**. Do not reduce the length of input text.`);
   }
 
   // Structure and formatting
@@ -1713,14 +1712,14 @@ const Main = () => {
 	const [inputWordCount, setInputWordCount] = useState(0);
 	const [inputCharCount, setInputCharCount] = useState(0);
 	const [pdfPageCount, setPdfPageCount] = useState(0);
-	const [showCustom,  setShowCustom]  = useState(false);  
+	const [showCustom,  setShowCustom]  = useState(false);  // accordion open/close
 
 	const inputTextSnapshot = useRef("");
 	const [pdfPath, setPdfPath] = useState(""); 
 
 	 // Output length
 
-  const lengthOptions = ["same", "shorter", "much_shorter", "very_simple"];
+  const lengthOptions = ["same", "shorter", "much_shorter"];
 
   const [outputLength, setOutputLength] = useState("same");
 
@@ -1881,10 +1880,75 @@ const Main = () => {
 		tonePreference,
 		additionalInstructions,
 	  );
-	  return `You are an expert in accessible communication.\n\n### USER‑SPECIFIC CUSTOMISATIONS\n${prefsText}\n\n Transform the input into clear, accessible language without losing information. Keep the length similar to the original and avoid hallucinations.\n\n"${chunk}"`;
+	  return `You are an expert in accessible communication.\n\n### USER‑SPECIFIC CUSTOMISATIONS\n${prefsText}\n\n Transform the input into clear, accessible language without losing information. Keep the length similar to the original and avoid hallucinations. Do not reduce the length or summarize. \n\n"${chunk}"`;
 	},
 	[inputWordCount, outputLength, prefs, tonePreference, additionalInstructions],
   );
+
+		// const generatePrompt = useCallback((inputText) => {
+		// 	const prefsText = prefsToPlain(inputWordCount, outputLength, customWordCount, structurePrefs, tonePreference);
+	
+		// 	return `
+		// ### USER‑SPECIFIC CUSTOMISATIONS (please follow **strictly**)
+		// ${prefsText || "• No special preferences."}
+		
+		// You are an expert in accessible communication, tasked with transforming complex text into clear, accessible plain language for individuals with Intellectual and Developmental Disabilities (IDD) or those requiring simplified content. Retain all essential information and intent while prioritizing readability, comprehension, and inclusivity.
+
+		// Text simplification refers to rewriting or adapting text to make it easier to read and understand while keeping the same level of detail and precision. Make sure you focus on simplification and not summarization. The length of generated output text must be similar to that of input text.
+
+		// Stick to the provided input text and only simplify the language. Don't provide the answer or hallucinate or provide any irrelevant information, not mentioned in the input text. 
+
+		// Guidelines for Simplification:
+		// Vocabulary and Terminology:
+		// Replace uncommon, technical, or abstract words with simple, everyday language.
+		// Define unavoidable complex terms in plain language within parentheses upon first use (example: "cardiologist (heart doctor)").
+		// Avoid idioms, metaphors, sarcasm, or culturally specific references.
+
+		// Sentence Structure:
+		// Use short sentences (10--15 words max). Break long sentences into 1–2 ideas each.
+		// Prefer active voice (example: "The doctor examined the patient" vs. "The patient was examined by the doctor").
+		// Avoid nested clauses, passive voice, and ambiguous pronouns (example: "they," "it").
+
+		// Clarity and Flow:
+		// Organize content logically, using headings/subheadings to group related ideas.
+		// Use bullet points or numbered lists for steps, options, or key points.
+		// Ensure each paragraph focuses on one main idea.
+
+		// Tone and Engagement:
+		// Write in a neutral, conversational tone (avoid formal or academic language).
+		// Address the reader directly with "you" or "we" where appropriate.
+		// Use consistent terms for concepts (avoid synonyms that may confuse).
+
+		// Avoid Exclusionary Elements:
+		// Remove jargon, acronyms (unless defined), and expand abbreviations if needed (example: "ASAP" → "as soon as possible").
+		// Eliminate metaphors, idioms, or implied meanings (example: "hit the books" → "study").
+		// Avoid double negatives (example: "not uncommon" → "common").
+
+		// Structural Support:
+		// Add clear headings to label sections (example: "How to Apply for Benefits").
+		// Use formatting tools like bold for key terms or warnings.
+		// Chunk information into short paragraphs with line breaks for visual ease.
+
+		// Inclusivity Checks:
+		// Ensure content is free of bias, stereotypes, or assumptions about the reader.
+		// Use gender-neutral language (example: "they" instead of "he/she").
+
+
+		// Output Requirements:
+		// Return only the simplified text, without markdown, emojis, or images.
+		// Preserve original context, facts, and intent. Do not omit critical details.
+		// Prioritize clarity over brevity; focus on simplification and not summarization. The length of generated output text should be same or similar to that of input text.
+		// Do not simplify already simple text.
+
+		// Example Transformation:
+		// Original: "Individuals experiencing adverse climatic conditions may necessitate relocation to mitigate health risks."
+		// Simplified: "If weather conditions become dangerous, people might need to move to stay safe."
+
+		// For the provided input text, apply the above guidelines rigorously. Ensure the output is accessible to readers with varied cognitive abilities, emphasizing clarity, simplicity, and logical structure. Verify that the simplified text aligns with plain language standards like WCAG and PlainLanguage.gov.
+
+		// "${inputText}"
+		// `;
+		//   }, [inputWordCount, outputLength, customWordCount, structurePrefs, tonePreference]);
 
   const splitTextIntoChunks = (text, maxTokens) => {
 	const words = text.split(" ");
@@ -2027,10 +2091,10 @@ const Main = () => {
 				  />
 				  <div className={styles.sliderLabels}>
 					{/* Ensure the order matches the slider positions */}
-					<span>Very simple</span>
-					<span>Much shorter</span>
+
+					<span>Same</span>		
 					<span>Shorter</span>
-					<span>Same</span>
+					<span>Much shorter</span>
 				  </div>
 				  {/* Structure & Formatting */}
 				  <h3>Structure & Formatting</h3>
@@ -2086,10 +2150,10 @@ const Main = () => {
 				  <div className={styles.toneOptions}>
 					{[
 					  { value: "neutral", label: "Neutral (default)" },
-					  { value: "formal", label: "Professional/Formal" },
-					  { value: "academic", label: "Academic/Instructional" },
-					  { value: "casual", label: "Casual/Conversational" },
-					  { value: "creative", label: "Creative/Enthusiastic" },
+					  { value: "formal", label: "Formal" },
+					  { value: "academic", label: "Academic" },
+					  { value: "casual", label: "Casual" },
+					  { value: "creative", label: "Creative" },
 					].map((tone) => (
 					  <label key={tone.value} className={styles.toneOption}>
 						<input
@@ -2188,6 +2252,521 @@ const Main = () => {
 	  </>
 	);
 
+//   return (
+//     <>
+//       <nav className={styles.navbar}>
+//         {/* <h1>Text Simplification Tool</h1> */}
+// 		<h1 
+//     onClick={() => window.location.href = "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/"}
+//     style={{ cursor: "pointer" }} // Makes it look clickable
+//  		>
+// 		Text Simplification Tool</h1>
+//         <button className={styles.white_btn} onClick={handleLogout}>
+//           Logout
+//         </button>
+//       </nav>
+
+// 	  <div className={styles.container}>
+
+// 			 <div
+// 				  className={`${styles.sidebar} ${
+// 					isSidebarVisible ? styles.expanded : ""
+// 				  }`}
+// 				>
+
+// 			{/* </div> */}
+
+// 			<button
+// 			className={styles.historyIcon}
+// 			onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+// 			>
+// 				🕒   <p style={{ fontSize: "15px" }}> History </p> 
+// 			</button>
+
+
+
+//           {isSidebarVisible && (
+//             <div className={styles.historyContent}>
+//               <button className={styles.closeButton} onClick={() => setIsSidebarVisible(false)}>
+//                 ✖
+//               </button>
+//               <ul className={styles.historyList}>
+//                 {documents.map((doc, index) => (
+    
+// 				<li
+// 				key={doc._id}
+// 				onClick={() => handleDocumentClick(doc)}
+// 				className={`${styles.historyItem} ${selectedDocument?._id === doc._id ? styles.activeDoc : ""}`}
+// 				>
+// 				{/* <strong>Document {index + 1}</strong>  */}
+// 				<strong>Document {documents.length - index}</strong>({doc.inputText.substring(0, 20)}...)
+// 				</li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
+//         </div>
+
+// 	  {/* <div className={styles.main_container}> */}
+	  
+// 	  <div className={`${styles.mainContent} ${isSidebarVisible ? styles.withSidebar : ""}`}>
+         
+
+
+// 			<div className={styles.description}>
+
+// 			  <p>
+// 			  This tool helps make complex text easier to read while preserving its original meaning. Whether you're simplifying academic content, technical documents, or general text for better accessibility, this tool provides a quick and efficient way to generate a more readable version. You can enter text manually or upload a document to get started.
+// 			  </p>
+// 	</div>
+
+// 	        {/* ─── CUSTOMISATION PANEL  ─────────── */}
+// 			<section className={styles.customPanel}>
+// 			  {/* toggle row */}
+// 			  <button
+// 				className={styles.customToggle}
+// 				onClick={() => setShowCustom((s) => !s)}
+// 			  >
+// 				{showCustom ? "▲  Hide Customisation Options" : "▼  Show Customisation Options"}
+// 			  </button>
+
+			 
+// 			  <div className={`${styles.customPanel} ${showCustom ? "" : styles.hiddenPanel}`}>
+// 				<div className={styles.customBody}>
+				  
+// 				  {/* 1. OUTPUT LENGTH SECTION */}
+// 				  <h3>Output Length</h3>
+// 				  <div className={styles.sliderContainer}>
+// 					{/* Visual slider representation */}
+// 					<div className={styles.sliderTrack}>
+// 					  <div className={styles.sliderMarkers}>
+// 						<span className={outputLength === "same" ? styles.activeMarker : styles.marker}>•</span>
+// 						<span className={outputLength === "shorter" ? styles.activeMarker : styles.marker}>•</span>
+// 						<span className={outputLength === "much_shorter" ? styles.activeMarker : styles.marker}>•</span>
+// 					  </div>
+// 					  <div className={styles.sliderLabels}>
+// 						<span>Same as input</span>
+// 						<span>Shorter</span>
+// 						<span>Much shorter</span>
+// 					  </div>
+// 					</div>
+					
+// 					{/* Radio buttons for selection */}
+// 					<div className={styles.lengthOptions}>
+// 					  <label className={styles.lengthOption}>
+// 						<input 
+// 						  type="radio" 
+// 						  name="outputLength" 
+// 						  value="same"
+// 						  checked={outputLength === "same"}
+// 						  onChange={(e) => setOutputLength(e.target.value)}
+// 						/>
+// 						<span>Same as input ({inputWordCount} words)</span>
+// 					  </label>
+					  
+// 					  <label className={styles.lengthOption}>
+// 						<input 
+// 						  type="radio" 
+// 						  name="outputLength" 
+// 						  value="shorter"
+// 						  checked={outputLength === "shorter"}
+// 						  onChange={(e) => setOutputLength(e.target.value)}
+// 						/>
+// 						<span>Shorter (~{Math.round(inputWordCount * 0.75)} words - 25% less)</span>
+// 					  </label>
+					  
+// 					  <label className={styles.lengthOption}>
+// 						<input 
+// 						  type="radio" 
+// 						  name="outputLength" 
+// 						  value="much_shorter"
+// 						  checked={outputLength === "much_shorter"}
+// 						  onChange={(e) => setOutputLength(e.target.value)}
+// 						/>
+// 						<span>Much shorter (~{Math.round(inputWordCount * 0.5)} words - 50% less)</span>
+// 					  </label>
+					  
+// 					  <label className={styles.lengthOption}>
+// 						<input 
+// 						  type="radio" 
+// 						  name="outputLength" 
+// 						  value="custom"
+// 						  checked={outputLength === "custom"}
+// 						  onChange={(e) => setOutputLength(e.target.value)}
+// 						/>
+// 						<span>Custom: </span>
+// 						<input
+// 						  type="number"
+// 						  min="10"
+// 						  placeholder="Enter word count"
+// 						  value={customWordCount}
+// 						  onChange={(e) => setCustomWordCount(e.target.value)}
+// 						  disabled={outputLength !== "custom"}
+// 						  style={{ width: "100px", marginLeft: "8px" }}
+// 						/>
+// 						<span> words</span>
+// 					  </label>
+// 					</div>
+// 				  </div>
+
+// 				  {/* 2. STRUCTURE & WRITING PREFERENCES */}
+// 				  <h3>Structure & Writing Preferences</h3>
+// 				  <div className={styles.structurePrefs}>
+					
+// 					{/* Organization & Structure */}
+// 					<div className={styles.prefSection}>
+// 					  <h4>Organization & Structure</h4>
+					  
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.sectionHeadings}
+// 						  onChange={() => toggleStructurePref('sectionHeadings')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Section headings</strong> - Add headings to organise sections
+// 						  <small className={styles.reference}>WCAG 2.2 & Easy-Read guidelines</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.bulletLists}
+// 						  onChange={() => toggleStructurePref('bulletLists')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Bullet/numbered lists</strong> - Use bullet points for lists and steps
+// 						  <small className={styles.reference}>Nielsen Norman Group: lists improve comprehension</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.shortParagraphs}
+// 						  onChange={() => toggleStructurePref('shortParagraphs')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Short paragraphs</strong> - Maximum 2-3 sentence paragraphs
+// 						  <small className={styles.reference}>Easy-Read conventions: ≤ 2 sentences per paragraph</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.addWhiteSpace}
+// 						  onChange={() => toggleStructurePref('addWhiteSpace')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>White space between ideas</strong> - Add visual breaks for easier reading
+// 						  <small className={styles.reference}>Improves scannability and reduces cognitive load</small>
+// 						</span>
+// 					  </label>
+// 					</div>
+
+// 					{/* Sentence Structure */}
+// 					<div className={styles.prefSection}>
+// 					  <h4>Sentence Structure</h4>
+					  
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.sentenceSplitting}
+// 						  onChange={() => toggleStructurePref('sentenceSplitting')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Break long sentences</strong> - Split sentences longer than 10-15 words
+// 						  <small className={styles.reference}>Readable.com & PlainLanguage.gov guidelines</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.activeVoice}
+// 						  onChange={() => toggleStructurePref('activeVoice')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Active voice</strong> - Convert passive to active voice
+// 						  <small className={styles.reference}>Minimal Text Complexity Guidelines</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.avoidNestedClauses}
+// 						  onChange={() => toggleStructurePref('avoidNestedClauses')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Simplify nested clauses</strong> - Break complex sentence structures
+// 						  <small className={styles.reference}>Reduces processing difficulty for readers</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.clearPronouns}
+// 						  onChange={() => toggleStructurePref('clearPronouns')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Clear pronoun references</strong> - Avoid ambiguous "they," "it," "this"
+// 						  <small className={styles.reference}>Prevents confusion about what pronouns refer to</small>
+// 						</span>
+// 					  </label>
+// 					</div>
+
+// 					{/* Vocabulary & Clarity */}
+// 					<div className={styles.prefSection}>
+// 					  <h4>Vocabulary & Clarity</h4>
+					  
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.useEverydayLanguage}
+// 						  onChange={() => toggleStructurePref('useEverydayLanguage')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Use everyday language</strong> - Replace complex words with simple alternatives
+// 						  <small className={styles.reference}>Core principle of plain language</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.defineComplexTerms}
+// 						  onChange={() => toggleStructurePref('defineComplexTerms')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Define complex terms</strong> - Add simple explanations in parentheses
+// 						  <small className={styles.reference}>e.g., "cardiologist (heart doctor)"</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.expandAcronyms}
+// 						  onChange={() => toggleStructurePref('expandAcronyms')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Expand acronyms</strong> - Write out abbreviated terms
+// 						  <small className={styles.reference}>e.g., "ASAP" → "as soon as possible"</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.avoidJargon}
+// 						  onChange={() => toggleStructurePref('avoidJargon')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Remove jargon</strong> - Eliminate technical or specialized language
+// 						  <small className={styles.reference}>Makes content accessible to general audiences</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.avoidIdioms}
+// 						  onChange={() => toggleStructurePref('avoidIdioms')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Avoid idioms & metaphors</strong> - Replace with literal language
+// 						  <small className={styles.reference}>e.g., "hit the books" → "study"</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.avoidDoubleNegatives}
+// 						  onChange={() => toggleStructurePref('avoidDoubleNegatives')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Eliminate double negatives</strong> - Use positive statements
+// 						  <small className={styles.reference}>e.g., "not uncommon" → "common"</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.consistentTerms}
+// 						  onChange={() => toggleStructurePref('consistentTerms')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Use consistent terms</strong> - Avoid synonyms that may confuse
+// 						  <small className={styles.reference}>Reduces cognitive load for readers</small>
+// 						</span>
+// 					  </label>
+// 					</div>
+
+// 					{/* Engagement & Formatting */}
+// 					<div className={styles.prefSection}>
+// 					  <h4>Engagement & Formatting</h4>
+					  
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.directAddress}
+// 						  onChange={() => toggleStructurePref('directAddress')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Direct address</strong> - Use "you" or "we" to engage readers
+// 						  <small className={styles.reference}>Creates conversational, accessible tone</small>
+// 						</span>
+// 					  </label>
+
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.boldKeyTerms}
+// 						  onChange={() => toggleStructurePref('boldKeyTerms')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Highlight key terms</strong> - Use bold for important words and warnings
+// 						  <small className={styles.reference}>Aids scanning and comprehension</small>
+// 						</span>
+// 					  </label>
+// 					</div>
+
+// 					{/* Special Features */}
+// 					<div className={styles.prefSection}>
+// 					  <h4>Review Features</h4>
+					  
+// 					  <label className={styles.structureOption}>
+// 						<input
+// 						  type="checkbox"
+// 						  checked={structurePrefs.showChanges}
+// 						  onChange={() => toggleStructurePref('showChanges')}
+// 						/>
+// 						<span className={styles.optionText}>
+// 						  <strong>Show changes while writing</strong> - Toggle above AI-generated text box
+// 						  <small className={styles.reference}>Useful for reviewing what was changed</small>
+// 						</span>
+// 					  </label>
+// 					</div>
+// 				  </div>
+
+// 				  {/* 3. TONE PREFERENCES */}
+// 				  <h3>Tone Preferences</h3>
+// 				  <div className={styles.toneOptions}>
+// 					{[
+// 					  { value: "neutral", label: "Neutral", default: true },
+// 					  { value: "academic", label: "Academic" },
+// 					  { value: "formal", label: "Formal" },
+// 					  { value: "creative", label: "Creative" }
+// 					].map((tone) => (
+// 					  <label key={tone.value} className={styles.toneOption}>
+// 						<input
+// 						  type="radio"
+// 						  name="tonePreference"
+// 						  value={tone.value}
+// 						  checked={tonePreference === tone.value}
+// 						  onChange={(e) => setTonePreference(e.target.value)}
+// 						/>
+// 						<span>{tone.label} {tone.default && "<By default>"}</span>
+// 					  </label>
+// 					))}
+// 				  </div>
+				  
+// 				</div>
+// 			  </div>
+// 			</section>
+
+// 			{/*  */}
+
+// 				  <div className={styles.form_container}>
+// 					{/* Input Area */}
+// 					<div className={styles.input_area}>
+// 					  <div className={styles.text_container}>
+// 						<label className={styles.label} htmlFor="inputText">
+// 						  Input Text
+// 						</label>
+// 						<textarea
+// 						  id="inputText"
+// 						  className={`${styles.textarea} ${isLoading ? styles.disabled : ""}`}
+// 						//   className={styles.textarea}
+// 						  placeholder="Write/Paste your text here or upload a PDF document to extract content automatically."
+// 						  value={inputText}
+// 						  onChange={(e) => setInputText(e.target.value)}
+// 						  disabled={isLoading} // Disable input when loading
+// 						></textarea>
+					 
+// 					 <p className={styles.countText}>Words: {inputWordCount} | Characters: {inputCharCount}
+// 					 {pdfPageCount > 0 && ` | Pages: ${pdfPageCount}`}
+// 					 </p>
+						
+// 					  </div>
+	  
+// 					  {/* OR Divider */}
+// 					  <div className={styles.or_divider}>OR</div>
+	  
+// 					  {/* File Upload */}
+// 					  <div className={`${styles.upload_area} ${isLoading ? styles.disabled : ""}`}
+// 						onDragOver={(e) => e.preventDefault()} // Prevent default behavior
+// 						onDrop={(e) => {
+// 							e.preventDefault();
+// 							const file = e.dataTransfer.files[0]; // Get the first dropped file
+// 							if (file) {
+// 							handleFileUpload({ target: { files: [file] } }); // Simulate file selection event
+// 							}
+// 						}}>
+// 						<label htmlFor="fileUpload" className={styles.upload_box}>
+							
+// 							{isUploading ? (
+// 								<span className={styles.loadingText}>Extracting text, please wait...</span>
+// 								) : uploadedFileName ? (
+// 								<>
+// 									File uploaded: <strong>{uploadedFileName}</strong>
+// 								</>
+// 								) : (
+// 								<>
+// 									Click to Upload a PDF
+// 									<br />
+// 									<span>...or drag and drop a file.</span>
+// 								</>
+// 							)}
+				
+// 						</label>
+// 						<input
+// 						  type="file"
+// 						  id="fileUpload"
+// 						  accept="application/pdf"
+// 						  onChange={handleFileUpload}
+// 						  className={styles.hidden_input}
+// 						  disabled={isUploading || isLoading} // Disable upload while processing
+// 						  //disabled={isUploading} // Disable upload while processing
+// 						/>
+// 					  </div>
+// 					</div>
+// 				  </div>
+// 				  {/* Submit Button */}
+// 				  <button
+// 					className={styles.submit_btn}
+// 					onClick={handleSubmit}
+// 					disabled={!inputText.trim() || isLoading || isUploading}
+// 					id="simplifyBtn"
+// 					//title={!inputText.trim() ? "Enter text or upload a file to enable simplification." : ""}
+// 				  >
+// 					{isLoading ? "Processing..." : "Simplify Text"}
+// 				  </button>
+		
+// 				  <p className={styles.help_text}>Need Help? <a href="mailto:anukumar@uw.edu">Contact Support</a></p>
+// 				  <Footer />  
+// 		      </div>
+
+// 		      </div>
+			  
+// 		    </>
+// 		  );
 		};
 
 		export default Main;
