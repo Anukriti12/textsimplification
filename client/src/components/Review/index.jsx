@@ -2630,10 +2630,10 @@ For the provided input text, apply the above guidelines rigorously. Ensure the o
                     className={styles.actionButton}
                     onClick={() => setIsEditable((s) => !s)}
                     aria-pressed={isEditable}
-                    aria-label={isEditable ? "Switch to Rendered View" : "Switch to AI-generated Output"}
+                    aria-label={isEditable ? "Show rendered output" : "Edit the output text"}
                     title={isEditable ? "Rendered View" : "AI-generated Output"}
                   >
-                    {isEditable ? "Rendered Version" : "Edit Output"}
+                    {isEditable ? "Show Rendered Output" : "Edit Output"}
                   </button>
                 </div>
               </div>

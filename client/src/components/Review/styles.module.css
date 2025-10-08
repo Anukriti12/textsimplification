@@ -308,6 +308,8 @@ html, body {
     display: flex;
     align-items: center;
     gap: 10px; /* Space between clipboard icon and button */
+  flex-wrap: wrap;     /* <-- critical */
+  overflow: visible;   /* <-- don't clip buttons that spill */
   }
   
   .toggleDiffBtn {
@@ -327,6 +329,16 @@ html, body {
     color: #000000; /* Keep text black on hover */
   }
 
+  .text_container,
+.textareas_container {
+  overflow: visible;
+}
+
+/* Keep each button tidy when wrapping */
+.actionButton,
+.toggleDiffBtn {
+  white-space: nowrap;
+}
 /* Full-width navbar */
 .navbar {
     width: 100%;
@@ -563,7 +575,10 @@ html, body {
     display: flex;
     justify-content: space-between; /* Aligns label and icon */
     align-items: center;
-    margin-bottom: 0px; /* Space between label and text box */
+    /* margin-bottom: 0px;  */
+      gap: 12px;
+  flex-wrap: wrap;     /* <-- allows actions to drop under the label */
+  overflow: visible;
   }
   
 /* Label Styling */
