@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build --prefix client",
+    "postinstall": "npm ci --prefix client && npm run build --prefix client",
     "test": "echo \"No tests available\"",
     "start": "node index.js"
   },
