@@ -4,7 +4,7 @@ import Survey from "./components/Survey";
 import Main from "./components/Main";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import Footer from "./components/Footer"; 
+// import Footer from "./components/Footer"; 
 
 import Review from "./components/Review";
 // import Save from "./components/Save";

@@ -21,7 +21,6 @@ const SurveyPage = () => {
       inputText,
       generatedText,        // new prop from Review
       finalText,            // new prop from Review
-      editHistory,
       saveHistory = [],
     } = state || {};
 
