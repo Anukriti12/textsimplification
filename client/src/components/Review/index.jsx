@@ -482,10 +482,17 @@ You are an expert plain-language editor. Simplify the text so it is easy to read
                   aria-label="Edit AI-generated text"
                 />
               ) : (
-                <div className={`${styles.output_box} ${styles.side_by_side}`}>
-                  {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{outputText}</ReactMarkdown> */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{String(outputText ?? "")}</ReactMarkdown>
-                </div>
+                <textarea
+                  className={`${styles.textarea} ${styles.side_by_side} ${styles.editable}`}
+                  // value={outputText}
+                  value={String(outputText ?? "")}
+                  onChange={handleEditChange}
+                  aria-label="Edit AI-generated text"
+                />
+                // <div className={`${styles.output_box} ${styles.side_by_side}`}>
+                //   {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{outputText}</ReactMarkdown> */}
+                //   <ReactMarkdown remarkPlugins={[remarkGfm]}>{String(outputText ?? "")}</ReactMarkdown>
+                // </div>
               )}
             </div>
 
