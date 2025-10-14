@@ -4526,8 +4526,8 @@ const Main = () => {
 	// Helper function to calculate word counts based on input
 	const calculateWordCount = (inputWordCount, type) => {
 	  switch(type) {
-		case "shorter": return Math.round(inputWordCount * 0.75);
-		case "much_shorter": return Math.round(inputWordCount * 0.5);
+		case "shorter": return Math.round(inputWordCount * 0.85);
+		case "much_shorter": return Math.round(inputWordCount * 0.65);
 		case "custom": return customWordCount;
 		default: return inputWordCount;
 	  }
