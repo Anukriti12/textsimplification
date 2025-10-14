@@ -1228,6 +1228,11 @@ font-weight: bold;
 text-align: center;
 }
 
+/* Optional: emphasize the current length label */
+.sliderLabel { opacity: 0.6; }
+.activeLabel { opacity: 1; font-weight: 600; text-decoration: underline; }
+
+
 /* Save/Edit Button Styling */
 .text_btn {
     margin-top: 10px;

@@ -205,6 +205,43 @@ router.put("/survey", async (req, res) => {
 //   }
 // });
 
+/**
+ * GET /api/simplifications/export
+ * Returns all documents, newest first (by createdAt; fallback to _id)
+ */
+router.get("/export", async (req, res) => {
+  try {
+    console.log("📦 Export route hit...");
+    const hasCreatedAt = await Simplification.exists({ createdAt: { $exists: true } });
+    const sort = hasCreatedAt ? { createdAt: -1 } : { _id: -1 };
+    const docs = await Simplification.find({}).sort(sort).lean();
+
+    console.log(`✅ Exported ${docs.length} records`);
+    res.json({ count: docs.length, data: docs });
+  } catch (e) {
+    console.error("❌ Error in /export route:", e);
+    res.status(500).json({ message: e.message || "Internal Server Error" });
+  }
+});
+
+
+// CSV export
+const { Parser } = require("@json2csv/plainjs");
+router.get("/export.csv", async (_req, res) => {
+  try {
+    const sort = (await Simplification.exists({ createdAt: { $exists: true } })) ? { createdAt: -1 } : { _id: -1 };
+    const docs = await Simplification.find({}).sort(sort).lean();
+    const parser = new Parser();
+    const csv = parser.parse(docs);
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", 'attachment; filename="simplifications.csv"');
+    res.send(csv);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("failed");
+  }
+});
+
 router.put("/save", async (req, res) => {
   try {
     const { email, inputText, finalText, readability, accuracy, comments } = req.body;

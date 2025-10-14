@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { calcMetrics, diffStats } = require("../client/src/utils/textMetrics"); // §4
+// const { calcMetrics, diffStats } = require("../client/src/utils/textMetrics"); // §4
 
 /* ----- reusable metric block ----- */
 const metricsSchema = new mongoose.Schema(

@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@json2csv/plainjs": "^7.0.6",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "diff-match-patch": "^1.0.5",
