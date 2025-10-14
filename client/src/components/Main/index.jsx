@@ -107,9 +107,9 @@ const prefsToPlain = (
 const Main = () => {
 
 	const [inputText, setInputText] = useState("");
-	const [setOutputText] = useState("");
+	const [outputText, setOutputText] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [setIsSubmitted] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
 	//const [isEditable, setIsEditable] = useState(false); // For toggling edit mode
 	const [uploadedFileName, setUploadedFileName] = useState(""); // State for file name
 	//const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(true);
@@ -394,7 +394,7 @@ const Main = () => {
 	setIsLoading(true);
   
 	try {
-	  const chunks = splitTextIntoChunks(trimmedInput, 10000);
+	  const chunks = splitTextIntoChunks(trimmedInput, 2000);
 	  let combinedOutput = "";
   
 	  for (let chunk of chunks) {
