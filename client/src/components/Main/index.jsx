@@ -1,6 +1,6 @@
 // v3
 
-import React, { useState, useEffect, useRef, useCallback  } from "react";
+import React, { useState, useEffect, useCallback  } from "react";
 import styles from "./styles.module.css";
 import { useNavigate } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
@@ -107,9 +107,9 @@ const prefsToPlain = (
 const Main = () => {
 
 	const [inputText, setInputText] = useState("");
-	const [_outputText, setOutputText] = useState("");
+	const [setOutputText] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [_isSubmitted, setIsSubmitted] = useState(false);
+	const [setIsSubmitted] = useState(false);
 	//const [isEditable, setIsEditable] = useState(false); // For toggling edit mode
 	const [uploadedFileName, setUploadedFileName] = useState(""); // State for file name
 	//const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(true);
