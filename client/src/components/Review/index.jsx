@@ -25,7 +25,7 @@ const Review = () => {
   const [inputText, setInputText] = useState(navInputText);
   const [outputText, setOutputText] = useState(navOutputText);
   const initialOutputText = navOutputText; // still needed for survey redirect
-  const [editHistory, _setEditHistory] = useState(restoredEditHistory);
+  const [editHistory] = useState(restoredEditHistory);
   const [saveHistory, setSaveHistory] = useState([]);
   /* UI-state */
   const [diffHtml, setDiffHtml] = useState("");
