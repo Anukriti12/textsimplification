@@ -208,31 +208,74 @@ You are an expert plain-language editor. Simplify the text so it is easy to read
   };
 
   const handleResimplify = async () => {
-    if (!inputText.trim()) return;
-    setIsLoading(true);
-    try {
-      const chunks = splitTextIntoChunks(inputText, 2000); // match Main’s chunk size
-      const requests = chunks.map(async (ch) => {
-        const res = await fetch(
-          "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: generatePrompt(ch) }),
+
+      if (!inputText.trim()) return;
+      setIsLoading(true);
+      try {
+        const chunks = splitTextIntoChunks(inputText, 2000);
+        const requests = chunks.map(async (ch) => {
+          const res = await fetch(
+            "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ prompt: generatePrompt(ch) }),
+            }
+          );
+          if (!res.ok) return "";
+          const data = await res.json();
+
+          // same normalization as Main
+          let text = "";
+          if (typeof data?.response === "string") {
+            text = data.response;
+          } else if (data?.response?.content && Array.isArray(data.response.content)) {
+            text = data.response.content.map((c) => c?.text || "").join(" ").trim();
+          } else if (Array.isArray(data?.choices)) {
+            text = data.choices.map((c) => c?.message?.content || "").join(" ").trim();
+          } else if (typeof data?.text === "string") {
+            text = data.text;
           }
-        );
-        if (!res.ok) return "";
-        const data = await res.json();
-        return (data?.response || data?.text || "").replace(/^"|"$/g, "");
-      });
-      const combo = (await Promise.all(requests)).join(" ").trim();
-      setOutputText(combo);
-    } catch (e) {
-      console.error("resimplify failed:", e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+          if (!text) {
+            try { text = JSON.stringify(data); } catch { text = String(data); }
+          }
+          return text.replace(/^"|"$/g, "");
+        });
+        const combo = (await Promise.all(requests)).join(" ").trim();
+        setOutputText(combo);
+      } catch (e) {
+        console.error("resimplify failed:", e);
+      } finally {
+        setIsLoading(false);
+      }
+};
+
+  // const handleResimplify = async () => {
+  //   if (!inputText.trim()) return;
+  //   setIsLoading(true);
+  //   try {
+  //     const chunks = splitTextIntoChunks(inputText, 2000); // match Main’s chunk size
+  //     const requests = chunks.map(async (ch) => {
+  //       const res = await fetch(
+  //         "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4",
+  //         {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ prompt: generatePrompt(ch) }),
+  //         }
+  //       );
+  //       if (!res.ok) return "";
+  //       const data = await res.json();
+  //       return (data?.response || data?.text || "").replace(/^"|"$/g, "");
+  //     });
+  //     const combo = (await Promise.all(requests)).join(" ").trim();
+  //     setOutputText(combo);
+  //   } catch (e) {
+  //     console.error("resimplify failed:", e);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const saveFinalOutput = async () => {
     setIsLoading(true);
@@ -433,13 +476,15 @@ You are an expert plain-language editor. Simplify the text so it is easy to read
               {isEditable ? (
                 <textarea
                   className={`${styles.textarea} ${styles.side_by_side} ${styles.editable}`}
-                  value={outputText}
+                  // value={outputText}
+                  value={String(outputText ?? "")}
                   onChange={handleEditChange}
                   aria-label="Edit AI-generated text"
                 />
               ) : (
                 <div className={`${styles.output_box} ${styles.side_by_side}`}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{outputText}</ReactMarkdown>
+                  {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{outputText}</ReactMarkdown> */}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{String(outputText ?? "")}</ReactMarkdown>
                 </div>
               )}
             </div>

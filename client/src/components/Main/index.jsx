@@ -268,27 +268,61 @@ Text to simplify:
 
     setIsLoading(true);
     try {
-      const chunks = splitTextIntoChunks(trimmedInput, 2000);
+      const chunks = splitTextIntoChunks(trimmedInput, 4000);
 
-      // Fire all chunk requests in parallel for speed
-      const requests = chunks.map(async (chunk) => {
-        const prompt = generatePrompt(chunk);
-        const res = await fetch(
-          "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt }),
-          }
-        );
-        if (!res.ok) throw new Error(`LLM request failed: ${res.status}`);
-        const data = await res.json();
-        const text =
-          (typeof data?.response === "string" ? data.response : null) ??
-          (typeof data?.text === "string" ? data.text : null) ??
-          "";
-        return text.replace(/^"|"$/g, "");
-      });
+	  const requests = chunks.map(async (chunk) => {
+		const prompt = generatePrompt(chunk);
+		const res = await fetch(
+			"https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4",
+			{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ prompt }),
+			}
+		);
+		if (!res.ok) throw new Error(`LLM request failed: ${res.status}`);
+		const data = await res.json();
+
+		// ---- NORMALIZE TO STRING (common OpenAI/SDK shapes + fallbacks) ----
+		let text = "";
+		if (typeof data?.response === "string") {
+			text = data.response;
+		} else if (data?.response?.content && Array.isArray(data.response.content)) {
+			// e.g., {response:{content:[{type:'output_text', text:'...'}]}}
+			text = data.response.content.map((c) => c?.text || "").join(" ").trim();
+		} else if (Array.isArray(data?.choices)) {
+			// e.g., OpenAI chat format
+			text = data.choices.map((c) => c?.message?.content || "").join(" ").trim();
+		} else if (typeof data?.text === "string") {
+			text = data.text;
+		}
+
+		if (!text) {
+			try { text = JSON.stringify(data); } catch { text = String(data); }
+		}
+
+		return text.replace(/^"|"$/g, "");
+		});
+
+    //   // Fire all chunk requests in parallel for speed
+    //   const requests = chunks.map(async (chunk) => {
+    //     const prompt = generatePrompt(chunk);
+    //     const res = await fetch(
+    //       "https://textsimplification12-a0a8gqfbhnhxbgbv.westus-01.azurewebsites.net/api/gpt4",
+    //       {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify({ prompt }),
+    //       }
+    //     );
+    //     if (!res.ok) throw new Error(`LLM request failed: ${res.status}`);
+    //     const data = await res.json();
+    //     const text =
+    //       (typeof data?.response === "string" ? data.response : null) ??
+    //       (typeof data?.text === "string" ? data.text : null) ??
+    //       "";
+    //     return text.replace(/^"|"$/g, "");
+    //   });
 
       const parts = await Promise.all(requests);
       const cleanedResponse = parts.join(" ").replace(/\s+\n/g, "\n").trim();
@@ -421,7 +455,7 @@ Text to simplify:
                 <h3>Sentence Style</h3>
                 {[
                   { key: "breakLongSentences", label: "Break long sentences" },
-                  { key: "activeVoice", label: "Active voice" },
+                  { key: "activeVoice", label: "Prefer active voice instead of passive voice" },
                   { key: "simplifyClauses", label: "Simplify nested clauses" },
                 ].map((opt) => (
                   <label key={opt.key} className={styles.structureOption}>
