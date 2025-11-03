@@ -1,4 +1,275 @@
+/* Reset and global */
 html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+/* Navbar */
+.navbar {
+  width: 100%;
+  height: 70px;
+  background-color: #3bb19b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+.navbar h1 {
+  color: white;
+  font-size: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+.white_btn {
+  background-color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 18px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Main layout */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 40px 0;
+  min-height: calc(100vh - 70px);
+  box-sizing: border-box;
+}
+
+/* Two-column text areas centered */
+.textareas_container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+/* Text blocks */
+.text_container {
+  flex: 1;
+  min-width: 500px;
+  max-width: 650px;
+}
+
+.labelWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #111;
+}
+
+.countText {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Textarea + output boxes */
+.textarea, .output_box {
+  width: 100%;
+  min-height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  line-height: 1.5;
+  resize: both;
+  overflow: auto;
+  box-sizing: border-box;
+}
+.textarea.editable {
+  border: 2px solid #4caf50;
+  background-color: #fff;
+}
+.output_box {
+  white-space: pre-wrap;
+}
+
+/* Action buttons */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 14px;
+  padding: 5px;
+}
+.actionButton:hover {
+  color: #3bb19b;
+}
+.toggleDiffBtn {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+.toggleDiffBtn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Quick prefs */
+.quickPrefs {
+  margin: 20px 0;
+  width: 100%;
+}
+.quickPrefs label {
+  font-weight: 600;
+}
+.quickPrefs select {
+  padding: 6px 10px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+/* Save button centered */
+.button_container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+.submit_btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+.submit_btn:hover {
+  background-color: #555;
+}
+
+/* Floating history button */
+.historyButton {
+  position: fixed;
+  left: 16px;
+  top: 96px;
+  z-index: 15;
+  background: #0078d4;
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.historyButton:hover {
+  background: #005a9e;
+}
+
+/* History sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 320px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  padding: 16px;
+  overflow-y: auto;
+  z-index: 20;
+}
+.historyItem {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.historyItem:hover {
+  background-color: #f0f0f0;
+}
+.activeDoc {
+  background-color: #e6f7ff;
+  border-left: 4px solid #1890ff;
+}
+
+/* Footer always below */
+footer, .footer {
+  width: 100%;
+  margin-top: auto;
+  padding: 24px 20px;
+  text-align: center;
+  background: #f9f9f9;
+  border-top: 1px solid #ddd;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Diff box */
+.diff_box {
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+  max-height: 250px;
+  white-space: pre-wrap;
+  margin-top: 15px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* Responsive layout */
+@media (max-width: 1100px) {
+  .textareas_container {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .text_container {
+    min-width: 90%;
+  }
+  .historyButton {
+    top: 80px;
+  }
+}
+
+
+/* html, body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -18,7 +289,7 @@ html, body {
 }
 
 .downloadIcon:hover {
-  color: #3bb19b; /* Hover color for download icon */
+  color: #3bb19b; 
 }
 
   
@@ -70,12 +341,7 @@ html, body {
     width: 100%;
 
   }
-/*   
-  .historyItem {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #ddd;
-  } */
+
   
   .historyItem {
     padding: 12px;
@@ -124,22 +390,16 @@ html, body {
   box-shadow: 0 0 4px rgba(59, 177, 155, 0.5);
 }
 
-/* Active version styling */
+
 .versionSelector option[selected] {
   font-weight: bold;
   color: #3bb19b;
-}
-
+} */
+/* 
 .activeDoc {
-  /* background-color: #e6f7ff;
-  font-weight: bold;
-  border-left: 4px solid #1890ff;
-  padding-left: 8px; */
-
-  /* background-color: #e0f7fa; 
-  border-left: 5px solid #00796b;  */
+ 
   padding: 10px;
-  /* font-weight: bold; */
+
   background-color: #f0f8ff;
   font-weight: bold;
   border-left: 3px solid #007bff;
@@ -152,8 +412,7 @@ html, body {
 
 
 .activeVersion {
-  /* background-color: #f0f0f0;
-  font-weight: bold; */
+
   background-color: #d0eaff;
   font-weight: bold;
   padding-left: 10px;
@@ -171,25 +430,13 @@ html, body {
   background-color: #f9f9f9;
 }
 
-/* Mobile Responsiveness */
+
 @media (max-width: 768px) {
   .container {
       flex-direction: column;
   }
 
 
-/* .docHeader {
-  padding: 10px;
-  cursor: pointer;
-  background-color: #ffffff;
-  border-bottom: 1px solid #ddd;
-  transition: background-color 0.3s ease;
-  font-weight: bold;
-}
-
-.docHeader:hover {
-  background-color: #f0f0f0;
-} */
 
   .sidebar {
       width: 100%;
@@ -218,14 +465,14 @@ html, body {
   }
   
   .mainContent.withSidebar {
-    margin-left: 0px; /* Adjust when sidebar is visible */
+    margin-left: 0px; 
   }
   
  .textareas_container {
     display: flex;
     flex-direction: row;
-    gap: 20px; /* Spacing between boxes */
-    align-items: stretch; /* Ensures all children have the same height */
+    gap: 20px; 
+    align-items: stretch; 
   }
   
 .text_container {
@@ -237,7 +484,7 @@ html, body {
   margin-top: 20px;
   display: flex;
   justify-content: center; 
-  gap: 15px; /* Space between Save and Edit buttons */
+  gap: 15px; 
 }
 
 .textarea {
@@ -248,11 +495,11 @@ html, body {
   border-radius: 4px;
   font-size: 16px;
   background-color: #f9f9f9;
-  line-height: 1.5; /* Consistent line height */
-  box-sizing: border-box; /* Include padding and border in width/height */
+  line-height: 1.5;
+  box-sizing: border-box;
   resize: both;
   overflow: auto;
-  margin: 15px 0; /* Add consistent spacing between elements */
+  margin: 15px 0;
 }
 
 
@@ -271,16 +518,10 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0px; /* Add spacing between label and textarea */
+    margin-bottom: 0px; 
   }
   
-  /* .copyIcon {
-    font-size: 18px;
-    cursor: pointer;
-    color: #888;
-    margin-left: 10px;
-    transition: color 0.3s ease;
-  } */
+
   .copyIcon {
     cursor: pointer;
     font-size: 18px;
@@ -289,16 +530,16 @@ html, body {
   }
   
   .copyIcon:hover {
-    color: #3bb19b; /* Hover color for clipboard icon */
+    color: #3bb19b;
   }
 
   .editableDiv span.diffins {
-    background-color: #d4f8d4; /* green background for additions */
+    background-color: #d4f8d4; 
     color: green;
   }
   
   .editableDiv span.diffdel {
-    background-color: #fdd; /* red background for deletions */
+    background-color: #fdd; 
     color: red;
     text-decoration: line-through;
   }
@@ -307,16 +548,16 @@ html, body {
   .actions {
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between clipboard icon and button */
-  flex-wrap: wrap;     /* <-- critical */
-  overflow: visible;   /* <-- don't clip buttons that spill */
+    gap: 10px; 
+  flex-wrap: wrap;     
+  overflow: visible;   
   }
   
   .toggleDiffBtn {
-    background-color: #ffffff; /* White background */
-    color: #000000; /* Black text color */
+    background-color: #ffffff; 
+    color: #000000; 
     border: 1px solid #ccc; 
-    /* Optional: Add a border for better visibility */
+
     padding: 5px 5px;
     border-radius: 4px;
     cursor: pointer;
@@ -325,8 +566,8 @@ html, body {
   }
   
   .toggleDiffBtn:hover {
-    background-color: #f0f0f0; /* Slightly darker background on hover */
-    color: #000000; /* Keep text black on hover */
+    background-color: #f0f0f0; 
+    color: #000000; 
   }
 
   .text_container,
@@ -334,12 +575,12 @@ html, body {
   overflow: visible;
 }
 
-/* Keep each button tidy when wrapping */
+
 .actionButton,
 .toggleDiffBtn {
   white-space: nowrap;
 }
-/* Full-width navbar */
+
 .navbar {
     width: 100%;
     height: 70px;
@@ -353,14 +594,14 @@ html, body {
     position: relative;
 }
 
-/* Navbar title */
+
 .navbar h1 {
     color: white;
     font-size: 25px;
     margin: 0;
 }
 
-/* Logout button */
+
 .white_btn {
     border: none;
     outline: none;
@@ -372,7 +613,7 @@ html, body {
     cursor: pointer;
 }
 
-/* Main container for content */
+
 .main_container {
     margin: 0 auto;
     padding: 20px;
@@ -380,7 +621,7 @@ html, body {
     max-width: 100%;
 }
 
-/* Form container for single and dual layouts */
+
 .form_container {
     display: flex;
     flex-direction: column;
@@ -391,11 +632,11 @@ html, body {
 }
 
 
-/* Submit and Save button styles */
+
 .submit_btn {
   background-color: #333;
   color: white;
-  /* width: auto; */
+
   width: 100%;
   border: none;
   padding: 10px 20px;
@@ -411,7 +652,7 @@ html, body {
   background-color: #555;
 }
 
-/* Disable the submit button until input is provided */
+
 .submit_btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
@@ -424,22 +665,22 @@ html, body {
 
 .survey_text {
   font-size: 20px;
-  color: #333; /* Darker text for readability */
+  color: #333; 
 }
 
 .survey_btn {
   background: none;
   border: none;
-  color: #0073e6; /* Blue for contrast */
+  color: #0073e6; 
   font-size: 20px;
   cursor: pointer;
-  text-decoration: underline; /* Mimics a hyperlink */
+  text-decoration: underline; 
   margin-left: 5px;
   padding: 5px;
 }
 
 .survey_btn:hover {
-  color: #a0abb6; /* Slightly darker blue on hover */
+  color: #a0abb6;
 }
 
 .help_text {
@@ -469,25 +710,25 @@ html, body {
 	padding: 5px;
 }
 
-/* Container for the input area and drag-and-drop box */
+
 .input_area {
     display: flex;
-    flex-direction: row; /* Align the input and upload area side by side */
-    gap: 20px; /* Space between the input and upload box */
+    flex-direction: row; 
+    gap: 20px; 
     width: 100%;
 
 
 }
 
-/* Drag-and-drop upload box */
+
 .upload_box {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 200px; /* Fixed width for the upload box */
-    height: 100px; /* Same height as the text box */
-    border: 2px dashed #ccc; /* Dashed border for drag-and-drop area */
+    width: 200px;
+    height: 100px; 
+    border: 2px dashed #ccc; 
     border-radius: 4px;
     background-color: #f9f9f9;
     color: #333;
@@ -499,13 +740,13 @@ html, body {
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Hover effect for upload box */
+
 .upload_box:hover {
     background-color: #eaeaea;
     border-color: #3bb19b;
 }
 
-/* Hidden file input */
+
 .hidden_input {
     display: none;
 }
@@ -513,28 +754,12 @@ html, body {
 
 
 
-/* Input box full width when alone */
-/* .textarea {
-    width: 100%;
-    min-height: 400px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    box-sizing: border-box;
-    resize: both;
-    overflow: auto;
-    margin-top: 15px;
 
-}  */
-
-/* Input and Output box side by side */
-/* Equal width for both input and output boxes */
 .side_by_side {
     flex: 1; 
 }
 
-/* Output box styles */
+
 .output_box {
 
     width: 100%;
@@ -562,35 +787,35 @@ html, body {
   }
   
   .output_box .diff-added {
-    background-color: #e6ffe6; /* Light green for added text */
+    background-color: #e6ffe6; 
   }
   
   .output_box .diff-deleted {
-    background-color: #ffe6e6; /* Light red for deleted text */
+    background-color: #ffe6e6;
     text-decoration: line-through;
   }
 
 
 .labelWrapper {
     display: flex;
-    justify-content: space-between; /* Aligns label and icon */
+    justify-content: space-between; 
     align-items: center;
-    /* margin-bottom: 0px;  */
+
       gap: 12px;
-  flex-wrap: wrap;     /* <-- allows actions to drop under the label */
+  flex-wrap: wrap;    
   overflow: visible;
   }
   
-/* Label Styling */
+
 .label {
 font-size: 16px;
 font-weight: bold;
-margin-bottom: 0px; /* Space between label and textarea */
-text-align: left; /* Ensure label aligns left */
+margin-bottom: 0px; 
+text-align: left;
 }
 
 
-/* "OR" Divider Styling */
+
 .or_divider {
 margin: 90px 0;
 font-size: 16px;
@@ -598,16 +823,16 @@ font-weight: bold;
 text-align: center;
 }
   
-/* Save/Edit Button Styling */
+
 .text_btn {
-    margin-top: 10px; /* Space between the button and the text box */
+    margin-top: 10px; 
     padding: 10px 20px;
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
     font-size: 16px;
     text-align: center;
-    width: fit-content; /* Only as wide as the text */
+    width: fit-content; 
   }
   
   .save_btn, .edit_btn {
@@ -643,7 +868,6 @@ text-align: center;
     cursor: not-allowed;
 }
   
-/* App Description Styling */
 .description {
     margin: 20px auto;
     text-align: center;
@@ -674,8 +898,8 @@ text-align: center;
   font-size: 14px;
 }
 
-/* styles.module.css */
+
 .textarea.editable {
-  border: 2px solid #4caf50; /* green border when editable */
+  border: 2px solid #4caf50;
   background-color: #fdfdfd;
-}
+} */
