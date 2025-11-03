@@ -130,80 +130,6 @@ router.put("/survey", async (req, res) => {
   }
 });
 
-/* ------------------------------------------------------------------ */
-/* read helpers remain unchanged ( /fetch , /user/:email … )          */
-/* ------------------------------------------------------------------ */
-
-
-
-// router.post("/", async (req, res) => {
-//   try {
-//     const { userId, inputText, outputText } = req.body;
-
-//     if (!userId || !inputText || !outputText) {
-//       return res.status(400).send({ message: "Missing required fields" });
-//     }
-
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).send({ message: "User not found" });
-//     }
-
-//     const simplification = new Simplification({
-//       userId,
-//       email: user.email,
-//       inputText,
-//       outputText,
-//     });
-
-//     await simplification.save();
-//     res.status(201).send({
-//       message: "Simplification saved successfully",
-//       data: simplification,
-//     });
-//   } catch (error) {
-//     console.error("Error saving simplification:", error);
-//     res.status(500).send({ message: "Internal Server Error" });
-//   }
-// });
-
-
-// router.put("/edit", async (req, res) => {
-//   try {
-//     const { email, inputText, editedText } = req.body;
-
-//     if (!email || !inputText || !editedText) {
-//       return res.status(400).send({ message: "Missing required fields" });
-//     }
-
-//     const simplification = await Simplification.findOne({ email, inputText });
-
-//     if (!simplification) {
-//       return res.status(404).send({ message: "Simplification not found" });
-//     }
-
-//     // Count words and characters
-//     const numWords = editedText.trim().split(/\s+/).filter(Boolean).length;
-//     const numChars = editedText.length;
-
-//     // Save edit to history
-//     simplification.editHistory.push({
-//       text: editedText,
-//       timestamp: new Date(),
-//       numWords,
-//       numChars
-//     });
-
-//     await simplification.save();
-//     res.status(200).send({
-//       message: "Edit saved successfully",
-//       data: simplification,
-//     });
-//   } catch (error) {
-//     console.error("Error saving edit:", error);
-//     res.status(500).send({ message: "Internal Server Error" });
-//   }
-// });
 
 /**
  * GET /api/simplifications/export
@@ -411,3 +337,78 @@ module.exports = router;
 // });
 
 // module.exports = router;
+
+/* ------------------------------------------------------------------ */
+/* read helpers remain unchanged ( /fetch , /user/:email … )          */
+/* ------------------------------------------------------------------ */
+
+
+
+// router.post("/", async (req, res) => {
+//   try {
+//     const { userId, inputText, outputText } = req.body;
+
+//     if (!userId || !inputText || !outputText) {
+//       return res.status(400).send({ message: "Missing required fields" });
+//     }
+
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).send({ message: "User not found" });
+//     }
+
+//     const simplification = new Simplification({
+//       userId,
+//       email: user.email,
+//       inputText,
+//       outputText,
+//     });
+
+//     await simplification.save();
+//     res.status(201).send({
+//       message: "Simplification saved successfully",
+//       data: simplification,
+//     });
+//   } catch (error) {
+//     console.error("Error saving simplification:", error);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
+
+
+// router.put("/edit", async (req, res) => {
+//   try {
+//     const { email, inputText, editedText } = req.body;
+
+//     if (!email || !inputText || !editedText) {
+//       return res.status(400).send({ message: "Missing required fields" });
+//     }
+
+//     const simplification = await Simplification.findOne({ email, inputText });
+
+//     if (!simplification) {
+//       return res.status(404).send({ message: "Simplification not found" });
+//     }
+
+//     // Count words and characters
+//     const numWords = editedText.trim().split(/\s+/).filter(Boolean).length;
+//     const numChars = editedText.length;
+
+//     // Save edit to history
+//     simplification.editHistory.push({
+//       text: editedText,
+//       timestamp: new Date(),
+//       numWords,
+//       numChars
+//     });
+
+//     await simplification.save();
+//     res.status(200).send({
+//       message: "Edit saved successfully",
+//       data: simplification,
+//     });
+//   } catch (error) {
+//     console.error("Error saving edit:", error);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
