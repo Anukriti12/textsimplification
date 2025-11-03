@@ -16,7 +16,7 @@ export default function StatsButton({ text }) {
         title="Show statistics"
         onClick={() => setOpen((o) => !o)}
       >
-        📊
+        📊 Stats
       </span>
 
       {open && (

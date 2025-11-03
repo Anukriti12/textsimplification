@@ -267,7 +267,7 @@ const handleFormSubmit = async (e) => {
                   onClick={() => handleCopy(inputText)}
                   title="Copy to Clipboard"
                 >
-                  📋 {/* Clipboard Emoji */}
+                  📋 Copy {/* Clipboard Emoji */}
                 </div>
 
                 <div
@@ -275,7 +275,7 @@ const handleFormSubmit = async (e) => {
                   onClick={() => handleDownload(inputText, "inputText", "txt")}
                   title="Download as .txt file"
                 >
-                  📥 {/* Download Icon */}
+                  📥 Download {/* Download Icon */}
                 </div>
             <StatsButton text={inputText} />
                 

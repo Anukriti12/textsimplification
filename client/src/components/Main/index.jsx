@@ -248,7 +248,7 @@ Follow these core rules:
 - Prefer active voice; avoid nested clauses and unclear pronouns.
 
 3) Structure & Flow
-- Organize with clear headings/subheadings (start at ##; do not skip levels).
+- Organize with clear headings/subheadings (start at heading level 1 (#); do not skip levels).
 - Use lists for steps or key points.
 - Keep paragraphs short; one idea per paragraph.
 

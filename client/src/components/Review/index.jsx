@@ -198,29 +198,36 @@ function ReviewInner(){
 
   const buildPrompt = useCallback(
     (text) => `
+
 You are an expert plain-language editor. Rewrite the text in clear **GitHub-Flavored Markdown** so it is easy to read and understand **without losing meaning**.
 
-Follow these core rules:
+  Follow these core rules:
 • Keep facts, intent, and sequence accurate. No hallucinations.
 • Do not add external information.
 • Use inclusive, gender-neutral language when needed.
 • Use consistent terms for the same concept; avoid double negatives.
-• Start content headings at **##** (no skipped levels).
+• Start headings at **#**. Do not skip levels.
 • Return **only** the rewritten Markdown (no extra commentary).
+• Provide appropriate spacing between each heading.
 
 1) Vocabulary & Tone
 - Replace technical or abstract words with simpler alternatives.
 - Define complex but necessary terms in parentheses on first use.
 - Remove idioms, metaphors, and jargon.
+- Use inclusive, gender-neutral language.
 
 2) Sentence Structure
 - Aim for sentences of 10–15 words.
 - Prefer active voice; avoid nested clauses and unclear pronouns.
 
 3) Structure & Flow
-- Organize with clear headings/subheadings (start at ##).
+- Organize with clear headings/subheadings (start at heading level 1 (#); do not skip levels).
 - Use lists for steps or key points.
 - Keep paragraphs short; one idea per paragraph.
+
+4) Final Checks
+- Preserve facts, order, and intent.
+- Use consistent terminology; avoid double negatives.
 
 User Preferences:
 ${buildPrefsText()}
