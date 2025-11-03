@@ -145,7 +145,7 @@ function ReviewInner(){
   const [{words:outW, chars:outC}, setOutStats] = useState(count(initialOutput));
   const [diffHtml, setDiffHtml] = useState(diffHTML(initialInput, initialOutput));
 
-  // Quick prefs (unchanged)
+  // Quick prefs
   const [lengthChoice, setLengthChoice] = useState("same");
   const [tone, setTone] = useState("neutral");
 
@@ -205,7 +205,7 @@ Follow these core rules:
 • Do not add external information.
 • Use inclusive, gender-neutral language when needed.
 • Use consistent terms for the same concept; avoid double negatives.
-• Start content headings at **#** (start from H1 in body). Do not skip levels.
+• Start content headings at **##** (no skipped levels).
 • Return **only** the rewritten Markdown (no extra commentary).
 
 1) Vocabulary & Tone
@@ -218,7 +218,7 @@ Follow these core rules:
 - Prefer active voice; avoid nested clauses and unclear pronouns.
 
 3) Structure & Flow
-- Organize with clear headings/subheadings (start at ##; no level skips).
+- Organize with clear headings/subheadings (start at ##).
 - Use lists for steps or key points.
 - Keep paragraphs short; one idea per paragraph.
 
@@ -353,9 +353,9 @@ Text:
         </div>
       )}
 
-      {/* ===== Centered content wrapper ===== */}
-      <main className={styles.centerWrap}>
-        <section className={styles.twoCols}>
+      {/* ===== Centered content wrapper (matches CSS names) ===== */}
+      <div className={styles.container}>
+        <div className={styles.textareas_container}>
           {/* Input column */}
           <div className={styles.text_container}>
             <div className={styles.labelWrapper}>
@@ -367,7 +367,7 @@ Text:
               </div>
             </div>
             <p className={styles.countText}>Words: {inW} | Characters: {inC}</p>
-            <textarea className={`${styles.textarea}`} value={inputText} readOnly />
+            <textarea className={styles.textarea} value={inputText} readOnly />
           </div>
 
           {/* Output column */}
@@ -392,9 +392,7 @@ Text:
             </div>
 
             {isDirty && (
-              <div className={styles.unsavedBanner}>
-                ⚠️ Unsaved changes
-              </div>
+              <div className={styles.unsavedBanner}>⚠️ Unsaved changes</div>
             )}
 
             {/* Quick Prefs (unchanged placement) */}
@@ -439,21 +437,21 @@ Text:
               </div>
             )}
           </div>
-        </section>
+        </div>
 
         {showDifference && (
-          <section className={styles.diffSection}>
+          <div className={styles.text_container} style={{ maxWidth: "1400px", width: "100%" }}>
             <div className={styles.labelWrapper}>
               <label className={styles.label}>Difference (vs input)</label>
             </div>
             <div className={styles.output_box} dangerouslySetInnerHTML={{ __html: diffHtml }} />
-          </section>
+          </div>
         )}
 
         <div className={styles.button_container}>
           <button className={styles.submit_btn} onClick={saveFinal}>Save & Continue</button>
         </div>
-      </main>
+      </div>
 
       {/* Footer is BELOW everything */}
       <Footer />
@@ -468,6 +466,477 @@ export default function Review(){
     </PageBoundary>
   );
 }
+
+// import React, { useEffect, useRef, useState, useCallback } from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import DiffMatchPatch from "diff-match-patch";
+// import { saveAs } from "file-saver";
+// import StatsButton from "../StatsButton";
+// import styles from "./styles.module.css";
+// import Footer from "../Footer";
+
+// /* -------- ErrorBoundary -------- */
+// class PageBoundary extends React.Component {
+//   constructor(p){ super(p); this.state = { hasError: false, error: null }; }
+//   static getDerivedStateFromError(err){ return { hasError: true, error: err }; }
+//   componentDidCatch(err, info){ console.error("Review crashed:", err, info); }
+//   render(){
+//     if(this.state.hasError){
+//       return (
+//         <div style={{padding:16}}>
+//           <h2>Something went wrong while rendering.</h2>
+//           <pre style={{whiteSpace:"pre-wrap"}}>{String(this.state.error)}</pre>
+//         </div>
+//       );
+//     }
+//     return this.props.children;
+//   }
+// }
+
+// /* -------- Utils -------- */
+// const dmp = new DiffMatchPatch();
+// const safeGetUser = () => { try { return JSON.parse(localStorage.getItem("user")) || null; } catch { return null; } };
+// const count = (s="") => ({ words: String(s).trim().split(/\s+/).filter(Boolean).length, chars: String(s).length });
+
+// const normalizeHeadings = (md="") => {
+//   const lines = String(md || "").split(/\r?\n/);
+//   let lastLevel = 1;
+//   const out = lines.map((line) => {
+//     const m = line.match(/^(#{1,6})\s+(.*)$/);
+//     if (!m) return line;
+//     let lvl = m[1].length;
+//     if (lvl < 2) lvl = 2;
+//     if (lvl > lastLevel + 1) lvl = lastLevel + 1;
+//     lastLevel = lvl;
+//     return `${"#".repeat(lvl)} ${m[2].trim()}`;
+//   });
+//   return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+// };
+
+// const coerceGFM = (md="") =>
+//   normalizeHeadings(
+//     String(md)
+//       .replace(/^\s*[\*\+]\s/gm, "- ")
+//       .replace(/^\s*(\d+)\)\s/gm, "$1. ")
+//       .replace(/[ \t]+$/gm, "")
+//   );
+
+// const diffHTML = (a="", b="") => {
+//   const diffs = dmp.diff_main(a ?? "", b ?? "");
+//   dmp.diff_cleanupSemantic(diffs);
+//   return diffs.map(([op, txt]) => {
+//     if (op === DiffMatchPatch.DIFF_INSERT) return `<span style="background:#d4fcdc;color:#08660f;">${txt}</span>`;
+//     if (op === DiffMatchPatch.DIFF_DELETE) return `<span style="background:#ffecec;color:#8f1d1d;text-decoration:line-through;">${txt}</span>`;
+//     return txt;
+//   }).join("");
+// };
+
+// /* -------- Minimal Markdown Renderer -------- */
+// const RenderMD = ({ text }) => {
+//   const src = String(text || "");
+//   const lines = src.split(/\r?\n/);
+//   const nodes = [];
+//   let list = null;
+
+//   const flushList = () => {
+//     if (list && list.items.length) {
+//       nodes.push(
+//         React.createElement(
+//           list.ordered ? "ol" : "ul",
+//           { key: `list-${nodes.length}`, style: { margin: "0 0 1rem 1.25rem" } },
+//           list.items.map((t, i) => <li key={i}>{t}</li>)
+//         )
+//       );
+//     }
+//     list = null;
+//   };
+
+//   for (const raw of lines) {
+//     const line = raw.trimRight();
+
+//     const m = line.match(/^(#{2,6})\s+(.*)$/);
+//     if (m) {
+//       flushList();
+//       const level = m[1].length;
+//       const Tag = `h${level}`;
+//       nodes.push(<Tag key={`h-${nodes.length}`}>{m[2]}</Tag>);
+//       continue;
+//     }
+
+//     const ul = line.match(/^-\s+(.*)$/);
+//     const ol = line.match(/^(\d+)\.\s+(.*)$/);
+//     if (ul || ol) {
+//       if (!list) list = { ordered: !!ol, items: [] };
+//       list.items.push((ul ? ul[1] : ol[2]).trim());
+//       continue;
+//     }
+
+//     if (!line.trim()) { flushList(); continue; }
+
+//     flushList();
+//     nodes.push(<p key={`p-${nodes.length}`}>{line}</p>);
+//   }
+//   flushList();
+//   return <div>{nodes}</div>;
+// };
+
+// /* -------- Component -------- */
+// function ReviewInner(){
+//   const navigate = useNavigate();
+//   const { state } = useLocation();
+//   const surveyRef = useRef(null);
+
+//   const fallback = (() => { try { return JSON.parse(sessionStorage.getItem("lastGenerated")) || null; } catch { return null; } })();
+//   const initialInput  = state?.inputText  ?? fallback?.inputText  ?? "";
+//   const initialOutput = state?.outputText ?? fallback?.outputText ?? "";
+
+//   const user = safeGetUser();
+//   const email = user?.email ?? null;
+
+//   // History / sidebar
+//   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+//   const [documents, setDocuments] = useState([]);
+
+//   // Main texts
+//   const [inputText, setInputText] = useState(initialInput);
+//   const [outputText, setOutputText] = useState(coerceGFM(initialOutput));
+//   const [originalOutputText, setOriginalOutputText] = useState(coerceGFM(initialOutput));
+
+//   // UI/UX
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [isDirty, setIsDirty] = useState(false);
+//   const [showDifference, setShowDifference] = useState(false);
+//   const [showSurveyPrompt, setShowSurveyPrompt] = useState(false);
+
+//   // Stats + diff
+//   const [{words:inW, chars:inC}, setInStats]   = useState(count(initialInput));
+//   const [{words:outW, chars:outC}, setOutStats] = useState(count(initialOutput));
+//   const [diffHtml, setDiffHtml] = useState(diffHTML(initialInput, initialOutput));
+
+//   // Quick prefs (unchanged)
+//   const [lengthChoice, setLengthChoice] = useState("same");
+//   const [tone, setTone] = useState("neutral");
+
+//   useEffect(() => setInStats(count(inputText)), [inputText]);
+//   useEffect(() => { setOutStats(count(outputText)); setDiffHtml(diffHTML(inputText, outputText)); }, [inputText, outputText]);
+
+//   /* Fetch history list (for sidebar) */
+//   useEffect(() => {
+//     if (!email) return;
+//     (async () => {
+//       try {
+//         const res = await fetch(`/api/simplifications/user/${email}`);
+//         const json = await res.json();
+//         if (res.ok && Array.isArray(json?.data)) {
+//           const sorted = json.data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+//           setDocuments(sorted);
+//         }
+//       } catch (e) {
+//         console.error("fetch history failed", e);
+//       }
+//     })();
+//   }, [email]);
+
+//   const loadDocument = (doc) => {
+//     const gen = coerceGFM(doc?.outputText || "");
+//     const final = coerceGFM(doc?.finalOutput?.text || gen);
+//     setInputText(doc?.inputText || "");
+//     setOriginalOutputText(gen);
+//     setOutputText(final);
+//     setIsEditing(false);
+//     setShowDifference(false);
+//     setIsDirty(false);
+//   };
+
+//   const buildPrefsSnapshot = useCallback(() => ({ lengthChoice, tone }), [lengthChoice, tone]);
+
+//   useEffect(() => {
+//     if (!inputText.trim()) return;
+//     const t = setTimeout(() => regenerate(), 800);
+//     return () => clearTimeout(t);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [lengthChoice, tone]);
+
+//   const buildPrefsText = useCallback(() => {
+//     const ratios = { same: 1, shorter: 0.75, much_shorter: 0.5 };
+//     const target = Math.max(10, Math.round(inW * (ratios[lengthChoice] ?? 1)));
+//     const toneLine = tone !== "neutral" ? `• Use a ${tone} tone.\n` : "";
+//     return `• Aim for ~${target} words while preserving meaning.\n${toneLine}`;
+//   }, [inW, lengthChoice, tone]);
+
+//   const buildPrompt = useCallback(
+//     (text) => `
+// You are an expert plain-language editor. Rewrite the text in clear **GitHub-Flavored Markdown** so it is easy to read and understand **without losing meaning**.
+
+// Follow these core rules:
+// • Keep facts, intent, and sequence accurate. No hallucinations.
+// • Do not add external information.
+// • Use inclusive, gender-neutral language when needed.
+// • Use consistent terms for the same concept; avoid double negatives.
+// • Start content headings at **#** (start from H1 in body). Do not skip levels.
+// • Return **only** the rewritten Markdown (no extra commentary).
+
+// 1) Vocabulary & Tone
+// - Replace technical or abstract words with simpler alternatives.
+// - Define complex but necessary terms in parentheses on first use.
+// - Remove idioms, metaphors, and jargon.
+
+// 2) Sentence Structure
+// - Aim for sentences of 10–15 words.
+// - Prefer active voice; avoid nested clauses and unclear pronouns.
+
+// 3) Structure & Flow
+// - Organize with clear headings/subheadings (start at ##; no level skips).
+// - Use lists for steps or key points.
+// - Keep paragraphs short; one idea per paragraph.
+
+// User Preferences:
+// ${buildPrefsText()}
+
+// Text:
+// "${text}"
+// `.trim(),
+//     [buildPrefsText]
+//   );
+
+//   const splitChunks = (txt, max=3500) => {
+//     const words = String(txt).split(/\s+/);
+//     const chunks = [];
+//     let cur = [];
+//     for (const w of words) {
+//       const next = (cur.join(" ") + " " + w).trim();
+//       if (next.length <= max) cur.push(w);
+//       else { if (cur.length) chunks.push(cur.join(" ")); cur = [w]; }
+//     }
+//     if (cur.length) chunks.push(cur.join(" "));
+//     return chunks;
+//   };
+
+//   const regenerate = async () => {
+//     if (!inputText.trim()) return;
+//     setIsLoading(true);
+//     try {
+//       const chunks = splitChunks(inputText);
+//       const reqs = chunks.map(async (ch) => {
+//         const res = await fetch("/api/gpt4", {
+//           method: "POST",
+//           headers: { "Content-Type":"application/json" },
+//           body: JSON.stringify({ prompt: buildPrompt(ch) })
+//         });
+//         const data = await res.json();
+//         let t = "";
+//         if (typeof data?.response === "string") t = data.response;
+//         else if (Array.isArray(data?.choices)) t = data.choices.map(c => c?.message?.content || "").join(" ");
+//         else if (typeof data?.text === "string") t = data.text;
+//         else if (data?.response?.content) t = data.response.content.map(c => c?.text || "").join(" ");
+//         return coerceGFM(t);
+//       });
+
+//       const combined = coerceGFM((await Promise.all(reqs)).join("\n\n"));
+//       setOutputText(combined);
+//       setIsDirty(true);
+
+//       if (email) {
+//         try {
+//           await fetch("/api/simplifications/version", {
+//             method: "POST",
+//             headers: { "Content-Type":"application/json" },
+//             body: JSON.stringify({
+//               email,
+//               inputText,
+//               producedText: combined,
+//               source: "resimplify",
+//               prefsSnapshot: buildPrefsSnapshot(),
+//             })
+//           });
+//         } catch (e) {
+//           console.error("version save failed", e);
+//         }
+//       }
+//     } catch (e) {
+//       console.error("regenerate", e);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const saveFinal = async () => {
+//     navigate("/survey", {
+//       state: {
+//         email,
+//         inputText,
+//         generatedText: originalOutputText,
+//         finalText: outputText,
+//       },
+//     });
+//   };
+
+//   const onEditChange = (e) => { setOutputText(coerceGFM(e.target.value)); setIsDirty(true); };
+
+//   /* -------- Render -------- */
+//   return (
+//     <>
+//       <nav className={styles.navbar}>
+//         <h1 onClick={() => (window.location.href = "/")} style={{ cursor: "pointer" }}>
+//           Text Simplification Tool
+//         </h1>
+//         <button className={styles.white_btn} onClick={() => navigate("/Login")}>Logout</button>
+//       </nav>
+
+//       {/* Floating history button */}
+//       <div className={styles.historyFabWrap}>
+//         <button
+//           onClick={() => setIsSidebarVisible(s => !s)}
+//           title="History"
+//           className={styles.historyFab}
+//         >
+//           🕓
+//         </button>
+//       </div>
+
+//       {/* Slide-in history panel */}
+//       {isSidebarVisible && (
+//         <div className={styles.historyPanel}>
+//           <div className={styles.historyHeader}>
+//             <h3>History</h3>
+//             <button onClick={() => setIsSidebarVisible(false)} className={styles.historyClose}>✖</button>
+//           </div>
+//           <ul className={styles.historyList}>
+//             {documents.map((doc, idx) => (
+//               <li
+//                 key={doc._id}
+//                 onClick={() => { loadDocument(doc); setIsSidebarVisible(false); }}
+//                 className={styles.historyItem}
+//               >
+//                 <div style={{ fontWeight:600 }}>Document {documents.length - idx}</div>
+//                 <div style={{ fontSize:12, color:"#666" }}>
+//                   {new Date(doc.createdAt).toLocaleString()}
+//                 </div>
+//                 <div style={{ fontSize:13, color:"#444", marginTop:4 }}>
+//                   {(doc.inputText || "").slice(0, 60)}…
+//                 </div>
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       )}
+
+//       {/* ===== Centered content wrapper ===== */}
+//       <main className={styles.centerWrap}>
+//         <section className={styles.twoCols}>
+//           {/* Input column */}
+//           <div className={styles.text_container}>
+//             <div className={styles.labelWrapper}>
+//               <label className={styles.label}>Input Text</label>
+//               <div className={styles.actions}>
+//                 <StatsButton text={inputText}/>
+//                 <button className={styles.actionButton} onClick={() => navigator.clipboard.writeText(inputText)}>📋 Copy</button>
+//                 <button className={styles.actionButton} onClick={() => saveAs(new Blob([inputText],{type:"text/plain;charset=utf-8"}), "InputText.txt")}>📥 Download</button>
+//               </div>
+//             </div>
+//             <p className={styles.countText}>Words: {inW} | Characters: {inC}</p>
+//             <textarea className={`${styles.textarea}`} value={inputText} readOnly />
+//           </div>
+
+//           {/* Output column */}
+//           <div className={styles.text_container}>
+//             <div className={styles.labelWrapper}>
+//               <label className={styles.label}>AI-generated Text (Markdown)</label>
+//               <div className={styles.actions}>
+//                 <StatsButton text={outputText}/>
+//                 <button className={styles.actionButton} onClick={() => navigator.clipboard.writeText(outputText)}>📋 Copy</button>
+//                 <button className={styles.actionButton} onClick={() => saveAs(new Blob([outputText],{type:"text/markdown;charset=utf-8"}), "Generated.md")}>📥 Download</button>
+//                 <button className={styles.toggleDiffBtn} onClick={() => setShowDifference(s => !s)}>
+//                   {showDifference ? "Hide Difference" : "Show Difference"}
+//                 </button>
+//                 <button
+//                   className={styles.editButton}
+//                   onClick={() => setIsEditing(s => !s)}
+//                   style={{ background:"#0078d4", color:"#fff", fontWeight:600, borderRadius:6, padding:"6px 12px" }}
+//                 >
+//                   {isEditing ? "Show Rendered" : "✏️ Edit Output"}
+//                 </button>
+//               </div>
+//             </div>
+
+//             {isDirty && (
+//               <div className={styles.unsavedBanner}>
+//                 ⚠️ Unsaved changes
+//               </div>
+//             )}
+
+//             {/* Quick Prefs (unchanged placement) */}
+//             <div className={styles.quickPrefs} style={{ margin: "20px 0" }}>
+//               <div style={{ marginBottom: 16 }}>
+//                 <span style={{ display:"block", marginBottom:8, fontWeight:600 }}>Output length</span>
+//                 <input
+//                   type="range" min="0" max="2"
+//                   value={["same","shorter","much_shorter"].indexOf(lengthChoice)}
+//                   onChange={(e)=>setLengthChoice(["same","shorter","much_shorter"][Number(e.target.value)])}
+//                   style={{ width:"100%", height: "14px" }}
+//                 />
+//                 <div style={{ display:"flex", justifyContent:"space-between", marginTop:6 }}>
+//                   <span>Same</span><span>Shorter</span><span>Much shorter</span>
+//                 </div>
+//               </div>
+
+//               <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+//                 <label style={{ fontWeight:600 }}>Tone</label>
+//                 <select value={tone} onChange={(e)=>setTone(e.target.value)} style={{ padding:"6px 10px", fontSize:15 }}>
+//                   <option value="neutral">Neutral</option>
+//                   <option value="formal">Formal</option>
+//                   <option value="academic">Academic</option>
+//                   <option value="casual">Casual</option>
+//                   <option value="creative">Creative</option>
+//                 </select>
+//               </div>
+//             </div>
+
+//             <p className={styles.countText}>Words: {outW} | Characters: {outC}</p>
+
+//             {isEditing ? (
+//               <textarea
+//                 className={`${styles.textarea} ${styles.editable}`}
+//                 value={outputText}
+//                 onChange={onEditChange}
+//                 aria-label="Edit AI-generated markdown"
+//               />
+//             ) : (
+//               <div className={styles.output_box}>
+//                 <RenderMD text={outputText}/>
+//               </div>
+//             )}
+//           </div>
+//         </section>
+
+//         {showDifference && (
+//           <section className={styles.diffSection}>
+//             <div className={styles.labelWrapper}>
+//               <label className={styles.label}>Difference (vs input)</label>
+//             </div>
+//             <div className={styles.output_box} dangerouslySetInnerHTML={{ __html: diffHtml }} />
+//           </section>
+//         )}
+
+//         <div className={styles.button_container}>
+//           <button className={styles.submit_btn} onClick={saveFinal}>Save & Continue</button>
+//         </div>
+//       </main>
+
+//       {/* Footer is BELOW everything */}
+//       <Footer />
+//     </>
+//   );
+// }
+
+// export default function Review(){
+//   return (
+//     <PageBoundary>
+//       <ReviewInner />
+//     </PageBoundary>
+//   );
+// }
 
 // import React, { useEffect, useRef, useState, useCallback } from "react";
 // import { useLocation, useNavigate } from "react-router-dom";

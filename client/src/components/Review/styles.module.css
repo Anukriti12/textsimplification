@@ -1,11 +1,11 @@
-/* Reset and global */
+/* Reset & base */
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
   font-family: Arial, sans-serif;
-  background-color: #fff;
+  background: #fff;
   box-sizing: border-box;
 }
 
@@ -18,254 +18,143 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  box-sizing: border-box;
 }
-.navbar h1 {
-  color: white;
-  font-size: 24px;
-  margin: 0;
-  cursor: pointer;
-}
+.navbar h1 { color:#fff; font-size:24px; margin:0; }
 .white_btn {
-  background-color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 18px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
+  background:#fff; border:none; border-radius:20px;
+  padding:10px 18px; font-weight:700; font-size:14px; cursor:pointer;
 }
 
-/* Main layout */
+/* Main centered wrapper */
 .container {
+  min-height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 40px 0;
-  min-height: calc(100vh - 70px);
-  box-sizing: border-box;
+  padding: 28px 32px 0;
 }
 
-/* Two-column text areas centered */
+/* Two side-by-side boxes centered */
 .textareas_container {
   display: flex;
-  justify-content: center;
+  justify-content: center;   /* center the pair */
   align-items: flex-start;
   gap: 40px;
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;         /* keep side-by-side on wide screens */
 }
 
-/* Text blocks */
+/* Individual columns */
 .text_container {
-  flex: 1;
-  min-width: 500px;
+  flex: 1 1 0;
+  min-width: 520px;
   max-width: 650px;
 }
 
 .labelWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  display:flex; justify-content:space-between; align-items:center;
+  gap:10px; flex-wrap:wrap;
 }
+.label { font-size:16px; font-weight:700; color:#111; }
+.countText { margin:8px 0; font-size:14px; color:#666; }
 
-.label {
-  font-size: 16px;
-  font-weight: bold;
-  color: #111;
-}
-
-.countText {
-  margin: 8px 0;
-  font-size: 14px;
-  color: #666;
-}
-
-/* Textarea + output boxes */
+/* Text areas / output */
 .textarea, .output_box {
-  width: 100%;
-  min-height: 400px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 12px;
-  font-size: 16px;
-  background-color: #f9f9f9;
-  line-height: 1.5;
-  resize: both;
-  overflow: auto;
-  box-sizing: border-box;
+  width:100%; min-height:400px;
+  border:1px solid #ccc; border-radius:4px; padding:12px;
+  font-size:16px; line-height:1.5; background:#f9f9f9;
+  resize:both; overflow:auto; box-sizing:border-box;
 }
-.textarea.editable {
-  border: 2px solid #4caf50;
-  background-color: #fff;
-}
-.output_box {
-  white-space: pre-wrap;
-}
+.textarea.editable { border:2px solid #4caf50; background:#fff; }
+.output_box { white-space:pre-wrap; }
 
-/* Action buttons */
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+/* Actions */
+.actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .actionButton {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #333;
-  font-size: 14px;
-  padding: 5px;
+  display:flex; align-items:center; gap:4px; background:none; border:none;
+  cursor:pointer; color:#333; font-size:14px; padding:5px;
 }
-.actionButton:hover {
-  color: #3bb19b;
-}
+.actionButton:hover { color:#3bb19b; }
 .toggleDiffBtn {
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #ccc;
-  padding: 5px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
+  background:#fff; color:#000; border:1px solid #ccc;
+  padding:5px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:700;
 }
-.toggleDiffBtn:hover {
-  background-color: #f0f0f0;
-}
+.toggleDiffBtn:hover { background:#f0f0f0; }
 
-/* Quick prefs */
-.quickPrefs {
-  margin: 20px 0;
-  width: 100%;
-}
-.quickPrefs label {
+/* Unsaved banner */
+.unsavedBanner {
+  margin: 8px 0 12px;
+  color: #9a6700;
+  background: #fff3cd;
+  padding: 8px;
+  border-radius: 6px;
   font-weight: 600;
 }
-.quickPrefs select {
-  padding: 6px 10px;
-  font-size: 15px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-}
+
+/* Quick Prefs (placement unchanged) */
+.quickPrefs { margin:20px 0; width:100%; }
+.quickPrefs label { font-weight:600; }
 
 /* Save button centered */
-.button_container {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-}
+.button_container { margin:28px 0; display:flex; justify-content:center; }
 .submit_btn {
-  background-color: #333;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  background:#333; color:#fff; border:none; padding:12px 24px;
+  border-radius:6px; cursor:pointer; font-weight:700; font-size:16px;
 }
-.submit_btn:hover {
-  background-color: #555;
-}
+.submit_btn:hover { background:#555; }
 
-/* Floating history button */
-.historyButton {
-  position: fixed;
-  left: 16px;
-  top: 96px;
-  z-index: 15;
-  background: #0078d4;
-  color: white;
-  border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+/* Floating history button & panel */
+.historyFabWrap { position:fixed; left:16px; top:96px; z-index:15; }
+.historyFab {
+  background:#0078d4; color:#fff; border:none; width:44px; height:44px;
+  border-radius:50%; font-size:20px; cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
 }
-.historyButton:hover {
-  background: #005a9e;
-}
+.historyFab:hover { background:#005a9e; }
 
-/* History sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 320px;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  padding: 16px;
-  overflow-y: auto;
-  z-index: 20;
+.historyPanel {
+  position:fixed; top:0; left:0; height:100vh; width:320px;
+  background:#fff; border-right:1px solid #ddd; padding:16px;
+  overflow-y:auto; z-index:20;
 }
+.historyHeader { display:flex; justify-content:space-between; align-items:center; }
+.historyClose { background:none; border:none; font-size:18px; cursor:pointer; }
+.historyList { list-style:none; padding:0; margin:12px 0 0; }
 .historyItem {
-  padding: 10px;
-  margin-bottom: 8px;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
+  padding:10px; margin-bottom:8px; border:1px solid #eee; border-radius:6px;
+  cursor:pointer; transition:background .2s;
 }
-.historyItem:hover {
-  background-color: #f0f0f0;
-}
-.activeDoc {
-  background-color: #e6f7ff;
-  border-left: 4px solid #1890ff;
-}
+.historyItem:hover { background:#f0f0f0; }
 
-/* Footer always below */
-footer, .footer {
-  width: 100%;
-  margin-top: auto;
-  padding: 24px 20px;
-  text-align: center;
-  background: #f9f9f9;
-  border-top: 1px solid #ddd;
-  color: #333;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* Diff box */
+/* Diff box (used in diff section) */
 .diff_box {
-  border: 1px solid #ddd;
-  padding: 10px;
-  background-color: #f9f9f9;
-  overflow-y: auto;
-  max-height: 250px;
-  white-space: pre-wrap;
-  margin-top: 15px;
-  font-family: "Courier New", Courier, monospace;
+  border:1px solid #ddd; padding:10px; background:#f9f9f9;
+  overflow-y:auto; max-height:250px; white-space:pre-wrap;
+  margin-top:15px; font-family:"Courier New", Courier, monospace;
 }
 
-/* Responsive layout */
+/* Footer (NIDILRR line lives here) */
+footer, .footer {
+  width:100%;
+  margin-top:auto;
+  padding:24px 20px;
+  text-align:center;
+  background:#f9f9f9;
+  border-top:1px solid #ddd;
+  color:#333; font-size:14px; line-height:1.5;
+}
+
+/* Responsive: stack columns on smaller screens */
 @media (max-width: 1100px) {
   .textareas_container {
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;          /* allow wrapping */
+    justify-content: center;  /* keep centered when stacked */
     gap: 24px;
   }
-  .text_container {
-    min-width: 90%;
-  }
-  .historyButton {
-    top: 80px;
-  }
+  .text_container { min-width: 92%; max-width: 900px; }
+  .historyFabWrap { top: 80px; }
 }
 
 
