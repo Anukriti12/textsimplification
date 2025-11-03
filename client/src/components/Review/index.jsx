@@ -36,8 +36,8 @@ const normalizeHeadings = (md="") => {
     const m = line.match(/^(#{1,6})\s+(.*)$/);
     if (!m) return line;
     let lvl = m[1].length;
-    if (lvl < 2) lvl = 2;               // ⭐ always start at H2
-    if (lvl > lastLevel + 1) lvl = lastLevel + 1; // ⭐ no level skips
+    if (lvl < 2) lvl = 2;               // start at H2 in body
+    if (lvl > lastLevel + 1) lvl = lastLevel + 1; // no level skips
     lastLevel = lvl;
     return `${"#".repeat(lvl)} ${m[2].trim()}`;
   });
@@ -124,33 +124,70 @@ function ReviewInner(){
   const user = safeGetUser();
   const email = user?.email ?? null;
 
+  // History / sidebar
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [documents, setDocuments] = useState([]);
+
+  // Main texts
   const [inputText, setInputText] = useState(initialInput);
   const [outputText, setOutputText] = useState(coerceGFM(initialOutput));
-  const [originalOutputText] = useState(coerceGFM(initialOutput)); // ⭐ freeze original; never overwrite
+  const [originalOutputText, setOriginalOutputText] = useState(coerceGFM(initialOutput)); // frozen first AI result
+
+  // UI/UX
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [showDifference, setShowDifference] = useState(false);
   const [showSurveyPrompt, setShowSurveyPrompt] = useState(false);
 
+  // Stats + diff
   const [{words:inW, chars:inC}, setInStats]   = useState(count(initialInput));
   const [{words:outW, chars:outC}, setOutStats] = useState(count(initialOutput));
   const [diffHtml, setDiffHtml] = useState(diffHTML(initialInput, initialOutput));
 
-  // Quick prefs (this page only exposes length + tone)
+  // Quick prefs (keep placement as-is)
   const [lengthChoice, setLengthChoice] = useState("same");
   const [tone, setTone] = useState("neutral");
 
   useEffect(() => setInStats(count(inputText)), [inputText]);
   useEffect(() => { setOutStats(count(outputText)); setDiffHtml(diffHTML(inputText, outputText)); }, [inputText, outputText]);
 
-  /* ⭐ Build a snapshot we will save with each regenerate */
+  /* Fetch history list (for sidebar) */
+  useEffect(() => {
+    if (!email) return;
+    (async () => {
+      try {
+        const res = await fetch(`/api/simplifications/user/${email}`);
+        const json = await res.json();
+        if (res.ok && Array.isArray(json?.data)) {
+          const sorted = json.data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+          setDocuments(sorted);
+        }
+      } catch (e) {
+        console.error("fetch history failed", e);
+      }
+    })();
+  }, [email]);
+
+  /* Load a historical doc into the page */
+  const loadDocument = (doc) => {
+    const gen = coerceGFM(doc?.outputText || "");
+    const final = coerceGFM(doc?.finalOutput?.text || gen);
+    setInputText(doc?.inputText || "");
+    setOriginalOutputText(gen); // what model produced originally
+    setOutputText(final);       // latest user-edited or same as gen
+    setIsEditing(false);
+    setShowDifference(false);
+    setIsDirty(false);
+  };
+
+  /* Build a snapshot we will save with each regenerate */
   const buildPrefsSnapshot = useCallback(() => ({
     lengthChoice,
     tone,
   }), [lengthChoice, tone]);
 
-  /* ⭐ Auto regenerate when length/tone change (debounced) */
+  /* Auto-regenerate when length/tone change (debounced) */
   useEffect(() => {
     if (!inputText.trim()) return;
     const t = setTimeout(() => regenerate(), 800);
@@ -167,7 +204,7 @@ function ReviewInner(){
   }, [inW, lengthChoice, tone]);
 
   const buildPrompt = useCallback(
-(text) => `
+    (text) => `
 You are an expert plain-language editor. Rewrite the text in clear **GitHub-Flavored Markdown** so it is easy to read and understand **without losing meaning**.
 
 Follow these core rules:
@@ -175,28 +212,22 @@ Follow these core rules:
 • Do not add external information.
 • Use inclusive, gender-neutral language when needed.
 • Use consistent terms for the same concept; avoid double negatives.
-• Start headings at **#**. Do not skip levels.
+• Start content headings at **##** (no H1 in body). Do not skip levels.
 • Return **only** the rewritten Markdown (no extra commentary).
-• Provide appropriate spacing between each heading.
 
 1) Vocabulary & Tone
 - Replace technical or abstract words with simpler alternatives.
 - Define complex but necessary terms in parentheses on first use.
 - Remove idioms, metaphors, and jargon.
-- Use inclusive, gender-neutral language.
 
 2) Sentence Structure
 - Aim for sentences of 10–15 words.
 - Prefer active voice; avoid nested clauses and unclear pronouns.
 
 3) Structure & Flow
-- Organize with clear headings/subheadings (start at ##; do not skip levels).
+- Organize with clear headings/subheadings (start at ##; no level skips).
 - Use lists for steps or key points.
 - Keep paragraphs short; one idea per paragraph.
-
-4) Final Checks
-- Preserve facts, order, and intent.
-- Use consistent terminology; avoid double negatives.
 
 User Preferences:
 ${buildPrefsText()}
@@ -244,7 +275,7 @@ Text:
       setOutputText(combined);
       setIsDirty(true);
 
-      /* ⭐ Persist a version row with prefsSnapshot */
+      // Persist a version row with prefsSnapshot (if your backend route exists)
       if (email) {
         try {
           await fetch("/api/simplifications/version", {
@@ -255,7 +286,7 @@ Text:
               inputText,
               producedText: combined,
               source: "resimplify",
-              prefsSnapshot: buildPrefsSnapshot(), // lengthChoice + tone
+              prefsSnapshot: buildPrefsSnapshot(),
             })
           });
         } catch (e) {
@@ -270,19 +301,19 @@ Text:
   };
 
   const saveFinal = async () => {
-    // ⭐ Survey sees original (first model output) and your edited final (current outputText)
     navigate("/survey", {
       state: {
         email,
         inputText,
-        generatedText: originalOutputText,
-        finalText: outputText,
+        generatedText: originalOutputText, // frozen first AI output
+        finalText: outputText,             // current edited
       },
     });
   };
 
   const onEditChange = (e) => { setOutputText(coerceGFM(e.target.value)); setIsDirty(true); };
 
+  /* -------- Render -------- */
   return (
     <>
       <nav className={styles.navbar}>
@@ -292,7 +323,57 @@ Text:
         <button className={styles.white_btn} onClick={() => navigate("/Login")}>Logout</button>
       </nav>
 
+      {/* Floating history button (always visible) */}
+      <div style={{ position:"fixed", left:12, top:96, zIndex: 15 }}>
+        <button
+          onClick={() => setIsSidebarVisible(s => !s)}
+          title="History"
+          style={{
+            background:"#0078d4", color:"#fff", border:"none", width:44, height:44,
+            borderRadius:"50%", fontSize:20, cursor:"pointer", boxShadow:"0 2px 8px rgba(0,0,0,.2)"
+          }}
+        >
+          🕓
+        </button>
+      </div>
+
+      {/* Slide-in history panel */}
+      {isSidebarVisible && (
+        <div
+          style={{
+            position:"fixed", top:0, left:0, height:"100vh", width:320, background:"#fff",
+            borderRight:"1px solid #ddd", padding:16, overflowY:"auto", zIndex: 20
+          }}
+        >
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <h3 style={{ margin:0 }}>History</h3>
+            <button onClick={() => setIsSidebarVisible(false)} style={{ background:"transparent", border:"none", fontSize:20, cursor:"pointer" }}>✖</button>
+          </div>
+          <ul style={{ listStyle:"none", padding:0, marginTop:12 }}>
+            {documents.map((doc, idx) => (
+              <li
+                key={doc._id}
+                onClick={() => { loadDocument(doc); setIsSidebarVisible(false); }}
+                style={{
+                  padding:"10px 8px", borderRadius:6, cursor:"pointer",
+                  border:"1px solid #eee", marginBottom:8
+                }}
+              >
+                <div style={{ fontWeight:600 }}>Document {documents.length - idx}</div>
+                <div style={{ fontSize:12, color:"#666" }}>
+                  {new Date(doc.createdAt).toLocaleString()}
+                </div>
+                <div style={{ fontSize:13, color:"#444", marginTop:4 }}>
+                  {(doc.inputText || "").slice(0, 60)}…
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className={styles.container}>
+        {/* Two-column feel is preserved by your CSS `side_by_side` classes */}
         {/* Input */}
         <div className={styles.text_container}>
           <div className={styles.labelWrapper}>
@@ -328,14 +409,14 @@ Text:
             </div>
           </div>
 
-          {/* ⭐ Unsaved banner right ABOVE the AI box */}
+          {/* Unsaved banner (kept just above AI box) */}
           {isDirty && (
             <div style={{margin:"8px 0 12px", color:"#9a6700", background:"#fff3cd", padding:8, borderRadius:6, fontWeight:600}}>
               ⚠️ Unsaved changes
             </div>
           )}
 
-          {/* Quick prefs with more spacing + bigger slider */}
+          {/* Quick Prefs (unchanged placement) */}
           <div className={styles.quickPrefs} style={{ margin: "20px 0" }}>
             <div style={{ marginBottom: 16 }}>
               <span style={{ display:"block", marginBottom:8, fontWeight:600 }}>Output length</span>
@@ -343,7 +424,7 @@ Text:
                 type="range" min="0" max="2"
                 value={["same","shorter","much_shorter"].indexOf(lengthChoice)}
                 onChange={(e)=>setLengthChoice(["same","shorter","much_shorter"][Number(e.target.value)])}
-                style={{ width:"100%", height: "14px" }} // ⭐ larger slider
+                style={{ width:"100%", height: "14px" }}
               />
               <div style={{ display:"flex", justifyContent:"space-between", marginTop:6 }}>
                 <span>Same</span><span>Shorter</span><span>Much shorter</span>
@@ -378,7 +459,7 @@ Text:
           )}
         </div>
 
-        {/* ⭐ Live difference view always reflects current outputText */}
+        {/* Difference */}
         {showDifference && (
           <div className={styles.text_container}>
             <div className={styles.labelWrapper}>
@@ -406,6 +487,7 @@ Text:
           </div>
         )}
 
+        {/* Footer/NIDILRR line remains below all boxes */}
         <Footer />
       </div>
     </>
@@ -420,6 +502,430 @@ export default function Review(){
   );
 }
 
+
+// import React, { useEffect, useRef, useState, useCallback } from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import DiffMatchPatch from "diff-match-patch";
+// import { saveAs } from "file-saver";
+// import StatsButton from "../StatsButton";
+// import styles from "./styles.module.css";
+// import Footer from "../Footer";
+
+// /* -------- ErrorBoundary -------- */
+// class PageBoundary extends React.Component {
+//   constructor(p){ super(p); this.state = { hasError: false, error: null }; }
+//   static getDerivedStateFromError(err){ return { hasError: true, error: err }; }
+//   componentDidCatch(err, info){ console.error("Review crashed:", err, info); }
+//   render(){
+//     if(this.state.hasError){
+//       return (
+//         <div style={{padding:16}}>
+//           <h2>Something went wrong while rendering.</h2>
+//           <pre style={{whiteSpace:"pre-wrap"}}>{String(this.state.error)}</pre>
+//         </div>
+//       );
+//     }
+//     return this.props.children;
+//   }
+// }
+
+// /* -------- Utils -------- */
+// const dmp = new DiffMatchPatch();
+// const safeGetUser = () => { try { return JSON.parse(localStorage.getItem("user")) || null; } catch { return null; } };
+// const count = (s="") => ({ words: String(s).trim().split(/\s+/).filter(Boolean).length, chars: String(s).length });
+
+// const normalizeHeadings = (md="") => {
+//   const lines = String(md || "").split(/\r?\n/);
+//   let lastLevel = 1;
+//   const out = lines.map((line) => {
+//     const m = line.match(/^(#{1,6})\s+(.*)$/);
+//     if (!m) return line;
+//     let lvl = m[1].length;
+//     if (lvl < 2) lvl = 2;               // ⭐ always start at H2
+//     if (lvl > lastLevel + 1) lvl = lastLevel + 1; // ⭐ no level skips
+//     lastLevel = lvl;
+//     return `${"#".repeat(lvl)} ${m[2].trim()}`;
+//   });
+//   return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+// };
+
+// const coerceGFM = (md="") =>
+//   normalizeHeadings(
+//     String(md)
+//       .replace(/^\s*[\*\+]\s/gm, "- ")
+//       .replace(/^\s*(\d+)\)\s/gm, "$1. ")
+//       .replace(/[ \t]+$/gm, "")
+//   );
+
+// const diffHTML = (a="", b="") => {
+//   const diffs = dmp.diff_main(a ?? "", b ?? "");
+//   dmp.diff_cleanupSemantic(diffs);
+//   return diffs.map(([op, txt]) => {
+//     if (op === DiffMatchPatch.DIFF_INSERT) return `<span style="background:#d4fcdc;color:#08660f;">${txt}</span>`;
+//     if (op === DiffMatchPatch.DIFF_DELETE) return `<span style="background:#ffecec;color:#8f1d1d;text-decoration:line-through;">${txt}</span>`;
+//     return txt;
+//   }).join("");
+// };
+
+// /* -------- Minimal Markdown Renderer -------- */
+// const RenderMD = ({ text }) => {
+//   const src = String(text || "");
+//   const lines = src.split(/\r?\n/);
+//   const nodes = [];
+//   let list = null;
+
+//   const flushList = () => {
+//     if (list && list.items.length) {
+//       nodes.push(
+//         React.createElement(
+//           list.ordered ? "ol" : "ul",
+//           { key: `list-${nodes.length}`, style: { margin: "0 0 1rem 1.25rem" } },
+//           list.items.map((t, i) => <li key={i}>{t}</li>)
+//         )
+//       );
+//     }
+//     list = null;
+//   };
+
+//   for (const raw of lines) {
+//     const line = raw.trimRight();
+
+//     const m = line.match(/^(#{2,6})\s+(.*)$/);
+//     if (m) {
+//       flushList();
+//       const level = m[1].length;
+//       const Tag = `h${level}`;
+//       nodes.push(<Tag key={`h-${nodes.length}`}>{m[2]}</Tag>);
+//       continue;
+//     }
+
+//     const ul = line.match(/^-\s+(.*)$/);
+//     const ol = line.match(/^(\d+)\.\s+(.*)$/);
+//     if (ul || ol) {
+//       if (!list) list = { ordered: !!ol, items: [] };
+//       list.items.push((ul ? ul[1] : ol[2]).trim());
+//       continue;
+//     }
+
+//     if (!line.trim()) { flushList(); continue; }
+
+//     flushList();
+//     nodes.push(<p key={`p-${nodes.length}`}>{line}</p>);
+//   }
+//   flushList();
+//   return <div>{nodes}</div>;
+// };
+
+// /* -------- Component -------- */
+// function ReviewInner(){
+//   const navigate = useNavigate();
+//   const { state } = useLocation();
+//   const surveyRef = useRef(null);
+
+//   const fallback = (() => { try { return JSON.parse(sessionStorage.getItem("lastGenerated")) || null; } catch { return null; } })();
+//   const initialInput  = state?.inputText  ?? fallback?.inputText  ?? "";
+//   const initialOutput = state?.outputText ?? fallback?.outputText ?? "";
+
+//   const user = safeGetUser();
+//   const email = user?.email ?? null;
+
+//   const [inputText, setInputText] = useState(initialInput);
+//   const [outputText, setOutputText] = useState(coerceGFM(initialOutput));
+//   const [originalOutputText] = useState(coerceGFM(initialOutput)); // ⭐ freeze original; never overwrite
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [isDirty, setIsDirty] = useState(false);
+//   const [showDifference, setShowDifference] = useState(false);
+//   const [showSurveyPrompt, setShowSurveyPrompt] = useState(false);
+
+//   const [{words:inW, chars:inC}, setInStats]   = useState(count(initialInput));
+//   const [{words:outW, chars:outC}, setOutStats] = useState(count(initialOutput));
+//   const [diffHtml, setDiffHtml] = useState(diffHTML(initialInput, initialOutput));
+
+//   // Quick prefs (this page only exposes length + tone)
+//   const [lengthChoice, setLengthChoice] = useState("same");
+//   const [tone, setTone] = useState("neutral");
+
+//   useEffect(() => setInStats(count(inputText)), [inputText]);
+//   useEffect(() => { setOutStats(count(outputText)); setDiffHtml(diffHTML(inputText, outputText)); }, [inputText, outputText]);
+
+//   /* ⭐ Build a snapshot we will save with each regenerate */
+//   const buildPrefsSnapshot = useCallback(() => ({
+//     lengthChoice,
+//     tone,
+//   }), [lengthChoice, tone]);
+
+//   /* ⭐ Auto regenerate when length/tone change (debounced) */
+//   useEffect(() => {
+//     if (!inputText.trim()) return;
+//     const t = setTimeout(() => regenerate(), 800);
+//     return () => clearTimeout(t);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [lengthChoice, tone]);
+
+//   /* Human-readable prefs block for the prompt */
+//   const buildPrefsText = useCallback(() => {
+//     const ratios = { same: 1, shorter: 0.75, much_shorter: 0.5 };
+//     const target = Math.max(10, Math.round(inW * (ratios[lengthChoice] ?? 1)));
+//     const toneLine = tone !== "neutral" ? `• Use a ${tone} tone.\n` : "";
+//     return `• Aim for ~${target} words while preserving meaning.\n${toneLine}`;
+//   }, [inW, lengthChoice, tone]);
+
+//   const buildPrompt = useCallback(
+// (text) => `
+// You are an expert plain-language editor. Rewrite the text in clear **GitHub-Flavored Markdown** so it is easy to read and understand **without losing meaning**.
+
+// Follow these core rules:
+// • Keep facts, intent, and sequence accurate. No hallucinations.
+// • Do not add external information.
+// • Use inclusive, gender-neutral language when needed.
+// • Use consistent terms for the same concept; avoid double negatives.
+// • Start headings at **#**. Do not skip levels.
+// • Return **only** the rewritten Markdown (no extra commentary).
+// • Provide appropriate spacing between each heading.
+
+// 1) Vocabulary & Tone
+// - Replace technical or abstract words with simpler alternatives.
+// - Define complex but necessary terms in parentheses on first use.
+// - Remove idioms, metaphors, and jargon.
+// - Use inclusive, gender-neutral language.
+
+// 2) Sentence Structure
+// - Aim for sentences of 10–15 words.
+// - Prefer active voice; avoid nested clauses and unclear pronouns.
+
+// 3) Structure & Flow
+// - Organize with clear headings/subheadings (start at ##; do not skip levels).
+// - Use lists for steps or key points.
+// - Keep paragraphs short; one idea per paragraph.
+
+// 4) Final Checks
+// - Preserve facts, order, and intent.
+// - Use consistent terminology; avoid double negatives.
+
+// User Preferences:
+// ${buildPrefsText()}
+
+// Text:
+// "${text}"
+// `.trim(),
+//     [buildPrefsText]
+//   );
+
+//   const splitChunks = (txt, max=3500) => {
+//     const words = String(txt).split(/\s+/);
+//     const chunks = [];
+//     let cur = [];
+//     for (const w of words) {
+//       const next = (cur.join(" ") + " " + w).trim();
+//       if (next.length <= max) cur.push(w);
+//       else { if (cur.length) chunks.push(cur.join(" ")); cur = [w]; }
+//     }
+//     if (cur.length) chunks.push(cur.join(" "));
+//     return chunks;
+//   };
+
+//   const regenerate = async () => {
+//     if (!inputText.trim()) return;
+//     setIsLoading(true);
+//     try {
+//       const chunks = splitChunks(inputText);
+//       const reqs = chunks.map(async (ch) => {
+//         const res = await fetch("/api/gpt4", {
+//           method: "POST",
+//           headers: { "Content-Type":"application/json" },
+//           body: JSON.stringify({ prompt: buildPrompt(ch) })
+//         });
+//         const data = await res.json();
+//         let t = "";
+//         if (typeof data?.response === "string") t = data.response;
+//         else if (Array.isArray(data?.choices)) t = data.choices.map(c => c?.message?.content || "").join(" ");
+//         else if (typeof data?.text === "string") t = data.text;
+//         else if (data?.response?.content) t = data.response.content.map(c => c?.text || "").join(" ");
+//         return coerceGFM(t);
+//       });
+
+//       const combined = coerceGFM((await Promise.all(reqs)).join("\n\n"));
+//       setOutputText(combined);
+//       setIsDirty(true);
+
+//       /* ⭐ Persist a version row with prefsSnapshot */
+//       if (email) {
+//         try {
+//           await fetch("/api/simplifications/version", {
+//             method: "POST",
+//             headers: { "Content-Type":"application/json" },
+//             body: JSON.stringify({
+//               email,
+//               inputText,
+//               producedText: combined,
+//               source: "resimplify",
+//               prefsSnapshot: buildPrefsSnapshot(), // lengthChoice + tone
+//             })
+//           });
+//         } catch (e) {
+//           console.error("version save failed", e);
+//         }
+//       }
+//     } catch (e) {
+//       console.error("regenerate", e);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const saveFinal = async () => {
+//     // ⭐ Survey sees original (first model output) and your edited final (current outputText)
+//     navigate("/survey", {
+//       state: {
+//         email,
+//         inputText,
+//         generatedText: originalOutputText,
+//         finalText: outputText,
+//       },
+//     });
+//   };
+
+//   const onEditChange = (e) => { setOutputText(coerceGFM(e.target.value)); setIsDirty(true); };
+
+//   return (
+//     <>
+//       <nav className={styles.navbar}>
+//         <h1 onClick={() => (window.location.href = "/")} style={{ cursor: "pointer" }}>
+//           Text Simplification Tool
+//         </h1>
+//         <button className={styles.white_btn} onClick={() => navigate("/Login")}>Logout</button>
+//       </nav>
+
+//       <div className={styles.container}>
+//         {/* Input */}
+//         <div className={styles.text_container}>
+//           <div className={styles.labelWrapper}>
+//             <label className={styles.label}>Input Text</label>
+//             <div className={styles.actions}>
+//               <StatsButton text={inputText}/>
+//               <button className={styles.actionButton} onClick={() => navigator.clipboard.writeText(inputText)}>📋 Copy</button>
+//               <button className={styles.actionButton} onClick={() => saveAs(new Blob([inputText],{type:"text/plain;charset=utf-8"}), "InputText.txt")}>📥 Download</button>
+//             </div>
+//           </div>
+//           <p className={styles.countText}>Words: {inW} | Characters: {inC}</p>
+//           <textarea className={`${styles.textarea} ${styles.side_by_side}`} value={inputText} readOnly />
+//         </div>
+
+//         {/* Output */}
+//         <div className={styles.text_container}>
+//           <div className={styles.labelWrapper}>
+//             <label className={styles.label}>AI-generated Text (Markdown)</label>
+//             <div className={styles.actions}>
+//               <StatsButton text={outputText}/>
+//               <button className={styles.actionButton} onClick={() => navigator.clipboard.writeText(outputText)}>📋 Copy</button>
+//               <button className={styles.actionButton} onClick={() => saveAs(new Blob([outputText],{type:"text/markdown;charset=utf-8"}), "Generated.md")}>📥 Download</button>
+//               <button className={styles.toggleDiffBtn} onClick={() => setShowDifference(s => !s)}>
+//                 {showDifference ? "Hide Difference" : "Show Difference"}
+//               </button>
+//               <button
+//                 className={styles.editButton}
+//                 onClick={() => setIsEditing(s => !s)}
+//                 style={{ background:"#0078d4", color:"#fff", fontWeight:600, borderRadius:6, padding:"6px 12px" }}
+//               >
+//                 {isEditing ? "Show Rendered" : "✏️ Edit Output"}
+//               </button>
+//             </div>
+//           </div>
+
+//           {/* ⭐ Unsaved banner right ABOVE the AI box */}
+//           {isDirty && (
+//             <div style={{margin:"8px 0 12px", color:"#9a6700", background:"#fff3cd", padding:8, borderRadius:6, fontWeight:600}}>
+//               ⚠️ Unsaved changes
+//             </div>
+//           )}
+
+//           {/* Quick prefs with more spacing + bigger slider */}
+//           <div className={styles.quickPrefs} style={{ margin: "20px 0" }}>
+//             <div style={{ marginBottom: 16 }}>
+//               <span style={{ display:"block", marginBottom:8, fontWeight:600 }}>Output length</span>
+//               <input
+//                 type="range" min="0" max="2"
+//                 value={["same","shorter","much_shorter"].indexOf(lengthChoice)}
+//                 onChange={(e)=>setLengthChoice(["same","shorter","much_shorter"][Number(e.target.value)])}
+//                 style={{ width:"100%", height: "14px" }} // ⭐ larger slider
+//               />
+//               <div style={{ display:"flex", justifyContent:"space-between", marginTop:6 }}>
+//                 <span>Same</span><span>Shorter</span><span>Much shorter</span>
+//               </div>
+//             </div>
+
+//             <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+//               <label style={{ fontWeight:600 }}>Tone</label>
+//               <select value={tone} onChange={(e)=>setTone(e.target.value)} style={{ padding:"6px 10px", fontSize:15 }}>
+//                 <option value="neutral">Neutral</option>
+//                 <option value="formal">Formal</option>
+//                 <option value="academic">Academic</option>
+//                 <option value="casual">Casual</option>
+//                 <option value="creative">Creative</option>
+//               </select>
+//             </div>
+//           </div>
+
+//           <p className={styles.countText}>Words: {outW} | Characters: {outC}</p>
+
+//           {isEditing ? (
+//             <textarea
+//               className={`${styles.textarea} ${styles.side_by_side} ${styles.editable}`}
+//               value={outputText}
+//               onChange={onEditChange}
+//               aria-label="Edit AI-generated markdown"
+//             />
+//           ) : (
+//             <div className={`${styles.output_box} ${styles.side_by_side}`}>
+//               <RenderMD text={outputText}/>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* ⭐ Live difference view always reflects current outputText */}
+//         {showDifference && (
+//           <div className={styles.text_container}>
+//             <div className={styles.labelWrapper}>
+//               <label className={styles.label}>Difference (vs input)</label>
+//             </div>
+//             <div className={`${styles.output_box} ${styles.side_by_side}`} dangerouslySetInnerHTML={{ __html: diffHtml }} />
+//           </div>
+//         )}
+
+//         <div className={styles.button_container}>
+//           <button className={styles.submit_btn} onClick={saveFinal}>Save & Continue</button>
+//         </div>
+
+//         {showSurveyPrompt && (
+//           <div className={styles.survey_prompt} ref={surveyRef}>
+//             <p className={styles.survey_text}>
+//               Please take the survey.
+//               <button
+//                 className={styles.survey_btn}
+//                 onClick={() => navigate("/survey", { state: { email, inputText, generatedText: originalOutputText, finalText: outputText } })}
+//               >
+//                 📑 Take the Survey
+//               </button>
+//             </p>
+//           </div>
+//         )}
+
+//         <Footer />
+//       </div>
+//     </>
+//   );
+// }
+
+// export default function Review(){
+//   return (
+//     <PageBoundary>
+//       <ReviewInner />
+//     </PageBoundary>
+//   );
+// }
+
+// prev UI
 // import React, { useEffect, useRef, useState, useCallback } from "react";
 // import { useLocation, useNavigate } from "react-router-dom";
 // import DiffMatchPatch from "diff-match-patch";
