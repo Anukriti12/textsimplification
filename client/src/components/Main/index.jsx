@@ -233,7 +233,7 @@ Follow these core rules:
 • Do not add external information.
 • Use inclusive, gender-neutral language when needed.
 • Use consistent terms for the same concept; avoid double negatives.
-• Start headings at **#**. Do not skip levels.
+• Start headings at **#** (heading level 1). Do not skip levels.
 • Return **only** the rewritten Markdown (no extra commentary).
 • Provide appropriate spacing between each heading.
 
