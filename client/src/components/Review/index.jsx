@@ -363,6 +363,8 @@ Text:
       setOutputText(combined);
       setIsDirty(true);
 
+      setOriginalOutputText(combined); 
+
       if (email) {
         try {
           await fetch("/api/simplifications/version", {
@@ -398,7 +400,7 @@ Text:
     });
   };
 
-  const onEditChange = (e) => { setOutputText(coerceGFM(e.target.value)); setIsDirty(true); };
+  const onEditChange = (e) => { setOutputText(e.target.value); setIsDirty(true); }; // { setOutputText(coerceGFM(e.target.value)); setIsDirty(true); };
 
   /* -------- Render -------- */
   return (
