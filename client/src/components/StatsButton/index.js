@@ -12,11 +12,11 @@ export default function StatsButton({ text }) {
   return (
     <div className={styles.wrapper}>
       <span
-        className={styles.icon}
+        className= "text_btn save_btn" //{styles.icon}
         title="Show statistics"
         onClick={() => setOpen((o) => !o)}
       >
-        📊 Stats
+        📊 
       </span>
 
       {open && (

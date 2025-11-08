@@ -612,6 +612,12 @@ text-align: center;
   align-items: center;
   margin-bottom: 15px;
 }
+.sliderWrapper {
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 
 .sliderMarkers {
   display: flex;

@@ -7,7 +7,7 @@
 }
 
 .panel {
-  position: absolute;
+  position: relative; 
   top: 1.8rem;        /* below the icons row */
   right: 0;
   z-index: 999;

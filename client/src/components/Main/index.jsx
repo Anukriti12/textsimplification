@@ -448,7 +448,8 @@ Text:
               <div className={styles.customBody}>
                 {/* Output Length with visible labels (larger slider + spacing) */}
                 <h3>Output Length</h3>
-                <div style={{ padding: "8px 0 12px" }}>
+                {/* <div style={{ padding: "8px 0 12px" }}> */}
+                <div className="sliderWrapper">
                   <input
                     type="range"
                     min="0"

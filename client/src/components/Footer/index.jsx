@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 const Footer = () => (
   <footer className={styles.footer}>
     <img
-      src="images/nidilrr_logo.jpg"
+      src="images/nidilrr_logo.png"
       alt="NIDILRR – National Institute on Disability, Independent Living, and Rehabilitation Research"
       className={styles.logo}
     />

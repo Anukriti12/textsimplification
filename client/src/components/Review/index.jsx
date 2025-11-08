@@ -380,7 +380,7 @@ Text:
           {/* Output column */}
           <div className={styles.text_container}>
             <div className={styles.labelWrapper}>
-              <label className={styles.label}>AI-generated Text (Markdown)</label>
+              <label className={styles.label}>AI-generated Text</label>
               <div className={styles.actions}>
                 <StatsButton text={outputText}/>
                 <button className={styles.actionButton} onClick={() => navigator.clipboard.writeText(outputText)}>📋 Copy</button>
