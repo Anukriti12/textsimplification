@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 import StatsButton from "../StatsButton";
 import styles from "./styles.module.css";
 import Footer from "../Footer";
+import { marked } from "marked";
 
 /* -------- ErrorBoundary -------- */
 class PageBoundary extends React.Component {
@@ -69,13 +70,47 @@ const RenderMD = ({ text }) => {
   const nodes = [];
   let list = null;
 
+  const parseInline = (text) => {
+    const parts = [];
+    let lastIndex = 0;
+
+    const regex = /(\*\*(.*?)\*\*|\*(.*?)\*|\[(.*?)\]\((.*?)\))/g;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+
+      if (match[2]) {
+        parts.push(<strong key={match.index}>{match[2]}</strong>);
+      } else if (match[3]) {
+        parts.push(<em key={match.index}>{match[3]}</em>);
+      } else if (match[4] && match[5]) {
+        parts.push(
+          <a key={match.index} href={match[5]} target="_blank" rel="noopener noreferrer">
+            {match[4]}
+          </a>
+        );
+      }
+
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+
+    return parts;
+  };
+
   const flushList = () => {
     if (list && list.items.length) {
       nodes.push(
         React.createElement(
           list.ordered ? "ol" : "ul",
           { key: `list-${nodes.length}`, style: { margin: "0 0 1rem 1.25rem" } },
-          list.items.map((t, i) => <li key={i}>{t}</li>)
+          list.items.map((t, i) => <li key={i}>{parseInline(t)}</li>)
         )
       );
     }
@@ -90,7 +125,7 @@ const RenderMD = ({ text }) => {
       flushList();
       const level = m[1].length;
       const Tag = `h${level}`;
-      nodes.push(<Tag key={`h-${nodes.length}`}>{m[2]}</Tag>);
+      nodes.push(<Tag key={`h-${nodes.length}`}>{parseInline(m[2])}</Tag>);
       continue;
     }
 
@@ -102,14 +137,67 @@ const RenderMD = ({ text }) => {
       continue;
     }
 
-    if (!line.trim()) { flushList(); continue; }
+    if (!line.trim()) {
+      flushList();
+      continue;
+    }
 
     flushList();
-    nodes.push(<p key={`p-${nodes.length}`}>{line}</p>);
+    nodes.push(<p key={`p-${nodes.length}`}>{parseInline(line)}</p>);
   }
+
   flushList();
   return <div>{nodes}</div>;
 };
+
+
+// const RenderMD = ({ text }) => {
+//   const src = String(text || "");
+//   const lines = src.split(/\r?\n/);
+//   const nodes = [];
+//   let list = null;
+
+//   const flushList = () => {
+//     if (list && list.items.length) {
+//       nodes.push(
+//         React.createElement(
+//           list.ordered ? "ol" : "ul",
+//           { key: `list-${nodes.length}`, style: { margin: "0 0 1rem 1.25rem" } },
+//           list.items.map((t, i) => <li key={i}>{t}</li>)
+//         )
+//       );
+//     }
+//     list = null;
+//   };
+
+//   for (const raw of lines) {
+//     const line = raw.trimRight();
+
+//     const m = line.match(/^(#{2,6})\s+(.*)$/);
+//     if (m) {
+//       flushList();
+//       const level = m[1].length;
+//       const Tag = `h${level}`;
+//       nodes.push(<Tag key={`h-${nodes.length}`}>{m[2]}</Tag>);
+//       continue;
+//     }
+
+//     const ul = line.match(/^-\s+(.*)$/);
+//     const ol = line.match(/^(\d+)\.\s+(.*)$/);
+//     if (ul || ol) {
+//       if (!list) list = { ordered: !!ol, items: [] };
+//       list.items.push((ul ? ul[1] : ol[2]).trim());
+//       continue;
+//     }
+
+//     if (!line.trim()) { flushList(); continue; }
+
+//     flushList();
+//     nodes.push(<p key={`p-${nodes.length}`}>{line}</p>);
+//   }
+//   flushList();
+//   return <div>{nodes}</div>;
+// };
 
 /* -------- Component -------- */
 function ReviewInner(){
@@ -206,7 +294,7 @@ You are an expert plain-language editor. Rewrite the text in clear **GitHub-Flav
 • Do not add external information.
 • Use inclusive, gender-neutral language when needed.
 • Use consistent terms for the same concept; avoid double negatives.
-• Start headings at **#** (heading 1). Do not skip levels.
+• Start headings at ** # ** (heading level 1). Do not skip levels.
 • Return **only** the rewritten Markdown (no extra commentary).
 • Provide appropriate spacing between each heading.
 

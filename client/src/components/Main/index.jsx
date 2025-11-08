@@ -31,7 +31,7 @@ const prefsToPlain = (inputWordCount, outputLength, prefs, tone, addl) => {
   }
 
   // Structure & formatting (include only checked)
-  if (prefs.sectionHeadings) sections.push("• Add clear section headings that group related ideas (start at **##**).");
+  if (prefs.sectionHeadings) sections.push("• Add clear section headings that group related ideas (start at ** # **, heading level 1).");
   if (prefs.bulletLists) sections.push("• Use bulleted or numbered lists for steps and key points.");
   if (prefs.shortParagraphs) sections.push("• Keep paragraphs short (2–3 sentences).");
 
@@ -233,7 +233,7 @@ Follow these core rules:
 • Do not add external information.
 • Use inclusive, gender-neutral language when needed.
 • Use consistent terms for the same concept; avoid double negatives.
-• Start headings at **#** (heading level 1). Do not skip levels.
+• Start headings at ** # ** (heading level 1). Do not skip levels.
 • Return **only** the rewritten Markdown (no extra commentary).
 • Provide appropriate spacing between each heading.
 
@@ -460,7 +460,7 @@ Text:
                     style={{ width: "100%", height: 12 }}
                     aria-label="Output length"
                   />
-                  <div className={styles.sliderLabels} style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                  {/* <div className={styles.sliderLabels} style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
                     {["same", "shorter", "much_shorter"].map((v) => (
                       <span
                         key={v}
@@ -469,7 +469,18 @@ Text:
                         {v === "same" ? "Same" : v === "shorter" ? "Shorter" : "Much shorter"}
                       </span>
                     ))}
+                  </div> */}
+                  <div className={styles.sliderLabels} style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                    {["Same", "Shorter", "Much shorter"].map((label, idx) => (
+                      <span
+                        key={label}
+                        className={outputLength === lengthOptions[idx] ? styles.activeLabel : styles.sliderLabel}
+                      >
+                        {label}
+                      </span>
+                    ))}
                   </div>
+
                 </div>
 
                 {/* Headings & Formatting */}
